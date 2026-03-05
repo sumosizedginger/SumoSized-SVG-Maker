@@ -40,9 +40,9 @@ export const simpleGradient: SVGGenerator = {
     angle: 45,
     transparent: false
   },
-  render: (params) => {
+  render: (params, seed) => {
     const { color1, color2, angle, transparent } = params;
-    const id = `grad-${Math.random().toString(36).substr(2, 9)}`;
+    const gradId = `grad-${seed}`;
 
     // Calculate coordinates based on angle (0deg = bottom to top, 90deg = left to right)
     const angleRad = ((angle - 90) * Math.PI) / 180;
@@ -54,12 +54,12 @@ export const simpleGradient: SVGGenerator = {
     return `
       <svg width="100%" height="100%" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
         <defs>
-          <linearGradient id="${id}" x1="${x1}%" y1="${y1}%" x2="${x2}%" y2="${y2}%">
+          <linearGradient id="${gradId}" x1="${x1}%" y1="${y1}%" x2="${x2}%" y2="${y2}%">
             <stop offset="0%" stop-color="${color1}" />
             <stop offset="100%" stop-color="${color2}" />
           </linearGradient>
         </defs>
-        ${transparent ? '' : `<rect width="100" height="100" fill="url(#${id})" />`}
+        ${transparent ? '' : `<rect width="100" height="100" fill="url(#${gradId})" />`}
       </svg>
     `.trim();
   }

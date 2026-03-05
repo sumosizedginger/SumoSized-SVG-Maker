@@ -53,10 +53,10 @@ export const dots: SVGGenerator = {
     return `
       <svg width="100%" height="100%" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
         <defs>
-          <clipPath id="dotsClip"><rect width="100" height="100" /></clipPath>
+          <clipPath id="dotsClip-${seed}"><rect width="100" height="100" /></clipPath>
         </defs>
         ${transparent ? '' : `<rect width="100" height="100" fill="${finalBg}" />`}
-        <g clip-path="url(#dotsClip)">
+        <g clip-path="url(#dotsClip-${seed})">
           ${dotsList.join('\n')}
         </g>
       </svg>
@@ -82,7 +82,7 @@ export const grid: SVGGenerator = {
     { name: 'transparent', label: 'Transparent Background', type: 'boolean', default: false, group: 'Background', advanced: true }
   ],
   defaultParams: { cells: 10, thickness: 0.5, paletteId: 'neon-vibe', bgColor: '#0a0a0d', lineColor: '#3a86ff', usePalette: true, showDots: true, transparent: false },
-  render: (params) => {
+  render: (params, seed) => {
     const { cells, thickness, paletteId, bgColor, lineColor, usePalette, showDots, transparent } = params;
 
     let finalBg = bgColor;
@@ -115,10 +115,10 @@ export const grid: SVGGenerator = {
     return `
       <svg width="100%" height="100%" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
         <defs>
-          <clipPath id="gridClip"><rect width="100" height="100" /></clipPath>
+          <clipPath id="gridClip-${seed}"><rect width="100" height="100" /></clipPath>
         </defs>
         ${transparent ? '' : `<rect width="100" height="100" fill="${finalBg}" />`}
-        <g clip-path="url(#gridClip)" stroke-linecap="round">
+        <g clip-path="url(#gridClip-${seed})" stroke-linecap="round">
           ${lines.join('\n')}
           ${dotsList.join('\n')}
         </g>

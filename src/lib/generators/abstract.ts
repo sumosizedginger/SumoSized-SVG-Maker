@@ -67,10 +67,10 @@ export const flowField: SVGGenerator = {
     return `
       <svg width="100%" height="100%" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
         <defs>
-          <clipPath id="flowClip"><rect width="100" height="100" /></clipPath>
+          <clipPath id="flowClip-${seed}"><rect width="100" height="100" /></clipPath>
         </defs>
         ${transparent ? '' : `<rect width="100" height="100" fill="${finalBg}" />`}
-        <g clip-path="url(#flowClip)">
+        <g clip-path="url(#flowClip-${seed})">
           ${paths.join('\n')}
         </g>
       </svg>

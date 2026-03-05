@@ -57,10 +57,10 @@ export const poster: SVGGenerator = {
     return `
       <svg width="100%" height="100%" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
         <defs>
-          <clipPath id="posterClip"><rect width="100" height="100" /></clipPath>
+          <clipPath id="posterClip-${seed}"><rect width="100" height="100" /></clipPath>
         </defs>
         ${transparent ? '' : `<rect width="100" height="100" fill="${finalBg}" />`}
-        <g clip-path="url(#posterClip)">
+        <g clip-path="url(#posterClip-${seed})">
           ${blocks.join('\n')}
         </g>
       </svg>

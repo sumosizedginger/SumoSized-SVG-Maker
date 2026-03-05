@@ -18,7 +18,7 @@ export const techBadge: SVGGenerator = {
     { name: 'glow', label: 'Glow Intensity', type: 'number', min: 0, max: 10, step: 1, default: 5, group: 'Details', advanced: true }
   ],
   defaultParams: { width: 70, height: 30, cornerRadius: 4, paletteId: 'neon-vibe', color: '#00bbf9', usePalette: true, glow: 5 },
-  render: (params) => {
+  render: (params, seed) => {
     const { width, height, cornerRadius, paletteId, color, usePalette, glow } = params;
 
     let finalColor = color;
@@ -32,16 +32,19 @@ export const techBadge: SVGGenerator = {
     const x = (100 - width) / 2;
     const y = (100 - height) / 2;
 
+    const badgeClipId = `badgeClip-${seed}`;
+    const glowId = `glow-${seed}`;
+
     return `
       <svg width="100%" height="100%" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
         <defs>
-          <clipPath id="badgeClip"><rect width="100" height="100" /></clipPath>
-          <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+          <clipPath id="${badgeClipId}"><rect width="100" height="100" /></clipPath>
+          <filter id="${glowId}" x="-50%" y="-50%" width="200%" height="200%">
             <feGaussianBlur stdDeviation="${glow / 2}" result="blur" />
             <feComposite in="SourceGraphic" in2="blur" operator="over" />
           </filter>
         </defs>
-        <g clip-path="url(#badgeClip)">
+        <g clip-path="url(#${badgeClipId})">
           <rect 
             x="${x}" y="${y}" 
             width="${width}" height="${height}" 
@@ -49,7 +52,7 @@ export const techBadge: SVGGenerator = {
             fill="none" 
             stroke="${finalColor}" 
             stroke-width="1"
-            filter="url(#glow)"
+            filter="url(#${glowId})"
           />
           <rect 
             x="${x + 2}" y="${y + 2}" 

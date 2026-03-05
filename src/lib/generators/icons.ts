@@ -61,10 +61,10 @@ export const symbolGrid: SVGGenerator = {
         return `
       <svg width="100%" height="100%" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
         <defs>
-          <clipPath id="symbolClip"><rect width="100" height="100" /></clipPath>
+          <clipPath id="symbolClip-${seed}"><rect width="100" height="100" /></clipPath>
         </defs>
         ${transparent ? '' : `<rect width="100" height="100" fill="${bgColor}" />`}
-        <g clip-path="url(#symbolClip)">
+        <g clip-path="url(#symbolClip-${seed})">
           ${symbols.join('\n')}
         </g>
       </svg>

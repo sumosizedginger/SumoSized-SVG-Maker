@@ -17,7 +17,7 @@ export const orbit: SVGGenerator = {
     { name: 'thickness', label: 'Thickness', type: 'number', min: 0.1, max: 5, step: 0.1, default: 1, group: 'Geometry' }
   ],
   defaultParams: { orbits: 3, duration: 3, paletteId: 'neon-vibe', color: '#9b5de5', usePalette: true, thickness: 1 },
-  render: (params) => {
+  render: (params, seed) => {
     const { orbits, duration, paletteId, color, usePalette, thickness } = params;
 
     let finalColor = color;
@@ -50,9 +50,9 @@ export const orbit: SVGGenerator = {
     return `
       <svg width="100%" height="100%" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
         <defs>
-          <clipPath id="orbitClip"><rect width="100" height="100" /></clipPath>
+          <clipPath id="orbitClip-${seed}"><rect width="100" height="100" /></clipPath>
         </defs>
-        <g clip-path="url(#orbitClip)">
+        <g clip-path="url(#orbitClip-${seed})">
           ${elements.join('\n        ')}
         </g>
       </svg>

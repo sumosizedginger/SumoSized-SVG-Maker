@@ -80,12 +80,12 @@ export const quantumCoreGenerator: SVGGenerator = {
         // Intense Pro Neon Glow Filter
         svgMarkup += `
             <defs>
-                <clipPath id="quantum-bounds">
+                <clipPath id="quantum-bounds-${seed}">
                     <rect x="0" y="0" width="100" height="100" />
                 </clipPath>
                 
                 <!-- Hyper-Glow Filter -->
-                <filter id="neon-glow" x="-100%" y="-100%" width="300%" height="300%">
+                <filter id="neon-glow-${seed}" x="-100%" y="-100%" width="300%" height="300%">
                     <!-- Core high-intensity burn -->
                     <feGaussianBlur in="SourceGraphic" stdDeviation="${glowIntensity * 0.15}" result="core_blur" />
                     <!-- Mid glow -->
@@ -114,7 +114,7 @@ export const quantumCoreGenerator: SVGGenerator = {
         if (quantumGlitch) {
             svgMarkup += `
             < !--Quantum Glitch Filter(Turbulence + Displacement)-- >
-                <filter id="quantum-glitch" x = "-50%" y = "-50%" width = "200%" height = "200%" >
+                <filter id="quantum-glitch-${seed}" x = "-50%" y = "-50%" width = "200%" height = "200%" >
                     <feTurbulence type="fractalNoise" baseFrequency = "0.05" numOctaves = "2" result = "noise" seed = "${seed}" />
                         <feDisplacementMap in="SourceGraphic" in2 = "noise" scale = "${glitchIntensity}" xChannelSelector = "R" yChannelSelector = "G" />
                             </filter>
@@ -129,7 +129,7 @@ export const quantumCoreGenerator: SVGGenerator = {
             }
 
             svgMarkup += `
-                <mask id="depth-mask-front">
+                <mask id="depth-mask-front-${seed}">
                     <rect x="0" y="0" width="100" height="100" fill="white" />
                     ${maskBandsForward}
                 </mask>
@@ -137,10 +137,10 @@ export const quantumCoreGenerator: SVGGenerator = {
         }
         svgMarkup += `</defs>\n`;
 
-        svgMarkup += `<g clip-path="url(#quantum-bounds)">\n`;
+        svgMarkup += `<g clip-path="url(#quantum-bounds-${seed})">\n`;
 
         if (quantumGlitch) {
-            svgMarkup += `<g filter="url(#quantum-glitch)">\n`;
+            svgMarkup += `<g filter="url(#quantum-glitch-${seed})">\n`;
         }
 
         // ==========================================
@@ -150,7 +150,7 @@ export const quantumCoreGenerator: SVGGenerator = {
         const numLayers = Math.max(3, Math.floor(random() * 5) + 3); // 3 to 7 nested harmonic waves
 
         // We wrap the central math layers in a group, and then use <use> tags for Symmetry Folding
-        svgMarkup += `<defs>\n<g id="harmonic-seed">\n`;
+        svgMarkup += `<defs>\n<g id="harmonic-seed-${seed}">\n`;
 
         for (let layer = 0; layer < numLayers; layer++) {
             const pathColor = colors[layer % colors.length];
@@ -185,10 +185,10 @@ export const quantumCoreGenerator: SVGGenerator = {
         svgMarkup += `</g>\n</defs>\n`;
 
         // Symmetrical Folding Render (Rotational cloning)
-        let harmonicMarkup = `<g filter="url(#neon-glow)">\n`;
+        let harmonicMarkup = `<g filter="url(#neon-glow-${seed})">\n`;
         for (let s = 0; s < symmetry; s++) {
             const rotation = (s * 360) / symmetry;
-            harmonicMarkup += `<use href="#harmonic-seed" transform="rotate(${rotation} 50 50)" />\n`;
+            harmonicMarkup += `<use href="#harmonic-seed-${seed}" transform="rotate(${rotation} 50 50)" />\n`;
         }
         harmonicMarkup += `</g>\n`;
 
@@ -196,7 +196,7 @@ export const quantumCoreGenerator: SVGGenerator = {
         // 2. RENDER ASSEMBLY (Alpha Interlacing Mask)
         // ==========================================
         if (depthWeaving) {
-            svgMarkup += `<g mask="url(#depth-mask-front)">\n${harmonicMarkup}</g>\n`;
+            svgMarkup += `<g mask="url(#depth-mask-front-${seed})">\n${harmonicMarkup}</g>\n`;
         } else {
             svgMarkup += harmonicMarkup;
         }
@@ -205,7 +205,7 @@ export const quantumCoreGenerator: SVGGenerator = {
         // 3. CORE ENERGY SINGULARITY (Center Dot)
         // ==========================================
         const coreColor = colors[Math.floor(random() * colors.length)];
-        svgMarkup += `<circle cx="50" cy="50" r="${lineWidth * 2.5}" fill="${coreColor}" filter="url(#neon-glow)" />\n`;
+        svgMarkup += `<circle cx="50" cy="50" r="${lineWidth * 2.5}" fill="${coreColor}" filter="url(#neon-glow-${seed})" />\n`;
         svgMarkup += `<circle cx="50" cy="50" r="${lineWidth}" fill="#ffffff" />\n`;
 
         if (quantumGlitch) {
