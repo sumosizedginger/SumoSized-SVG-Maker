@@ -12,15 +12,11 @@
 
 	let { generatorId, params, values, onUpdate }: Props = $props();
 
-	// Group params by group label and apply filtering
+	let visibleParams = $derived(
+		params.filter((p) => !appState.simpleMode || !p.advanced),
+	);
 	let groupedParams = $derived.by(() => {
 		const groups: Record<string, ParamDefinition[]> = {};
-
-		// Filter based on simpleMode
-		const visibleParams = params.filter(
-			(p) => !appState.simpleMode || !p.advanced,
-		);
-
 		visibleParams.forEach((p) => {
 			const g = p.group || "General";
 			if (!groups[g]) groups[g] = [];

@@ -11,6 +11,7 @@ class AppState {
     activeLayerId = $state<string | null>(null);
     userPresets = $state<Preset[]>([]);
     simpleMode = $state(true); // Default to clean, simplified UI
+    isGalleryOpen = $state(false); // Controls global modal visibility
 
     activeLayer = $derived(this.layers.find(l => l.id === this.activeLayerId) || null);
     activeGenerator = $derived(this.activeLayer ? getGenerator(this.activeLayer.generatorId) : null);
@@ -86,8 +87,10 @@ class AppState {
             this.layers = savedState;
             this.activeLayerId = this.layers[this.layers.length - 1].id;
         } else {
-            // "Golden Preset" Onboarding
+            // "Golden Preset" Onboarding Setup
             this.addGoldenPreset();
+            // Automatically pop open the Gallery on first visit so they know it exists!
+            this.isGalleryOpen = true;
         }
 
         // Try to load from URL hash if present (overrides local storage)
@@ -143,6 +146,14 @@ class AppState {
         } catch (e) {
             console.error("Failed to parse state from hash", e);
         }
+    }
+
+    updateUrlHash() {
+        if (typeof window === 'undefined') return;
+        const hash = this.serializeState();
+        // Use replaceState so we don't spam the browser back-history, 
+        // but the address bar always accurately reflects the shareable URL!
+        window.history.replaceState(null, '', `#${hash}`);
     }
 
     generateShareUrl(): string {
@@ -290,6 +301,7 @@ class AppState {
 
     saveState() {
         storage.saveCompositionState(this.layers);
+        this.updateUrlHash();
     }
 
     savePreset(name: string) {

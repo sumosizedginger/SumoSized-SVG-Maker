@@ -13,7 +13,6 @@
 	let searchQuery = $state("");
 	let selectedCategory = $state("All");
 	let variants = $state<{ layers: any[]; svg: string }[]>([]);
-	let showGallery = $state(false);
 
 	const categories = ["All", ...new Set(generators.map((g) => g.category))];
 
@@ -66,7 +65,7 @@
 		const url = appState.generateShareUrl();
 		copyToClipboard(url);
 		alert(
-			"Shareable URL copied to clipboard! Anyone with this link can view your composition.",
+			"Shareable URL copied to clipboard!\n\nIt is also synced to your browser address bar.",
 		);
 	}
 
@@ -83,7 +82,7 @@
 		if (e.key.toLowerCase() === "r") {
 			appState.randomizeSeed();
 		} else if (e.key.toLowerCase() === "n") {
-			showGallery = true;
+			appState.isGalleryOpen = true;
 		} else if (e.key.toLowerCase() === "v") {
 			handleGenerateVariants();
 		}
@@ -96,11 +95,29 @@
 	<header>
 		<h1>SumoSized SVG Generator</h1>
 		<div class="header-actions">
-			<button class="header-btn" onclick={() => (showGallery = true)}
-				>+ New Layer</button
+			<button
+				class="header-btn gallery-btn"
+				onclick={() => (appState.isGalleryOpen = true)}
 			>
+				<svg
+					width="14"
+					height="14"
+					viewBox="0 0 24 24"
+					fill="none"
+					stroke="currentColor"
+					stroke-width="2"
+					><rect x="3" y="3" width="7" height="7"></rect><rect
+						x="14"
+						y="3"
+						width="7"
+						height="7"
+					></rect><rect x="14" y="14" width="7" height="7"
+					></rect><rect x="3" y="14" width="7" height="7"></rect></svg
+				>
+				Open Gallery
+			</button>
 			<button class="header-btn share" onclick={handleShare}
-				>Share URL</button
+				>Copy Share Link</button
 			>
 		</div>
 	</header>
@@ -238,10 +255,16 @@
 	</div>
 </main>
 
-{#if showGallery}
-	<div class="modal-overlay" onclick={() => (showGallery = false)}>
+{#if appState.isGalleryOpen}
+	<!-- svelte-ignore a11y_click_events_have_key_events -->
+	<!-- svelte-ignore a11y_no_static_element_interactions -->
+	<div class="modal-overlay" onclick={() => (appState.isGalleryOpen = false)}>
+		<!-- svelte-ignore a11y_click_events_have_key_events -->
+		<!-- svelte-ignore a11y_no_static_element_interactions -->
 		<div class="modal-content" onclick={(e) => e.stopPropagation()}>
-			<GeneratorGallery onSelect={() => (showGallery = false)} />
+			<GeneratorGallery
+				onSelect={() => (appState.isGalleryOpen = false)}
+			/>
 		</div>
 	</div>
 {/if}
