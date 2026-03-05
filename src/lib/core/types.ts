@@ -11,6 +11,7 @@ export interface ParamDefinition {
     default: any;
     group?: string; // section in UI (e.g., "Layout", "Colors")
     description?: string;
+    advanced?: boolean; // If true, hidden by default in "Simple" mode
 }
 
 export interface GeneratorMetadata {

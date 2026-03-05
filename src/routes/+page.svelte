@@ -8,10 +8,12 @@
 
 	import { copyToClipboard } from "$lib/utils/export";
 	import { logExport } from "$lib/services/telemetry.svelte";
+	import GeneratorGallery from "$lib/ui/GeneratorGallery.svelte";
 
 	let searchQuery = $state("");
 	let selectedCategory = $state("All");
 	let variants = $state<{ layers: any[]; svg: string }[]>([]);
+	let showGallery = $state(false);
 
 	const categories = ["All", ...new Set(generators.map((g) => g.category))];
 
@@ -59,11 +61,48 @@
 			);
 		}
 	}
+
+	function handleShare() {
+		const url = appState.generateShareUrl();
+		copyToClipboard(url);
+		alert(
+			"Shareable URL copied to clipboard! Anyone with this link can view your composition.",
+		);
+	}
+
+	// Hotkeys
+	function handleKeydown(e: KeyboardEvent) {
+		// Ignore if typing in an input
+		if (
+			e.target instanceof HTMLInputElement ||
+			e.target instanceof HTMLTextAreaElement ||
+			e.target instanceof HTMLSelectElement
+		)
+			return;
+
+		if (e.key.toLowerCase() === "r") {
+			appState.randomizeSeed();
+		} else if (e.key.toLowerCase() === "n") {
+			showGallery = true;
+		} else if (e.key.toLowerCase() === "v") {
+			handleGenerateVariants();
+		}
+	}
 </script>
+
+<svelte:window onkeydown={handleKeydown} />
 
 <main>
 	<header>
 		<h1>SumoSized SVG Generator</h1>
+		<div class="header-actions">
+			<button class="header-btn" onclick={() => (showGallery = true)}
+				>+ New Layer</button
+			>
+			<button class="header-btn share" onclick={handleShare}
+				>Share URL</button
+			>
+		</div>
 	</header>
 
 	<div class="layout">
@@ -199,6 +238,14 @@
 	</div>
 </main>
 
+{#if showGallery}
+	<div class="modal-overlay" onclick={() => (showGallery = false)}>
+		<div class="modal-content" onclick={(e) => e.stopPropagation()}>
+			<GeneratorGallery onSelect={() => (showGallery = false)} />
+		</div>
+	</div>
+{/if}
+
 <style>
 	.layers-section {
 		display: flex;
@@ -253,8 +300,35 @@
 		flex-shrink: 0;
 		background: #1e1e2e;
 		color: white;
-		padding: 0.6rem 1rem;
-		text-align: center;
+		padding: 0.6rem 1.5rem;
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+	}
+
+	.header-actions {
+		display: flex;
+		gap: 0.75rem;
+	}
+
+	.header-btn {
+		background: rgba(255, 255, 255, 0.1);
+		border: 1px solid rgba(255, 255, 255, 0.2);
+		color: white;
+		padding: 0.4rem 0.8rem;
+		border-radius: 6px;
+		font-size: 0.85rem;
+		cursor: pointer;
+		transition: all 0.2s;
+	}
+
+	.header-btn:hover {
+		background: rgba(255, 255, 255, 0.2);
+	}
+
+	.header-btn.share {
+		background: var(--accent-primary, #6366f1);
+		border-color: transparent;
 	}
 
 	h1 {
@@ -513,5 +587,25 @@
 	.variant-card:hover {
 		transform: scale(1.02);
 		border-color: #1e1e2e;
+	}
+
+	/* Modal Overlay */
+	.modal-overlay {
+		position: fixed;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
+		background: rgba(0, 0, 0, 0.6);
+		backdrop-filter: blur(4px);
+		z-index: 1000;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+	}
+
+	.modal-content {
+		max-width: 90%;
+		max-height: 90%;
 	}
 </style>

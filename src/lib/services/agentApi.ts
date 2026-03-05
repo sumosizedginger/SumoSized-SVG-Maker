@@ -1,6 +1,5 @@
 import { appState } from '$lib/state/appState.svelte';
 import { generators, getGenerator } from '$lib/core/registry';
-import { svgToPngBlob } from '$lib/utils/export';
 import type { ParamDefinition } from '$lib/core/types';
 import type { Preset } from '$lib/services/storage';
 
@@ -120,14 +119,7 @@ class AgentAPI implements SumoSvgAppAPI {
     async getPreviewDataURL() {
         try {
             const svg = appState.renderedSvg;
-            const blob = await svgToPngBlob(svg, 500, 500); // smaller resolution for agents
-
-            return new Promise<string>((resolve, reject) => {
-                const reader = new FileReader();
-                reader.onloadend = () => resolve(reader.result as string);
-                reader.onerror = reject;
-                reader.readAsDataURL(blob);
-            });
+            return `data:image/svg+xml;base64,${btoa(unescape(encodeURIComponent(svg)))}`;
         } catch (e) {
             console.error("AgentAPI: Failed to get preview data URL", e);
             return "";

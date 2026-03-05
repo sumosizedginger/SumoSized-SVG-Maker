@@ -29,11 +29,11 @@ export const sacredGeometryGenerator: SVGGenerator = {
         },
         { name: 'lineWidth', label: 'Line Thickness', type: 'number', min: 0.05, max: 2, step: 0.05, default: 0.4, group: 'Geometry' },
         { name: 'scale', label: 'Scale', type: 'number', min: 0.5, max: 3, step: 0.1, default: 1, group: 'Geometry' },
-        { name: 'glowIntensity', label: 'Neon Glow', type: 'number', min: 0, max: 20, step: 0.5, default: 8, group: 'Effects' },
-        { name: 'paletteId', label: 'Colors', type: 'palette', default: 'neon-vibe', group: 'Colors' },
+        { name: 'glowIntensity', label: 'Neon Glow', type: 'number', min: 0, max: 20, step: 0.5, default: 8, group: 'Effects', advanced: true },
+        { name: 'paletteId', label: 'Colors', type: 'palette', default: 'neon-vibe', group: 'Colors', advanced: true },
         { name: 'overrideColor', label: 'Single Color', type: 'color', default: '#00f5d4', group: 'Colors' },
-        { name: 'usePalette', label: 'Use Palette', type: 'boolean', default: true, group: 'Colors' },
-        { name: 'transparent', label: 'Transparent Background', type: 'boolean', default: true, group: 'Background' }
+        { name: 'usePalette', label: 'Use Palette', type: 'boolean', default: true, group: 'Colors', advanced: true },
+        { name: 'transparent', label: 'Transparent Background', type: 'boolean', default: true, group: 'Background', advanced: true }
     ],
     defaultParams: {
         sacredMode: 'Metatron Cube',

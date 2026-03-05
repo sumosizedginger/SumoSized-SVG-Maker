@@ -1,6 +1,7 @@
 <script lang="ts">
 	import type { ParamDefinition } from "../core/types";
 	import { palettes } from "../core/palettes";
+	import { appState } from "../state/appState.svelte";
 
 	interface Props {
 		generatorId: string;
@@ -11,10 +12,16 @@
 
 	let { generatorId, params, values, onUpdate }: Props = $props();
 
-	// Group params by group label
+	// Group params by group label and apply filtering
 	let groupedParams = $derived.by(() => {
 		const groups: Record<string, ParamDefinition[]> = {};
-		params.forEach((p) => {
+
+		// Filter based on simpleMode
+		const visibleParams = params.filter(
+			(p) => !appState.simpleMode || !p.advanced,
+		);
+
+		visibleParams.forEach((p) => {
 			const g = p.group || "General";
 			if (!groups[g]) groups[g] = [];
 			groups[g].push(p);
@@ -77,6 +84,42 @@
 <!-- Key on generatorId so all inputs fully remount when the generator changes -->
 {#key generatorId}
 	<div class="param-panel">
+		<div class="panel-header">
+			<div class="title-row">
+				<div class="mode-toggle">
+					<button
+						class="toggle-btn"
+						class:active={!appState.simpleMode}
+						onclick={() =>
+							(appState.simpleMode = !appState.simpleMode)}
+						title="Toggle Advanced Controls"
+					>
+						{appState.simpleMode
+							? "Show Advanced"
+							: "Hide Advanced"}
+					</button>
+					<button
+						class="random-btn"
+						onclick={() => appState.randomizeSeed()}
+						title="New Seed"
+					>
+						<svg
+							width="16"
+							height="16"
+							viewBox="0 0 24 24"
+							fill="none"
+							stroke="currentColor"
+							stroke-width="2"
+						>
+							<path
+								d="M21 2v6h-6M3 12a9 9 0 0 1 15-6.7L21 8M3 22v-6h6M21 12a9 9 0 0 1-15 6.7L3 16"
+							/>
+						</svg>
+					</button>
+				</div>
+			</div>
+		</div>
+
 		{#each Object.entries(groupedParams) as [groupName, groupItems]}
 			<div class="param-group">
 				<h3>{groupName}</h3>
@@ -169,6 +212,62 @@
 		color: #666;
 		border-bottom: 1px solid #eee;
 		padding-bottom: 0.4rem;
+	}
+
+	.panel-header {
+		margin-bottom: 1rem;
+	}
+
+	.title-row {
+		display: flex;
+		justify-content: flex-end;
+		margin-bottom: 0.5rem;
+	}
+
+	.mode-toggle {
+		display: flex;
+		gap: 0.5rem;
+		align-items: center;
+	}
+
+	.toggle-btn {
+		background: #f0f0f0;
+		border: 1px solid #ddd;
+		color: #666;
+		padding: 4px 8px;
+		border-radius: 4px;
+		font-size: 0.7rem;
+		cursor: pointer;
+		transition: all 0.2s;
+	}
+
+	.toggle-btn:hover {
+		background: #e0e0e0;
+		color: #333;
+	}
+
+	.toggle-btn.active {
+		background: #6366f1;
+		color: white;
+		border-color: transparent;
+	}
+
+	.random-btn {
+		background: none;
+		border: none;
+		color: #666;
+		cursor: pointer;
+		padding: 4px;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		border-radius: 50%;
+		transition: background 0.2s;
+	}
+
+	.random-btn:hover {
+		background: rgba(0, 0, 0, 0.05);
+		color: #333;
 	}
 
 	.param-field {

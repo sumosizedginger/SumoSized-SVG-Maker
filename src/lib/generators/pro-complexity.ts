@@ -19,15 +19,15 @@ export const quantumCoreGenerator: SVGGenerator = {
         { name: 'frequencyRatio', label: 'Frequency Ratio', type: 'number', min: 0.1, max: 20, step: 0.001, default: 1.618, group: 'Math Settings' },
         { name: 'symmetry', label: 'Symmetry Fold', type: 'integer', min: 1, max: 36, step: 1, default: 6, group: 'Math Settings' },
         { name: 'amplitude', label: 'Core Amplitude', type: 'number', min: 5, max: 80, step: 1, default: 35, group: 'Math Settings' },
-        { name: 'glowIntensity', label: 'Neon Overdrive', type: 'number', min: 0, max: 20, step: 0.5, default: 8, group: 'Effects' },
-        { name: 'lineWidth', label: 'Core Line Thickness', type: 'number', min: 0.05, max: 2, step: 0.05, default: 0.3, group: 'Geometry' },
-        { name: 'depthWeaving', label: 'Alpha Interlacing Mask', type: 'boolean', default: false, group: 'Geometry' },
-        { name: 'paletteId', label: 'Neon Palette', type: 'palette', default: 'neon-vibe', group: 'Colors' },
+        { name: 'glowIntensity', label: 'Neon Overdrive', type: 'number', min: 0, max: 20, step: 0.5, default: 8, group: 'Effects', advanced: true },
+        { name: 'lineWidth', label: 'Core Line Thickness', type: 'number', min: 0.05, max: 2, step: 0.05, default: 0.3, group: 'Geometry', advanced: true },
+        { name: 'depthWeaving', label: 'Alpha Interlacing Mask', type: 'boolean', default: false, group: 'Geometry', advanced: true },
+        { name: 'paletteId', label: 'Neon Palette', type: 'palette', default: 'neon-vibe', group: 'Colors', advanced: true },
         { name: 'overrideColor', label: 'Override Color', type: 'color', default: '#00f5d4', group: 'Colors' },
-        { name: 'usePalette', label: 'Use Palette', type: 'boolean', default: true, group: 'Colors' },
-        { name: 'quantumGlitch', label: 'Quantum Glitch', type: 'boolean', default: false, group: 'Effects' },
-        { name: 'glitchIntensity', label: 'Glitch Intensity', type: 'number', min: 1, max: 100, step: 1, default: 15, group: 'Effects' },
-        { name: 'transparent', label: 'Transparent Background', type: 'boolean', default: false, group: 'Background' }
+        { name: 'usePalette', label: 'Use Palette', type: 'boolean', default: true, group: 'Colors', advanced: true },
+        { name: 'quantumGlitch', label: 'Quantum Glitch', type: 'boolean', default: false, group: 'Effects', advanced: true },
+        { name: 'glitchIntensity', label: 'Glitch Intensity', type: 'number', min: 1, max: 100, step: 1, default: 15, group: 'Effects', advanced: true },
+        { name: 'transparent', label: 'Transparent Background', type: 'boolean', default: false, group: 'Background', advanced: true }
     ],
     defaultParams: {
         sacredMode: 'Metatron Cube',
