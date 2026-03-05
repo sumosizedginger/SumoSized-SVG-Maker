@@ -1,44 +1,50 @@
-import type { SVGGenerator } from '../core/types';
+import type { SVGGenerator } from "../core/types";
 
 export const simpleGradient: SVGGenerator = {
-  id: 'simple-gradient',
-  name: 'Simple Gradient',
-  description: 'A basic linear gradient background',
-  category: 'Backgrounds',
-  tags: ['gradient', 'simple', 'test'],
-  version: '1.0.0',
+  id: "simple-gradient",
+  name: "Simple Gradient",
+  description: "A basic linear gradient background",
+  category: "Backgrounds",
+  tags: ["gradient", "simple", "test"],
+  version: "1.0.0",
   params: [
     {
-      name: 'color1',
-      label: 'Start Color',
-      type: 'color',
-      default: '#ff0000',
-      group: 'Colors'
+      name: "color1",
+      label: "Start Color",
+      type: "color",
+      default: "#ff0000",
+      group: "Colors",
     },
     {
-      name: 'color2',
-      label: 'End Color',
-      type: 'color',
-      default: '#0000ff',
-      group: 'Colors'
+      name: "color2",
+      label: "End Color",
+      type: "color",
+      default: "#0000ff",
+      group: "Colors",
     },
     {
-      name: 'angle',
-      label: 'Angle',
-      type: 'number',
+      name: "angle",
+      label: "Angle",
+      type: "number",
       min: 0,
       max: 360,
       step: 1,
       default: 45,
-      group: 'Layout'
+      group: "Layout",
     },
-    { name: 'transparent', label: 'Transparent Background', type: 'boolean', default: false, group: 'Background' }
+    {
+      name: "transparent",
+      label: "Transparent Background",
+      type: "boolean",
+      default: false,
+      group: "Background",
+    },
   ],
   defaultParams: {
-    color1: '#ff0000',
-    color2: '#0000ff',
+    color1: "#ff0000",
+    color2: "#0000ff",
     angle: 45,
-    transparent: false
+    transparent: false,
   },
   render: (params, seed) => {
     const { color1, color2, angle, transparent } = params;
@@ -53,14 +59,16 @@ export const simpleGradient: SVGGenerator = {
 
     return `
       <svg width="100%" height="100%" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+        <title>Simple Gradient</title>
+        <desc>Linear gradient from ${color1} to ${color2} at ${angle} degrees.</desc>
         <defs>
           <linearGradient id="${gradId}" x1="${x1}%" y1="${y1}%" x2="${x2}%" y2="${y2}%">
             <stop offset="0%" stop-color="${color1}" />
             <stop offset="100%" stop-color="${color2}" />
           </linearGradient>
         </defs>
-        ${transparent ? '' : `<rect width="100" height="100" fill="url(#${gradId})" />`}
+        ${transparent ? "" : `<rect width="100" height="100" fill="url(#${gradId})" />`}
       </svg>
     `.trim();
-  }
+  },
 };

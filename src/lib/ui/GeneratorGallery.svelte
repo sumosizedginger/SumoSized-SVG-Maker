@@ -97,18 +97,20 @@
 <style>
     .gallery-container {
         padding: 1.5rem;
-        background: #fff;
+        background: #002244; /* Seahawks Navy */
+        border: 1px solid #003153; /* Prussian Blue */
         border-radius: 12px;
         max-width: 900px;
         width: 90vw;
         max-height: 80vh;
         overflow-y: auto;
-        box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+        box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
+        color: #e2e8f0;
     }
 
     .gallery-header {
         margin-bottom: 1.5rem;
-        border-bottom: 1px solid #eee;
+        border-bottom: 1px solid #003153;
         padding-bottom: 1rem;
     }
 
@@ -120,7 +122,8 @@
 
     .tabs {
         display: flex;
-        background: #f3f4f6;
+        background: #082567; /* Dark Sapphire */
+        border: 1px solid #003153;
         padding: 0.25rem;
         border-radius: 8px;
         gap: 0.25rem;
@@ -134,25 +137,25 @@
         border: none;
         cursor: pointer;
         background: transparent;
-        color: #6b7280;
+        color: #a0aec0;
         transition: all 0.2s;
     }
 
     .tabs button.active {
-        background: #fff;
-        color: #111;
-        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        background: #003153; /* Prussian Blue */
+        color: white;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
     }
 
     h2 {
         margin: 0;
         font-size: 1.5rem;
-        color: #111;
+        color: white;
     }
 
     p {
         margin: 0.5rem 0 0;
-        color: #666;
+        color: #a0aec0;
         font-size: 0.9rem;
     }
 
@@ -163,8 +166,8 @@
     }
 
     .gen-card {
-        background: #f9fafb;
-        border: 1px solid #e5e7eb;
+        background: #002147; /* Oxford Blue */
+        border: 1px solid #003153;
         border-radius: 8px;
         padding: 0.5rem;
         cursor: pointer;
@@ -176,15 +179,15 @@
     }
 
     .gen-card:hover {
-        border-color: #6366f1;
+        border-color: #228b22; /* Forest Green */
         transform: translateY(-2px);
-        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
-        background: #fff;
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.4);
+        background: #003153;
     }
 
     .thumb {
         aspect-ratio: 1;
-        background: #000;
+        background: #1f2328; /* Charcoal Blue */
         border-radius: 4px;
         overflow: hidden;
         display: flex;
@@ -206,19 +209,19 @@
     .name {
         font-weight: 600;
         font-size: 0.9rem;
-        color: #111;
+        color: white;
     }
 
     .category {
         font-size: 0.75rem;
-        color: #6b7280;
+        color: #a0aec0;
         text-transform: uppercase;
         letter-spacing: 0.025em;
     }
 
     .tpl-desc {
         font-size: 0.75rem;
-        color: #9ca3af;
+        color: #718096;
         margin: 0.25rem 0 0;
         line-height: normal;
     }

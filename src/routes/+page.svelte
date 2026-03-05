@@ -1,10 +1,12 @@
 <script lang="ts">
+	import { base } from "$app/paths";
 	import { generators } from "$lib/core/registry";
 	import { appState } from "$lib/state/appState.svelte";
 	import Preview from "$lib/ui/Preview.svelte";
 	import ParamPanel from "$lib/ui/ParamPanel.svelte";
 	import PresetManager from "$lib/ui/PresetManager.svelte";
 	import LayerPanel from "$lib/ui/LayerPanel.svelte";
+	import ToolPalette from "$lib/ui/ToolPalette.svelte";
 
 	import { copyToClipboard } from "$lib/utils/export";
 	import { logExport } from "$lib/services/telemetry.svelte";
@@ -79,12 +81,54 @@
 		)
 			return;
 
-		if (e.key.toLowerCase() === "r") {
+		const key = e.key.toLowerCase();
+
+		// Tool switching hotkeys
+		const toolKeys: Record<string, any> = {
+			v: "pointer",
+			g: "move",
+			s: "transform",
+			c: "crop",
+			p: "pencil",
+			b: "brush",
+			e: "eraser",
+			l: "line",
+			u: "rect",
+			o: "ellipse",
+			t: "text",
+		};
+
+		if (toolKeys[key]) {
+			appState.activeTool = toolKeys[key];
+			// Auto-create drawing layer for draw tools
+			const drawTools = [
+				"pencil",
+				"brush",
+				"eraser",
+				"line",
+				"rect",
+				"ellipse",
+				"text",
+			];
+			if (
+				drawTools.includes(toolKeys[key]) &&
+				appState.activeLayer?.generatorId !== "free-draw"
+			) {
+				appState.addLayer("free-draw");
+			}
+			return;
+		}
+
+		if (key === "r" && !e.ctrlKey) {
 			appState.randomizeSeed();
-		} else if (e.key.toLowerCase() === "n") {
+		} else if (key === "n") {
 			appState.isGalleryOpen = true;
-		} else if (e.key.toLowerCase() === "v") {
-			handleGenerateVariants();
+		} else if (e.ctrlKey && key === "z") {
+			e.preventDefault();
+			appState.undo();
+		} else if (e.ctrlKey && (key === "y" || (e.shiftKey && key === "z"))) {
+			e.preventDefault();
+			appState.redo();
 		}
 	}
 </script>
@@ -93,7 +137,12 @@
 
 <main>
 	<header>
-		<h1>SumoSized SVG Generator</h1>
+		<img
+			src="{base}/logo.svg"
+			alt="SumoSized SVG Maker"
+			class="header-logo"
+		/>
+		<h1 class="sr-only">SumoSized SVG Generator</h1>
 		<div class="header-actions">
 			<button
 				class="header-btn gallery-btn"
@@ -123,6 +172,7 @@
 	</header>
 
 	<div class="layout">
+		<ToolPalette />
 		<!-- Sidebar: generator list + presets -->
 		<aside class="sidebar">
 			<div class="sidebar-inner">
@@ -308,8 +358,8 @@
 		overflow: hidden;
 		font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
 			sans-serif;
-		background: #fafafa;
-		color: #333;
+		background: #1f2328; /* Charcoal Blue */
+		color: #e2e8f0;
 	}
 
 	main {
@@ -321,12 +371,13 @@
 
 	header {
 		flex-shrink: 0;
-		background: #1e1e2e;
+		background: #082567; /* Dark Sapphire */
 		color: white;
 		padding: 0.6rem 1.5rem;
 		display: flex;
 		justify-content: space-between;
 		align-items: center;
+		border-bottom: 2px solid #4dff00; /* Action Green accent */
 	}
 
 	.header-actions {
@@ -350,8 +401,14 @@
 	}
 
 	.header-btn.share {
-		background: var(--accent-primary, #6366f1);
+		background: #228b22; /* Forest Green */
 		border-color: transparent;
+		color: white;
+	}
+
+	.header-btn.share:hover {
+		background: #4dff00; /* Action Green */
+		color: #002244;
 	}
 
 	h1 {
@@ -360,19 +417,35 @@
 		letter-spacing: 0.03em;
 	}
 
-	/* Three-column layout; takes remaining height */
+	.header-logo {
+		height: 54px;
+		width: auto;
+	}
+
+	.sr-only {
+		position: absolute;
+		width: 1px;
+		height: 1px;
+		padding: 0;
+		margin: -1px;
+		overflow: hidden;
+		clip: rect(0, 0, 0, 0);
+		white-space: nowrap;
+		border-width: 0;
+	}
+
+	/* Four-column layout; takes remaining height */
 	.layout {
 		display: grid;
-		grid-template-columns: 220px 1fr 280px;
+		grid-template-columns: 48px 220px 1fr 280px;
 		flex: 1;
 		min-height: 0;
 		overflow: hidden;
 	}
 
-	/* ── Sidebar ─────────────────────────────────── */
 	.sidebar {
-		border-right: 1px solid #ddd;
-		background: #fff;
+		border-right: 1px solid #002244;
+		background: #002147; /* Oxford Blue */
 		min-height: 0;
 		overflow: hidden;
 	}
@@ -405,10 +478,16 @@
 	.search-input,
 	.category-select {
 		padding: 0.45rem 0.6rem;
-		border: 1px solid #ddd;
+		border: 1px solid #003153; /* Prussian Blue */
+		background: #1f2328; /* Charcoal Blue */
+		color: white;
 		border-radius: 4px;
 		width: 100%;
 		font-size: 0.85rem;
+	}
+
+	.search-input::placeholder {
+		color: #888;
 	}
 
 	.generator-list {
@@ -425,8 +504,9 @@
 		width: 100%;
 		padding: 0.45rem 0.6rem;
 		text-align: left;
-		background: #f4f4f4;
-		border: 1px solid #e0e0e0;
+		background: #002244; /* Seahawks Navy */
+		border: 1px solid #003153; /* Prussian Blue */
+		color: #e2e8f0;
 		border-radius: 4px;
 		cursor: pointer;
 		display: flex;
@@ -435,17 +515,19 @@
 	}
 
 	.generator-list button:hover {
-		background: #eee;
+		background: #003153; /* Prussian Blue */
+		border-color: #228b22; /* Forest Green */
 	}
 
 	.generator-list button.active {
-		background: #1e1e2e;
+		background: #191970; /* Midnight Blue */
 		color: white;
-		border-color: #1e1e2e;
+		border-color: #4dff00; /* Action Green */
+		box-shadow: 0 0 0 1px #4dff00;
 	}
 
 	.generator-list button.active .gen-cat {
-		color: #aaa;
+		color: #a0aec0;
 	}
 
 	.gen-name {
@@ -461,7 +543,7 @@
 		font-size: 0.9rem;
 		text-transform: uppercase;
 		letter-spacing: 0.05em;
-		color: #555;
+		color: #a0aec0;
 		margin: 0 0 0.5rem 0;
 	}
 
@@ -470,15 +552,15 @@
 		min-height: 0;
 		overflow: hidden;
 		padding: 0.75rem;
-		background: #f5f5f7;
+		background: #1f2328; /* Charcoal Blue */
 		display: flex;
 		flex-direction: column;
 	}
 
 	/* ── Controls ────────────────────────────────── */
 	.controls {
-		border-left: 1px solid #ddd;
-		background: #fff;
+		border-left: 1px solid #002244;
+		background: #002147; /* Oxford Blue */
 		min-height: 0;
 		overflow: hidden;
 	}
@@ -503,23 +585,25 @@
 		align-items: center;
 		justify-content: space-between;
 		padding: 0.5rem 0;
-		border-top: 1px solid #eee;
+		border-top: 1px solid #003153;
 		font-size: 0.85rem;
-		color: #555;
+		color: #a0aec0;
 	}
 
 	.seed-btn {
 		padding: 0.3rem 0.75rem;
 		font-size: 0.8rem;
-		background: #f0f0f0;
-		border: 1px solid #ccc;
+		background: #003153;
+		color: white;
+		border: 1px solid #082567;
 		border-radius: 4px;
 		cursor: pointer;
 		width: auto;
 	}
 
 	.seed-btn:hover {
-		background: #e0e0e0;
+		background: #191970;
+		border-color: #228b22;
 	}
 
 	.preview-container {
@@ -535,11 +619,12 @@
 		justify-content: space-between;
 		align-items: center;
 		flex-shrink: 0;
-		background: white;
+		background: #082567; /* Dark Sapphire */
 		padding: 0.75rem;
 		border-radius: 8px;
-		box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+		box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
 		margin-bottom: 1rem;
+		border: 1px solid #191970;
 	}
 
 	.action-group {
@@ -549,8 +634,9 @@
 
 	.action-btn {
 		padding: 0.5rem 1rem;
-		border: 1px solid #ddd;
-		background: #fff;
+		border: 1px solid #003153;
+		background: #002244;
+		color: white;
 		border-radius: 4px;
 		cursor: pointer;
 		font-size: 0.85rem;
@@ -559,22 +645,24 @@
 	}
 
 	.action-btn:hover {
-		background: #f4f4f4;
+		background: #191970;
+		border-color: #228b22;
 	}
 
 	.action-btn.primary {
-		background: #1e1e2e;
+		background: #002147;
 		color: white;
-		border-color: #1e1e2e;
+		border-color: #4dff00;
 	}
 
 	.action-btn.primary:hover {
-		background: #2a2a3e;
+		background: #003153;
+		box-shadow: 0 0 8px rgba(77, 255, 0, 0.4);
 	}
 
 	.action-btn.secondary {
-		border-color: #1e1e2e;
-		color: #1e1e2e;
+		border-color: #228b22;
+		color: #4dff00;
 	}
 
 	.variants-grid {
@@ -586,8 +674,8 @@
 	}
 
 	.variant-card {
-		background: white;
-		border: 1px solid #ddd;
+		background: #002244;
+		border: 1px solid #003153;
 		border-radius: 8px;
 		padding: 0.25rem;
 		cursor: pointer;
@@ -609,7 +697,8 @@
 
 	.variant-card:hover {
 		transform: scale(1.02);
-		border-color: #1e1e2e;
+		border-color: #4dff00;
+		box-shadow: 0 0 10px rgba(77, 255, 0, 0.2);
 	}
 
 	/* Modal Overlay */

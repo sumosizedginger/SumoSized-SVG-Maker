@@ -91,7 +91,12 @@
 							class:active={!appState.simpleMode}
 							onclick={() =>
 								(appState.simpleMode = !appState.simpleMode)}
-							title="Toggle Advanced Controls"
+							aria-label={appState.simpleMode
+								? "Show advanced generation parameters"
+								: "Hide advanced generation parameters"}
+							title={appState.simpleMode
+								? "Show Advanced"
+								: "Hide Advanced"}
 						>
 							{appState.simpleMode
 								? "Show Advanced"
@@ -101,6 +106,7 @@
 					<button
 						class="random-btn"
 						onclick={() => appState.randomizeSeed()}
+						aria-label="Randomize seed for the current layer"
 						title="New Seed"
 					>
 						<svg
@@ -110,6 +116,7 @@
 							fill="none"
 							stroke="currentColor"
 							stroke-width="2"
+							aria-hidden="true"
 						>
 							<path
 								d="M21 2v6h-6M3 12a9 9 0 0 1 15-6.7L21 8M3 22v-6h6M21 12a9 9 0 0 1-15 6.7L3 16"
@@ -121,25 +128,39 @@
 		</div>
 
 		{#each Object.entries(groupedParams) as [groupName, groupItems]}
-			<div class="param-group">
-				<h3>{groupName}</h3>
+			<section
+				class="param-group"
+				aria-labelledby="group-{groupName
+					.replace(/\s+/g, '-')
+					.toLowerCase()}"
+			>
+				<h3 id="group-{groupName.replace(/\s+/g, '-').toLowerCase()}">
+					{groupName}
+				</h3>
 				{#each groupItems as param}
 					<div class="param-field">
-						<label for={param.name}>{param.label}</label>
+						<label for="{generatorId}-{param.name}"
+							>{param.label}</label
+						>
 
 						{#if param.type === "number" || param.type === "integer"}
 							<div class="number-input">
 								<input
 									type="range"
-									id={param.name}
+									id="{generatorId}-{param.name}"
 									min={param.min}
 									max={param.max}
 									step={param.step}
 									value={values[param.name] ?? param.default}
 									oninput={(e) => handleChange(param.name, e)}
+									aria-valuemin={param.min}
+									aria-valuemax={param.max}
+									aria-valuenow={values[param.name] ??
+										param.default}
 								/>
 								<input
 									type="number"
+									aria-label="{param.label} numeric value"
 									min={param.min}
 									max={param.max}
 									step={param.step}
@@ -150,23 +171,25 @@
 						{:else if param.type === "color"}
 							<input
 								type="color"
-								id={param.name}
+								id="{generatorId}-{param.name}"
 								use:forceColorAttr={values[param.name] ??
 									param.default}
 								oninput={(e) => handleChange(param.name, e)}
+								aria-label="Select {param.label}"
 							/>
 						{:else if param.type === "boolean"}
 							<input
 								type="checkbox"
-								id={param.name}
+								id="{generatorId}-{param.name}"
 								checked={values[param.name] ?? param.default}
 								onchange={(e) => handleChange(param.name, e)}
 							/>
 						{:else if param.type === "select" || param.type === "palette"}
 							<select
-								id={param.name}
+								id="{generatorId}-{param.name}"
 								value={values[param.name] ?? param.default}
 								onchange={(e) => handleChange(param.name, e)}
+								aria-label="Select {param.label}"
 							>
 								{#if param.type === "palette"}
 									{#each palettes as pal}
@@ -182,10 +205,19 @@
 									{/each}
 								{/if}
 							</select>
+						{:else if param.type === "text"}
+							<input
+								type="text"
+								id="{generatorId}-{param.name}"
+								value={values[param.name] ?? param.default}
+								oninput={(e) => handleChange(param.name, e)}
+								placeholder="Enter {param.label.toLowerCase()}..."
+								aria-label={param.label}
+							/>
 						{/if}
 					</div>
 				{/each}
-			</div>
+			</section>
 		{/each}
 	</div>
 {/key}
@@ -198,10 +230,10 @@
 	}
 
 	.param-group {
-		border: 1px solid #eee;
+		border: 1px solid #003153; /* Prussian Blue */
 		padding: 0.75rem;
 		border-radius: 8px;
-		background: #fafafa;
+		background: #002244; /* Seahawks Navy */
 	}
 
 	h3 {
@@ -209,8 +241,8 @@
 		font-size: 0.8rem;
 		text-transform: uppercase;
 		letter-spacing: 0.05em;
-		color: #666;
-		border-bottom: 1px solid #eee;
+		color: #e2e8f0; /* Light Gray text */
+		border-bottom: 1px solid #003153; /* Prussian Blue */
 		padding-bottom: 0.4rem;
 	}
 
@@ -231,9 +263,9 @@
 	}
 
 	.toggle-btn {
-		background: #f0f0f0;
-		border: 1px solid #ddd;
-		color: #666;
+		background: #003153; /* Prussian Blue */
+		border: 1px solid #082567; /* Dark Sapphire */
+		color: #a0aec0;
 		padding: 4px 8px;
 		border-radius: 4px;
 		font-size: 0.7rem;
@@ -242,12 +274,12 @@
 	}
 
 	.toggle-btn:hover {
-		background: #e0e0e0;
-		color: #333;
+		background: #191970; /* Midnight Blue */
+		color: white;
 	}
 
 	.toggle-btn.active {
-		background: #6366f1;
+		background: #228b22; /* Forest Green */
 		color: white;
 		border-color: transparent;
 	}
@@ -255,7 +287,7 @@
 	.random-btn {
 		background: none;
 		border: none;
-		color: #666;
+		color: #a0aec0;
 		cursor: pointer;
 		padding: 4px;
 		display: flex;
@@ -266,8 +298,8 @@
 	}
 
 	.random-btn:hover {
-		background: rgba(0, 0, 0, 0.05);
-		color: #333;
+		background: rgba(255, 255, 255, 0.1);
+		color: white;
 	}
 
 	.param-field {

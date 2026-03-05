@@ -30,7 +30,7 @@ Respect stage boundaries and STOP when instructed, waiting for manual testing an
 Assume this will run on typical laptops + mobile devices; keep performance tight and avoid memory leaks.
 
 1. High-Level Product
-Build “SumoSized SVG Generator”, a static web app that:
+   Build “SumoSized SVG Generator”, a static web app that:
 
 Lets users select from a library of SVG generators (abstract art, patterns, layouts, UI assets, icons, animations, etc.).
 
@@ -61,7 +61,7 @@ Responsive layout (desktop, tablet, mobile).
 Accessible controls (ARIA labels, keyboard focus, reasonable color contrast for UI chrome).
 
 2. Architecture
-Organize the code into clear domains:
+   Organize the code into clear domains:
 
 core/
 
@@ -142,35 +142,35 @@ Keep side effects localized (e.g., one top-level store, pure helpers, composable
 Prefer composition over inheritance.
 
 3. Generators & Param System
-Generator Interface
-Define types similar to:
+   Generator Interface
+   Define types similar to:
 
 ts
 type ParamType = 'number' | 'integer' | 'boolean' | 'select' | 'color' | 'seed';
 
 interface ParamDefinition {
-  name: string;          // stable key
-  label: string;
-  type: ParamType;
-  min?: number;
-  max?: number;
-  step?: number;
-  options?: { value: string; label: string }[];
-  default: any;
-  group?: string;        // section in UI (e.g., "Layout", "Colors")
-  description?: string;
+name: string; // stable key
+label: string;
+type: ParamType;
+min?: number;
+max?: number;
+step?: number;
+options?: { value: string; label: string }[];
+default: any;
+group?: string; // section in UI (e.g., "Layout", "Colors")
+description?: string;
 }
 
 interface Generator {
-  id: string;            // unique, stable
-  name: string;
-  description: string;
-  category: string;      // e.g., "Patterns", "Abstract", "Layouts", "UI", "Icons", "Animations"
-  tags: string[];
-  version: string;       // semantic, e.g., "1.0.0"
-  params: ParamDefinition[];
-  defaultParams: Record<string, any>;
-  render: (params: Record<string, any>, seed: number) => string; // full <svg>...</svg>
+id: string; // unique, stable
+name: string;
+description: string;
+category: string; // e.g., "Patterns", "Abstract", "Layouts", "UI", "Icons", "Animations"
+tags: string[];
+version: string; // semantic, e.g., "1.0.0"
+params: ParamDefinition[];
+defaultParams: Record<string, any>;
+render: (params: Record<string, any>, seed: number) => string; // full <svg>...</svg>
 }
 Maintain a central registry:
 
@@ -257,7 +257,7 @@ Overrides for key roles: bg, fg, accent, etc.
 Utility to safely map palette roles to SVG fills/strokes.
 
 4. UI & UX
-App shell:
+   App shell:
 
 Sidebar / topbar:
 
@@ -312,7 +312,7 @@ Provide keyboard shortcuts where helpful (optional but encouraged):
 E.g., R to randomize seed, S to save preset, arrow keys for generator navigation.
 
 5. Local Persistence
-Use localStorage to persist:
+   Use localStorage to persist:
 
 Last selected generatorId.
 
@@ -341,7 +341,7 @@ Migration handling:
 If schema or generator versions change, be defensive when loading old presets (ignore unknown params, clamp values, etc.).
 
 6. Telemetry
-Implement a simple telemetry client:
+   Implement a simple telemetry client:
 
 Configurable base URL string, e.g., TELEMETRY_ENDPOINT constant.
 
@@ -374,29 +374,29 @@ Failures must not break the app.
 Fire-and-forget, non-blocking UI.
 
 7. Browser-Agent Skill Layer (Front-End Exposure)
-Implement a window.SumoSvgApp object with a stable, typed API for browser agents:
+   Implement a window.SumoSvgApp object with a stable, typed API for browser agents:
 
 ts
 interface SumoSvgAppAPI {
-  listGenerators(): { id: string; name: string; category: string; tags: string[] }[];
-  getGeneratorSchema(id: string): {
-    id: string;
-    name: string;
-    description: string;
-    params: ParamDefinition[];
-  } | null;
-  getCurrentState(): {
-    generatorId: string;
-    params: Record<string, any>;
-    seed: number;
-  } | null;
-  setGenerator(id: string): boolean;
-  setParams(params: Record<string, any>): boolean;
-  setSeed(seed: number): boolean;
-  renderNow(): string; // returns SVG markup of current state
-  getPreviewDataURL(): Promise<string>; // optional: data URL PNG/JPEG for critique
-  savePreset(name: string, description?: string, tags?: string[]): boolean;
-  listPresets(generatorId?: string): PresetSummary[];
+listGenerators(): { id: string; name: string; category: string; tags: string[] }[];
+getGeneratorSchema(id: string): {
+id: string;
+name: string;
+description: string;
+params: ParamDefinition[];
+} | null;
+getCurrentState(): {
+generatorId: string;
+params: Record<string, any>;
+seed: number;
+} | null;
+setGenerator(id: string): boolean;
+setParams(params: Record<string, any>): boolean;
+setSeed(seed: number): boolean;
+renderNow(): string; // returns SVG markup of current state
+getPreviewDataURL(): Promise<string>; // optional: data URL PNG/JPEG for critique
+savePreset(name: string, description?: string, tags?: string[]): boolean;
+listPresets(generatorId?: string): PresetSummary[];
 }
 Rules:
 
@@ -419,7 +419,7 @@ Call renderNow to get SVG for analysis.
 You do not implement LLM logic; only the hooks.
 
 8. Performance, Error Handling, and Testing
-Performance:
+   Performance:
 
 Keep renders under ~16ms for typical presets on a mid-range laptop.
 
@@ -446,7 +446,7 @@ Include basic store/state tests (if using a centralized store).
 Include at least one end-to-end “happy path” test (e.g., via Playwright) if feasible.
 
 9. Staged Build Plan (Hard STOP Points)
-You must build in stages. At the end of each stage, STOP and wait for a human to test and adjust before continuing.
+   You must build in stages. At the end of each stage, STOP and wait for a human to test and adjust before continuing.
 
 Stage A – Project Scaffold & Core Types
 Goals:

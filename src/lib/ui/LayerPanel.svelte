@@ -54,9 +54,57 @@
             appState.saveState();
         }
     }
+    async function handleImportSVG() {
+        const input = document.createElement("input");
+        input.type = "file";
+        input.accept = ".svg";
+        input.onchange = async (e) => {
+            const file = (e.target as HTMLInputElement).files?.[0];
+            if (!file) return;
+            const text = await file.text();
+
+            // Atomic add: avoids intermediate render of placeholder circle
+            appState.addLayer("svg-import", { svgData: text });
+            const newLayerId = appState.activeLayerId;
+
+            let retries = 0;
+            const attemptFit = () => {
+                if (!newLayerId) return;
+                const g = document.querySelector(
+                    `.layer-${newLayerId}`,
+                ) as SVGGElement | null;
+
+                if (g && g.getBBox) {
+                    try {
+                        const b = g.getBBox();
+                        // Verify we have real dimensions
+                        if (b.width > 2 && b.height > 2) {
+                            appState.fitLayerToCanvas(newLayerId);
+                            return;
+                        }
+                    } catch (err) {}
+                }
+
+                if (retries < 30) {
+                    retries++;
+                    requestAnimationFrame(attemptFit);
+                }
+            };
+            requestAnimationFrame(attemptFit);
+        };
+        input.click();
+    }
 </script>
 
 <div class="layer-panel">
+    <button class="import-btn" onclick={handleImportSVG}>
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+            <path
+                d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM14 13v4h-4v-4H7l5-5 5 5h-3z"
+            />
+        </svg>
+        Import SVG
+    </button>
     {#if displayLayers.length === 0}
         <div class="empty-state">No layers. Click a generator to add one.</div>
     {:else}
@@ -141,6 +189,95 @@
                                     })}
                             />
                         </div>
+                        <div class="control-row">
+                            <label for={`scaleX-${layer.id}`}
+                                >Scale X ({layer.transforms.scaleX.toFixed(
+                                    2,
+                                )})</label
+                            >
+                            <input
+                                id={`scaleX-${layer.id}`}
+                                type="range"
+                                min="0.1"
+                                max="10"
+                                step="0.1"
+                                value={layer.transforms.scaleX}
+                                oninput={(e) =>
+                                    appState.updateLayer(layer.id, {
+                                        transforms: {
+                                            ...layer.transforms,
+                                            scaleX: parseFloat(
+                                                e.currentTarget.value,
+                                            ),
+                                        },
+                                    })}
+                            />
+                        </div>
+                        <div class="control-row">
+                            <label for={`scaleY-${layer.id}`}
+                                >Scale Y ({layer.transforms.scaleY.toFixed(
+                                    2,
+                                )})</label
+                            >
+                            <input
+                                id={`scaleY-${layer.id}`}
+                                type="range"
+                                min="0.1"
+                                max="10"
+                                step="0.1"
+                                value={layer.transforms.scaleY}
+                                oninput={(e) =>
+                                    appState.updateLayer(layer.id, {
+                                        transforms: {
+                                            ...layer.transforms,
+                                            scaleY: parseFloat(
+                                                e.currentTarget.value,
+                                            ),
+                                        },
+                                    })}
+                            />
+                        </div>
+                        <div class="control-row">
+                            <label for={`rotation-${layer.id}`}
+                                >Rotation ({layer.transforms.rotation.toFixed(
+                                    0,
+                                )}°)</label
+                            >
+                            <input
+                                id={`rotation-${layer.id}`}
+                                type="range"
+                                min="0"
+                                max="360"
+                                step="1"
+                                value={layer.transforms.rotation}
+                                oninput={(e) =>
+                                    appState.updateLayer(layer.id, {
+                                        transforms: {
+                                            ...layer.transforms,
+                                            rotation: parseFloat(
+                                                e.currentTarget.value,
+                                            ),
+                                        },
+                                    })}
+                            />
+                        </div>
+                        <div class="control-row action-row">
+                            <button
+                                class="layer-action-btn"
+                                onclick={() =>
+                                    appState.fitLayerToCanvas(layer.id)}
+                                title="Scale and Center to fit 100x100 exactly"
+                            >
+                                Fit to Canvas
+                            </button>
+                            <button
+                                class="layer-action-btn"
+                                onclick={() => appState.centerLayer(layer.id)}
+                                title="Center in the 100x100 canvas without scaling"
+                            >
+                                Center
+                            </button>
+                        </div>
                     </div>
                 {/if}
             </div>
@@ -152,38 +289,62 @@
     .layer-panel {
         display: flex;
         flex-direction: column;
-        gap: 0.25rem;
+        gap: 0.5rem;
+    }
+
+    .import-btn {
+        background: #003153; /* Prussian Blue */
+        border: 1px solid #082567; /* Dark Sapphire */
+        color: #4dff00; /* Action Green */
+        padding: 0.6rem;
+        border-radius: 6px;
+        font-size: 0.85rem;
+        font-weight: 600;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        transition: all 0.2s;
+        margin-bottom: 0.25rem;
+    }
+
+    .import-btn:hover {
+        background: #082567;
+        box-shadow: 0 0 10px rgba(77, 255, 0, 0.2);
+        border-color: #4dff00;
     }
 
     .empty-state {
         padding: 1rem;
         text-align: center;
-        color: #888;
+        color: #a0aec0;
         font-size: 0.85rem;
-        background: #f9f9f9;
-        border: 1px dashed #ccc;
+        background: #002244; /* Seahawks Navy */
+        border: 1px dashed #003153; /* Prussian Blue */
         border-radius: 4px;
     }
 
     .layer-item {
-        background: #f4f4f4;
-        border: 1px solid #ddd;
+        background: #002244; /* Seahawks Navy */
+        border: 1px solid #003153; /* Prussian Blue */
         border-radius: 4px;
         cursor: pointer;
         user-select: none;
         transition: all 0.2s;
         overflow: hidden;
+        color: #e2e8f0;
     }
 
     .layer-item:hover {
-        border-color: #bbb;
+        border-color: #228b22; /* Forest Green */
     }
 
     .layer-item.active {
-        background: #fff;
-        border-color: #1e1e2e;
-        border-left: 4px solid #1e1e2e;
-        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+        background: #191970; /* Midnight Blue */
+        border-color: #4dff00; /* Action Green */
+        border-left: 4px solid #4dff00;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
     }
 
     .layer-header {
@@ -229,8 +390,8 @@
 
     .layer-controls {
         padding: 0.5rem;
-        border-top: 1px solid #eee;
-        background: #fafafa;
+        border-top: 1px solid #003153; /* Prussian Blue */
+        background: #002147; /* Oxford Blue */
         display: flex;
         flex-direction: column;
         gap: 0.5rem;
@@ -244,7 +405,7 @@
 
     .control-row label {
         font-size: 0.75rem;
-        color: #666;
+        color: #a0aec0;
         text-transform: uppercase;
     }
 
@@ -253,5 +414,29 @@
         width: 100%;
         padding: 0.2rem;
         font-size: 0.8rem;
+    }
+
+    .action-row {
+        flex-direction: row;
+        gap: 0.5rem;
+        margin-top: 0.25rem;
+    }
+
+    .layer-action-btn {
+        flex: 1;
+        background: #003153; /* Prussian Blue */
+        border: 1px solid #002244; /* Seahawks Navy */
+        color: #e2e8f0;
+        padding: 0.3rem;
+        border-radius: 4px;
+        font-size: 0.75rem;
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+
+    .layer-action-btn:hover {
+        background: #191970; /* Midnight Blue */
+        border-color: #228b22; /* Forest Green */
+        color: white;
     }
 </style>

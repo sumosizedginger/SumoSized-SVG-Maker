@@ -60,9 +60,9 @@
         flex-direction: column;
         gap: 1.5rem;
         padding: 1rem;
-        background: #fff;
+        background: #002244; /* Seahawks Navy */
         border-radius: 8px;
-        border: 1px solid #eee;
+        border: 1px solid #003153; /* Prussian Blue */
     }
 
     .save-preset {
@@ -73,13 +73,15 @@
 
     input {
         padding: 0.6rem;
-        border: 1px solid #ccc;
+        border: 1px solid #003153;
+        background: #1f2328;
+        color: white;
         border-radius: 4px;
     }
 
     .save-preset button {
         padding: 0.6rem;
-        background: #333;
+        background: #228b22; /* Forest Green */
         color: white;
         border: none;
         border-radius: 4px;
@@ -87,7 +89,8 @@
     }
 
     .save-preset button:disabled {
-        background: #ccc;
+        background: #003153;
+        color: #a0aec0;
         cursor: not-allowed;
     }
 
@@ -96,7 +99,7 @@
         font-size: 0.9rem;
         text-transform: uppercase;
         letter-spacing: 0.05em;
-        color: #666;
+        color: #e2e8f0;
     }
 
     ul {
@@ -116,20 +119,22 @@
         display: flex;
         flex-direction: column;
         padding: 0.6rem;
-        background: #f4f4f4;
-        border: 1px solid #eee;
+        background: #002147; /* Oxford Blue */
+        border: 1px solid #082567; /* Dark Sapphire */
+        color: white;
         border-radius: 4px;
         cursor: pointer;
         text-align: left;
     }
 
     .preset-btn:hover {
-        background: #eee;
+        background: #003153;
+        border-color: #228b22;
     }
 
     .date {
         font-size: 0.7rem;
-        color: #888;
+        color: #a0aec0;
     }
 
     .delete-btn {

@@ -1,5 +1,8 @@
 <script lang="ts">
 	import { tick } from "svelte";
+	import { appState } from "../state/appState.svelte";
+	import DrawingSurface from "./DrawingSurface.svelte";
+	import CanvasInteract from "./CanvasInteract.svelte";
 
 	interface Props {
 		svg: string;
@@ -41,6 +44,12 @@
 <div class="preview-outer">
 	<div class="svg-wrapper" bind:this={containerEl}>
 		{@html svg}
+		{#if ["pencil", "brush", "eraser", "line", "rect", "ellipse", "text"].includes(appState.activeTool)}
+			<DrawingSurface />
+		{/if}
+		{#if ["move", "crop", "pointer", "transform"].includes(appState.activeTool)}
+			<CanvasInteract />
+		{/if}
 	</div>
 
 	{#if isAnimation}
@@ -92,17 +101,31 @@
 		flex: 1;
 		min-height: 0;
 		overflow: hidden;
-		background: #f0f0f0;
+		background: #1f2328; /* Charcoal Blue */
 		border-radius: 8px 8px 0 0;
-		border: 1px solid #ddd;
+		border: 1px solid #003153; /* Prussian Blue */
 		border-bottom: none;
+		position: relative;
 	}
 
-	:global(.svg-wrapper svg) {
+	:global(.svg-wrapper > svg:first-child) {
 		width: 100%;
 		height: 100%;
 		display: block;
 		overflow: hidden;
+		/* 2026 GPU Promotion: Ensure composition is handled by the compositor during active transforms */
+		will-change: transform;
+	}
+
+	/* Overlay SVGs (DrawingSurface, CanvasInteract) */
+	:global(.svg-wrapper > svg:not(:first-child)) {
+		position: absolute !important;
+		top: 0 !important;
+		left: 0 !important;
+		width: 100% !important;
+		height: 100% !important;
+		z-index: 50 !important;
+		touch-action: none;
 	}
 
 	.playback-bar {
@@ -110,8 +133,8 @@
 		align-items: center;
 		gap: 0.75rem;
 		padding: 0.5rem 0.75rem;
-		background: #1a1a1a;
-		border: 1px solid #ddd;
+		background: #002147; /* Oxford Blue */
+		border: 1px solid #003153;
 		border-top: none;
 		border-radius: 0 0 8px 8px;
 	}
@@ -121,9 +144,9 @@
 		align-items: center;
 		gap: 0.5rem;
 		padding: 0.4rem 1rem;
-		background: #333;
+		background: #003153; /* Prussian Blue */
 		color: white;
-		border: 1px solid #555;
+		border: 1px solid #082567;
 		border-radius: 4px;
 		cursor: pointer;
 		font-size: 0.9rem;
@@ -131,6 +154,6 @@
 	}
 
 	.play-btn:hover {
-		background: #555;
+		background: #191970; /* Midnight Blue */
 	}
 </style>

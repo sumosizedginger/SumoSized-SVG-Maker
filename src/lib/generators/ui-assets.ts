@@ -1,31 +1,96 @@
-import type { SVGGenerator } from '../core/types';
-import { getPalette, getPaletteRole } from '../core/palettes';
+import type { SVGGenerator } from "../core/types";
+import { getPalette, getPaletteRole } from "../core/palettes";
 
 export const techBadge: SVGGenerator = {
-  id: 'ui-badge',
-  name: 'Tech Badge',
-  description: 'A futuristic tech badge or chip asset',
-  category: 'UI Assets',
-  tags: ['ui', 'badge', 'chip', 'tech'],
-  version: '1.1.0',
+  id: "ui-badge",
+  name: "Tech Badge",
+  description: "A futuristic tech badge or chip asset",
+  category: "UI Assets",
+  tags: ["ui", "badge", "chip", "tech"],
+  version: "1.1.0",
   params: [
-    { name: 'width', label: 'Width', type: 'number', min: 40, max: 90, step: 1, default: 70, group: 'Size' },
-    { name: 'height', label: 'Height', type: 'number', min: 20, max: 60, step: 1, default: 30, group: 'Size' },
-    { name: 'cornerRadius', label: 'Corners', type: 'number', min: 0, max: 15, step: 1, default: 4, group: 'Size' },
-    { name: 'paletteId', label: 'Palette', type: 'palette', default: 'neon-vibe', group: 'Colors' },
-    { name: 'color', label: 'Override Color', type: 'color', default: '#00bbf9', group: 'Colors', advanced: true },
-    { name: 'usePalette', label: 'Use Palette', type: 'boolean', default: true, group: 'Colors' },
-    { name: 'glow', label: 'Glow Intensity', type: 'number', min: 0, max: 10, step: 1, default: 5, group: 'Details', advanced: true }
+    {
+      name: "width",
+      label: "Width",
+      type: "number",
+      min: 40,
+      max: 90,
+      step: 1,
+      default: 70,
+      group: "Size",
+    },
+    {
+      name: "height",
+      label: "Height",
+      type: "number",
+      min: 20,
+      max: 60,
+      step: 1,
+      default: 30,
+      group: "Size",
+    },
+    {
+      name: "cornerRadius",
+      label: "Corners",
+      type: "number",
+      min: 0,
+      max: 15,
+      step: 1,
+      default: 4,
+      group: "Size",
+    },
+    {
+      name: "paletteId",
+      label: "Palette",
+      type: "palette",
+      default: "neon-vibe",
+      group: "Colors",
+    },
+    {
+      name: "color",
+      label: "Override Color",
+      type: "color",
+      default: "#00bbf9",
+      group: "Colors",
+      advanced: true,
+    },
+    {
+      name: "usePalette",
+      label: "Use Palette",
+      type: "boolean",
+      default: true,
+      group: "Colors",
+    },
+    {
+      name: "glow",
+      label: "Glow Intensity",
+      type: "number",
+      min: 0,
+      max: 10,
+      step: 1,
+      default: 5,
+      group: "Details",
+      advanced: true,
+    },
   ],
-  defaultParams: { width: 70, height: 30, cornerRadius: 4, paletteId: 'neon-vibe', color: '#00bbf9', usePalette: true, glow: 5 },
+  defaultParams: {
+    width: 70,
+    height: 30,
+    cornerRadius: 4,
+    paletteId: "neon-vibe",
+    color: "#00bbf9",
+    usePalette: true,
+    glow: 5,
+  },
   render: (params, seed) => {
-    const { width, height, cornerRadius, paletteId, color, usePalette, glow } = params;
+    const { width, height, cornerRadius, paletteId, color, usePalette, glow } =
+      params;
 
     let finalColor = color;
     if (usePalette) {
       const pal = getPalette(paletteId);
       if (pal) {
-        finalColor = getPaletteRole(pal, 'accent');
+        finalColor = getPaletteRole(pal, "accent");
       }
     }
 
@@ -37,6 +102,8 @@ export const techBadge: SVGGenerator = {
 
     return `
       <svg width="100%" height="100%" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+        <title>Tech Badge</title>
+        <desc>A futuristic interface component with neon glow effects.</desc>
         <defs>
           <clipPath id="${badgeClipId}"><rect width="100" height="100" /></clipPath>
           <filter id="${glowId}" x="-50%" y="-50%" width="200%" height="200%">
@@ -66,5 +133,5 @@ export const techBadge: SVGGenerator = {
         </g>
       </svg>
     `.trim();
-  }
+  },
 };
