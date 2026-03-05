@@ -1,0 +1,173 @@
+
+> svg@0.0.1 check
+> svelte-kit sync && svelte-check --tsconfig ./tsconfig.json
+
+Loading svelte-check in workspace: d:\SVG
+Getting Svelte diagnostics...
+
+d:\SVG\[32msrc\lib\services\storage.ts[39m:1:28
+[31mError[39m: Cannot find module '../core/types' or its corresponding type declarations. 
+[36mimport type { Layer } from [35m"../core/types"[36m;[39m
+
+d:\SVG\[32msrc\lib\state\history.svelte.ts[39m:1:28
+[31mError[39m: Cannot find module '../core/types' or its corresponding type declarations. 
+[36mimport type { Layer } from [35m"../core/types"[36m;[39m
+
+d:\SVG\[32msrc\lib\state\appState.svelte.ts[39m:1:42
+[31mError[39m: Cannot find module '$lib/core/registry' or its corresponding type declarations. 
+[36mimport { generators, getGenerator } from [35m"$lib/core/registry"[36m;
+import * as storage from "$lib/services/storage";[39m
+
+d:\SVG\[32msrc\lib\state\appState.svelte.ts[39m:10:8
+[31mError[39m: Cannot find module '$lib/core/types' or its corresponding type declarations. 
+[36m	PaintTool,
+} from [35m"$lib/core/types"[36m;
+import { logRender, logError } from "$lib/services/telemetry.svelte";[39m
+
+d:\SVG\[32msrc\lib\state\appState.svelte.ts[39m:13:57
+[31mError[39m: Cannot find module '$lib/core/starters' or its corresponding type declarations. 
+[36mimport LZString from "lz-string";
+import { STARTER_TEMPLATES, type StarterTemplate } from [35m"$lib/core/starters"[36m;[39m
+
+d:\SVG\[32msrc\lib\state\appState.svelte.ts[39m:415:42
+[31mError[39m: Parameter 't' implicitly has an 'any' type. 
+[36m	addGoldenPreset() {
+		const golden = STARTER_TEMPLATES.find(([35mt[36m) => t.id === "golden-core");
+		if (golden) {[39m
+
+d:\SVG\[32msrc\lib\state\appState.svelte.ts[39m:422:37
+[31mError[39m: Parameter 'l' implicitly has an 'any' type. 
+[36m	applyStarter(starter: StarterTemplate) {
+		this.layers = starter.layers.map(([35ml[36m) => {
+			const gen = getGenerator(l.generatorId!);[39m
+
+d:\SVG\[32msrc\lib\services\agentApi.ts[39m:2:42
+[31mError[39m: Cannot find module '$lib/core/registry' or its corresponding type declarations. 
+[36mimport { appState } from "$lib/state/appState.svelte";
+import { generators, getGenerator } from [35m"$lib/core/registry"[36m;
+import type { ParamDefinition } from "$lib/core/types";[39m
+
+d:\SVG\[32msrc\lib\services\agentApi.ts[39m:3:38
+[31mError[39m: Cannot find module '$lib/core/types' or its corresponding type declarations. 
+[36mimport { generators, getGenerator } from "$lib/core/registry";
+import type { ParamDefinition } from [35m"$lib/core/types"[36m;
+import type { Preset } from "$lib/services/storage";[39m
+
+d:\SVG\[32msrc\lib\services\agentApi.ts[39m:37:26
+[31mError[39m: Parameter 'g' implicitly has an 'any' type. 
+[36m	listGenerators() {
+		return generators.map(([35mg[36m) => ({
+			id: g.id,[39m
+
+d:\SVG\[32msrc\lib\services\agentApi.ts[39m:76:28
+[31mError[39m: Parameter 'g' implicitly has an 'any' type. 
+[36m			if (!gen) {
+				gen = generators.find(([35mg[36m) =>
+					g.name.toLowerCase().includes(idOrName.toLowerCase()),[39m
+
+d:\SVG\[32msrc\lib\engine\index.ts[39m:15:10
+[31mError[39m: Module '"./generators/abstract"' has no exported member 'abstractGenerator'. 
+[36m// Generator Modules
+export { [35mabstractGenerator[36m } from './generators/abstract';
+export { animations } from './generators/animations';[39m
+
+d:\SVG\[32msrc\lib\engine\index.ts[39m:16:10
+[31mError[39m: Module '"./generators/animations"' has no exported member 'animations'. 
+[36mexport { abstractGenerator } from './generators/abstract';
+export { [35manimations[36m } from './generators/animations';
+export { freeDraw } from './generators/free-draw';[39m
+
+d:\SVG\[32msrc\lib\engine\index.ts[39m:18:10
+[31mError[39m: Module '"./generators/gradient"' has no exported member 'gradient'. 
+[36mexport { freeDraw } from './generators/free-draw';
+export { [35mgradient[36m } from './generators/gradient';
+export { icons } from './generators/icons';[39m
+
+d:\SVG\[32msrc\lib\engine\index.ts[39m:19:10
+[31mError[39m: Module '"./generators/icons"' has no exported member 'icons'. 
+[36mexport { gradient } from './generators/gradient';
+export { [35micons[36m } from './generators/icons';
+export { basicLayouts } from './generators/layouts';[39m
+
+d:\SVG\[32msrc\lib\engine\index.ts[39m:20:10
+[31mError[39m: Module '"./generators/layouts"' has no exported member 'basicLayouts'. 
+[36mexport { icons } from './generators/icons';
+export { [35mbasicLayouts[36m } from './generators/layouts';
+export { dots, grid } from './generators/patterns';[39m
+
+d:\SVG\[32msrc\lib\engine\index.ts[39m:23:10
+[31mError[39m: Module '"./generators/sacred-geometry"' has no exported member 'sacredGeometry'. 
+[36mexport { quantumCoreGenerator } from './generators/pro-complexity';
+export { [35msacredGeometry[36m } from './generators/sacred-geometry';
+export { svgImport } from './generators/svg-import';[39m
+
+d:\SVG\[32msrc\lib\engine\index.ts[39m:26:10
+[31mError[39m: Module '"./generators/ui-assets"' has no exported member 'uiAssets'. 
+[36mexport { textEffects } from './generators/text-effects';
+export { [35muiAssets[36m } from './generators/ui-assets';[39m
+
+d:\SVG\[32msrc\lib\ui\GeneratorGallery.svelte[39m:2:46
+[31mError[39m: Cannot find module '$lib/core/registry' or its corresponding type declarations. (ts)
+[36m<script lang="ts">
+    import { generators, getGenerator } from [35m"$lib/core/registry"[36m;
+    import { appState } from "$lib/state/appState.svelte";[39m
+
+d:\SVG\[32msrc\lib\ui\GeneratorGallery.svelte[39m:7:12
+[31mError[39m: Cannot find module '$lib/core/starters' or its corresponding type declarations. (ts)
+[36m        type StarterTemplate,
+    } from [35m"$lib/core/starters"[36m;[39m
+
+d:\SVG\[32msrc\lib\ui\GeneratorGallery.svelte[39m:24:33
+[31mError[39m: Parameter 'l' implicitly has an 'any' type. (ts)
+[36m        let inner = "";
+        starter.layers.forEach(([35ml[36m) => {
+            const gen = getGenerator(l.generatorId!);[39m
+
+d:\SVG\[32msrc\lib\ui\LayerPanel.svelte[39m:3:36
+[31mError[39m: Cannot find module '$lib/core/types' or its corresponding type declarations. (ts)
+[36m    import { appState } from "$lib/state/appState.svelte";
+    import type { BlendMode } from [35m"$lib/core/types"[36m;[39m
+
+d:\SVG\[32msrc\lib\ui\ParamPanel.svelte[39m:2:39
+[31mError[39m: Cannot find module '../core/types' or its corresponding type declarations. (ts)
+[36m<script lang="ts">
+	import type { ParamDefinition } from [35m"../core/types"[36m;
+	import { palettes } from "../core/palettes";[39m
+
+d:\SVG\[32msrc\lib\ui\ParamPanel.svelte[39m:3:27
+[31mError[39m: Cannot find module '../core/palettes' or its corresponding type declarations. (ts)
+[36m	import type { ParamDefinition } from "../core/types";
+	import { palettes } from [35m"../core/palettes"[36m;
+	import { appState } from "../state/appState.svelte";[39m
+
+d:\SVG\[32msrc\lib\ui\ToolPalette.svelte[39m:3:36
+[31mError[39m: Cannot find module '../core/types' or its corresponding type declarations. (ts)
+[36m    import { appState } from "../state/appState.svelte";
+    import type { PaintTool } from [35m"../core/types"[36m;[39m
+
+d:\SVG\[32msrc\routes\+page.svelte[39m:3:29
+[31mError[39m: Cannot find module '$lib/core/registry' or its corresponding type declarations. (ts)
+[36m	import { base } from "$app/paths";
+	import { generators } from [35m"$lib/core/registry"[36m;
+	import { appState } from "$lib/state/appState.svelte";[39m
+
+d:\SVG\[32msrc\routes\+page.svelte[39m:19:56
+[31mError[39m: Parameter 'g' implicitly has an 'any' type. (ts)
+[36m
+	const categories = ["All", ...new Set(generators.map(([35mg[36m) => g.category))];[39m
+
+d:\SVG\[32msrc\routes\+page.svelte[39m:22:22
+[31mError[39m: Parameter 'g' implicitly has an 'any' type. (ts)
+[36m	let filteredGenerators = $derived(
+		generators.filter(([35mg[36m) => {
+			const matchesSearch =[39m
+
+d:\SVG\[32msrc\routes\+page.svelte[39m:25:18
+[31mError[39m: Parameter 't' implicitly has an 'any' type. (ts)
+[36m				g.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+				g.tags.some(([35mt[36m) =>
+					t.toLowerCase().includes(searchQuery.toLowerCase()),[39m
+
+====================================
+[31msvelte-check found 29 errors and 0 warnings in 10 files
+[39m

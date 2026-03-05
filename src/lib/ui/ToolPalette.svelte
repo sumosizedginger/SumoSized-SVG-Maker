@@ -1,6 +1,6 @@
 <script lang="ts">
     import { appState } from "../state/appState.svelte";
-    import type { PaintTool } from "../core/types";
+    import type { PaintTool } from "../engine/core/types";
 
     interface ToolDef {
         id: PaintTool;

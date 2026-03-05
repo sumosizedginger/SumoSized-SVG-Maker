@@ -682,7 +682,6 @@ Checklist:
 
 Then: STOP and wait for final human review.
 
-***
+---
 
 **STATUS: COMPLETED 100/100 PRODUCTION GRADE (2026 STANDARDS).** All stages, including performance capping, decoupling, ADA Title II compliant ARIA mappings, and full test/lint suites are passing. The headless `window.SumoSvgApp` API is fully operational.
-

@@ -1,6 +1,6 @@
 <script lang="ts">
-	import type { ParamDefinition } from "../core/types";
-	import { palettes } from "../core/palettes";
+	import type { ParamDefinition } from "../engine/core/types";
+	import { palettes } from "../engine/core/palettes";
 	import { appState } from "../state/appState.svelte";
 
 	interface Props {

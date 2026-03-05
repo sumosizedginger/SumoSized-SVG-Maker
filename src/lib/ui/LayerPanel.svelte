@@ -1,9 +1,11 @@
 <script lang="ts">
     import { appState } from "$lib/state/appState.svelte";
-    import type { BlendMode } from "$lib/core/types";
+    import type { BlendMode } from "$lib/engine/core/types";
 
     // Reverse layers so top is first (visual representation like Photoshop)
     let displayLayers = $derived([...appState.layers].reverse());
+
+    let isDraggingId = $state<string | null>(null);
 
     const blendModes: BlendMode[] = [
         "normal",
@@ -25,10 +27,27 @@
     ];
 
     function handleDragStart(e: DragEvent, id: string) {
+        // Prevent dragging if the user is interacting with an input, select, or button
+        const target = e.target as HTMLElement;
+        if (
+            target.tagName === "INPUT" ||
+            target.tagName === "SELECT" ||
+            target.tagName === "BUTTON" ||
+            target.closest("button")
+        ) {
+            e.preventDefault();
+            return;
+        }
+
         if (e.dataTransfer) {
             e.dataTransfer.setData("text/plain", id);
             e.dataTransfer.effectAllowed = "move";
+            isDraggingId = id;
         }
+    }
+
+    function handleDragEnd() {
+        isDraggingId = null;
     }
 
     function handleDragOver(e: DragEvent) {
@@ -112,18 +131,43 @@
             <div
                 class="layer-item"
                 class:active={appState.activeLayerId === layer.id}
-                onclick={() => (appState.activeLayerId = layer.id)}
-                draggable="true"
-                ondragstart={(e) => handleDragStart(e, layer.id)}
                 ondragover={handleDragOver}
                 ondrop={(e) => handleDrop(e, layer.id)}
-                role="button"
-                tabindex="0"
-                onkeydown={(e) =>
-                    e.key === "Enter" && (appState.activeLayerId = layer.id)}
+                role="presentation"
             >
-                <div class="layer-header">
+                <div
+                    class="layer-header"
+                    draggable="true"
+                    role="button"
+                    tabindex="0"
+                    aria-expanded={appState.activeLayerId === layer.id}
+                    aria-label={`Toggle ${layer.name} controls`}
+                    ondragstart={(e) => handleDragStart(e, layer.id)}
+                    ondragend={handleDragEnd}
+                    onclick={(e) => {
+                        e.stopPropagation();
+                        if (appState.activeLayerId === layer.id) {
+                            appState.activeLayerId = null;
+                        } else {
+                            appState.activeLayerId = layer.id;
+                        }
+                    }}
+                    onkeydown={(e) => {
+                        if (e.key === "Enter" || e.key === " ") {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            if (appState.activeLayerId === layer.id) {
+                                appState.activeLayerId = null;
+                            } else {
+                                appState.activeLayerId = layer.id;
+                            }
+                        }
+                    }}
+                >
                     <div class="drag-handle">⋮⋮</div>
+                    <span class="chevron" aria-hidden="true">
+                        {appState.activeLayerId === layer.id ? "▾" : "▸"}
+                    </span>
                     <input
                         type="checkbox"
                         title="Toggle Visibility"
@@ -145,7 +189,7 @@
                     >
                 </div>
 
-                {#if appState.activeLayerId === layer.id}
+                {#if appState.activeLayerId === layer.id && !isDraggingId}
                     <div
                         class="layer-controls"
                         onclick={(e) => e.stopPropagation()}
@@ -352,13 +396,26 @@
         align-items: center;
         padding: 0.5rem;
         gap: 0.5rem;
+        cursor: grab;
+    }
+
+    .layer-header:active {
+        cursor: grabbing;
+    }
+
+    .chevron {
+        font-size: 0.7rem;
+        color: #888;
+        width: 12px;
+        display: inline-block;
+        transition: transform 0.2s;
     }
 
     .drag-handle {
         color: #aaa;
-        cursor: grab;
         font-size: 0.8rem;
         padding: 0 0.2rem;
+        pointer-events: none; /* Let header handle the interaction */
     }
 
     .drag-handle:active {

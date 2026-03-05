@@ -8,8 +8,8 @@ SumoSized SVG Generator strictly adheres to decoupling state management, UI, and
 
 1. **`src/lib/generators/`**: The pure mathematics and SVG string builders live here.
 2. **`src/lib/state/`**: The Core State Domain.
-   - `appState.svelte.ts`: The Svelte 5 runes context holds all mutable state (seed, layer stacks, blended CSS states).
-   - `history.svelte.ts`: The decoupled `HistoryManager` handling discrete undo/redo logic per 2026 Domain-Driven Design (DDD) requirements.
+    - `appState.svelte.ts`: The Svelte 5 runes context holds all mutable state (seed, layer stacks, blended CSS states).
+    - `history.svelte.ts`: The decoupled `HistoryManager` handling discrete undo/redo logic per 2026 Domain-Driven Design (DDD) requirements.
 3. **`src/lib/ui/`**: Specialized pure components.
 
 ## How to add a new Generator
@@ -24,32 +24,37 @@ Create a new file (e.g., `src/lib/generators/my-new-aesthetic.ts`):
 import type { Generator, ParamDefinition } from "../core/types";
 
 export const myNewGenerator: Generator = {
-  id: "my-new-aesthetic",
-  name: "My New Aesthetic",
-  description: "A beautiful new generative landscape.",
-  category: "Abstract",
-  tags: ["new", "beautiful"],
-  version: "1.0.0",
-  defaultParams: {
-    intensity: 5,
-    color: "#ff0000",
-  },
-  params: [
-    {
-      name: "intensity",
-      label: "Intensity",
-      type: "number",
-      min: 1,
-      max: 10,
-      step: 1,
-      default: 5,
-    },
-    { name: "color", label: "Main Color", type: "color", default: "#ff0000" },
-  ],
-  render: (params, seed) => {
-    // use mathematical functions seeded by 'seed'
-    return `<rect width="100%" height="100%" fill="${params.color}" opacity="${params.intensity / 10}" />`;
-  },
+	id: "my-new-aesthetic",
+	name: "My New Aesthetic",
+	description: "A beautiful new generative landscape.",
+	category: "Abstract",
+	tags: ["new", "beautiful"],
+	version: "1.0.0",
+	defaultParams: {
+		intensity: 5,
+		color: "#ff0000",
+	},
+	params: [
+		{
+			name: "intensity",
+			label: "Intensity",
+			type: "number",
+			min: 1,
+			max: 10,
+			step: 1,
+			default: 5,
+		},
+		{
+			name: "color",
+			label: "Main Color",
+			type: "color",
+			default: "#ff0000",
+		},
+	],
+	render: (params, seed) => {
+		// use mathematical functions seeded by 'seed'
+		return `<rect width="100%" height="100%" fill="${params.color}" opacity="${params.intensity / 10}" />`;
+	},
 };
 ```
 
@@ -63,6 +68,6 @@ Open `src/lib/generators/generators.test.ts`. Because generation happens through
 
 ```typescript
 it("My New Aesthetic generates deterministic SVG", () => {
-  // Write a test for your generator here
+	// Write a test for your generator here
 });
 ```

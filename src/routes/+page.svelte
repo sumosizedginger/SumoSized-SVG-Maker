@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { base } from "$app/paths";
-	import { generators } from "$lib/core/registry";
+	import { generators } from "$lib/engine/core/registry";
 	import { appState } from "$lib/state/appState.svelte";
 	import Preview from "$lib/ui/Preview.svelte";
 	import ParamPanel from "$lib/ui/ParamPanel.svelte";
