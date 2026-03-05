@@ -7,7 +7,9 @@ Thanks for taking the time to contribute to this 100% in-browser SVG engine!
 SumoSized SVG Generator strictly adheres to decoupling state management, UI, and procedural rendering mathematics.
 
 1. **`src/lib/generators/`**: The pure mathematics and SVG string builders live here.
-2. **`src/lib/state/appState.svelte.ts`**: The Svelte 5 runes context holds all mutable state (seed, layer stacks, blended CSS states).
+2. **`src/lib/state/`**: The Core State Domain.
+   - `appState.svelte.ts`: The Svelte 5 runes context holds all mutable state (seed, layer stacks, blended CSS states).
+   - `history.svelte.ts`: The decoupled `HistoryManager` handling discrete undo/redo logic per 2026 Domain-Driven Design (DDD) requirements.
 3. **`src/lib/ui/`**: Specialized pure components.
 
 ## How to add a new Generator
