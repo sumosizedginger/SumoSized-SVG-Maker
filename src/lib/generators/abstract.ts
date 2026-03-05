@@ -11,13 +11,13 @@ export const flowField: SVGGenerator = {
   params: [
     { name: 'count', label: 'Line Count', type: 'integer', min: 10, max: 200, step: 1, default: 50, group: 'Geometry' },
     { name: 'steps', label: 'Step Length', type: 'integer', min: 5, max: 100, step: 1, default: 30, group: 'Geometry' },
-    { name: 'complexity', label: 'Complexity', type: 'number', min: 0.01, max: 0.5, step: 0.01, default: 0.1, group: 'Geometry' },
+    { name: 'complexity', label: 'Complexity', type: 'number', min: 0.01, max: 0.5, step: 0.01, default: 0.1, group: 'Geometry', advanced: true },
     { name: 'paletteId', label: 'Palette', type: 'palette', default: 'neon-vibe', group: 'Colors' },
-    { name: 'bgColor', label: 'Background Override', type: 'color', default: '#000000', group: 'Colors' },
-    { name: 'lineColor', label: 'Line Override', type: 'color', default: '#ff006e', group: 'Colors' },
+    { name: 'bgColor', label: 'Background Override', type: 'color', default: '#000000', group: 'Colors', advanced: true },
+    { name: 'lineColor', label: 'Line Override', type: 'color', default: '#ff006e', group: 'Colors', advanced: true },
     { name: 'usePalette', label: 'Use Palette', type: 'boolean', default: true, group: 'Colors' },
-    { name: 'opacity', label: 'Opacity', type: 'number', min: 0, max: 1, step: 0.1, default: 0.6, group: 'Colors' },
-    { name: 'transparent', label: 'Transparent Background', type: 'boolean', default: false, group: 'Background' }
+    { name: 'opacity', label: 'Opacity', type: 'number', min: 0, max: 1, step: 0.1, default: 0.6, group: 'Colors', advanced: true },
+    { name: 'transparent', label: 'Transparent Background', type: 'boolean', default: false, group: 'Background', advanced: true }
   ],
   defaultParams: { count: 50, steps: 30, complexity: 0.1, paletteId: 'neon-vibe', bgColor: '#000000', lineColor: '#ff006e', usePalette: true, opacity: 0.6, transparent: false },
   render: (params, seed) => {

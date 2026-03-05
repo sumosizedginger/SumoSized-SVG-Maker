@@ -12,6 +12,8 @@
 
 	let { generatorId, params, values, onUpdate }: Props = $props();
 
+	let hasAdvancedParams = $derived(params.some((p) => p.advanced));
+
 	let visibleParams = $derived(
 		params.filter((p) => !appState.simpleMode || !p.advanced),
 	);
@@ -83,17 +85,19 @@
 		<div class="panel-header">
 			<div class="title-row">
 				<div class="mode-toggle">
-					<button
-						class="toggle-btn"
-						class:active={!appState.simpleMode}
-						onclick={() =>
-							(appState.simpleMode = !appState.simpleMode)}
-						title="Toggle Advanced Controls"
-					>
-						{appState.simpleMode
-							? "Show Advanced"
-							: "Hide Advanced"}
-					</button>
+					{#if hasAdvancedParams}
+						<button
+							class="toggle-btn"
+							class:active={!appState.simpleMode}
+							onclick={() =>
+								(appState.simpleMode = !appState.simpleMode)}
+							title="Toggle Advanced Controls"
+						>
+							{appState.simpleMode
+								? "Show Advanced"
+								: "Hide Advanced"}
+						</button>
+					{/if}
 					<button
 						class="random-btn"
 						onclick={() => appState.randomizeSeed()}

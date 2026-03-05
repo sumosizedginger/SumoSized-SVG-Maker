@@ -13,9 +13,9 @@ export const techBadge: SVGGenerator = {
     { name: 'height', label: 'Height', type: 'number', min: 20, max: 60, step: 1, default: 30, group: 'Size' },
     { name: 'cornerRadius', label: 'Corners', type: 'number', min: 0, max: 15, step: 1, default: 4, group: 'Size' },
     { name: 'paletteId', label: 'Palette', type: 'palette', default: 'neon-vibe', group: 'Colors' },
-    { name: 'color', label: 'Override Color', type: 'color', default: '#00bbf9', group: 'Colors' },
+    { name: 'color', label: 'Override Color', type: 'color', default: '#00bbf9', group: 'Colors', advanced: true },
     { name: 'usePalette', label: 'Use Palette', type: 'boolean', default: true, group: 'Colors' },
-    { name: 'glow', label: 'Glow Intensity', type: 'number', min: 0, max: 10, step: 1, default: 5, group: 'Details' }
+    { name: 'glow', label: 'Glow Intensity', type: 'number', min: 0, max: 10, step: 1, default: 5, group: 'Details', advanced: true }
   ],
   defaultParams: { width: 70, height: 30, cornerRadius: 4, paletteId: 'neon-vibe', color: '#00bbf9', usePalette: true, glow: 5 },
   render: (params) => {

@@ -11,12 +11,12 @@ export const dots: SVGGenerator = {
   params: [
     { name: 'dotSize', label: 'Dot Size', type: 'number', min: 1, max: 20, step: 0.5, default: 5, group: 'Geometry' },
     { name: 'spacing', label: 'Spacing', type: 'number', min: 10, max: 100, step: 1, default: 20, group: 'Geometry' },
-    { name: 'jitter', label: 'Jitter', type: 'number', min: 0, max: 50, step: 1, default: 0, group: 'Geometry' },
+    { name: 'jitter', label: 'Jitter', type: 'number', min: 0, max: 50, step: 1, default: 0, group: 'Geometry', advanced: true },
     { name: 'paletteId', label: 'Palette', type: 'palette', default: 'neon-vibe', group: 'Colors' },
-    { name: 'bgColor', label: 'Background Override', type: 'color', default: '#3a0ca3', group: 'Colors' },
-    { name: 'dotColor', label: 'Dot Override', type: 'color', default: '#4361ee', group: 'Colors' },
+    { name: 'bgColor', label: 'Background Override', type: 'color', default: '#3a0ca3', group: 'Colors', advanced: true },
+    { name: 'dotColor', label: 'Dot Override', type: 'color', default: '#4361ee', group: 'Colors', advanced: true },
     { name: 'usePalette', label: 'Use Palette', type: 'boolean', default: true, group: 'Colors' },
-    { name: 'transparent', label: 'Transparent Background', type: 'boolean', default: false, group: 'Background' }
+    { name: 'transparent', label: 'Transparent Background', type: 'boolean', default: false, group: 'Background', advanced: true }
   ],
   defaultParams: { dotSize: 5, spacing: 20, jitter: 0, paletteId: 'neon-vibe', bgColor: '#3a0ca3', dotColor: '#4361ee', usePalette: true, transparent: false },
   render: (params, seed) => {
@@ -75,11 +75,11 @@ export const grid: SVGGenerator = {
     { name: 'cells', label: 'Cells', type: 'integer', min: 2, max: 50, step: 1, default: 10, group: 'Geometry' },
     { name: 'thickness', label: 'Line Thickness', type: 'number', min: 0.1, max: 5, step: 0.1, default: 0.5, group: 'Geometry' },
     { name: 'paletteId', label: 'Palette', type: 'palette', default: 'neon-vibe', group: 'Colors' },
-    { name: 'bgColor', label: 'Background Override', type: 'color', default: '#0a0a0d', group: 'Colors' },
-    { name: 'lineColor', label: 'Line Override', type: 'color', default: '#3a86ff', group: 'Colors' },
+    { name: 'bgColor', label: 'Background Override', type: 'color', default: '#0a0a0d', group: 'Colors', advanced: true },
+    { name: 'lineColor', label: 'Line Override', type: 'color', default: '#3a86ff', group: 'Colors', advanced: true },
     { name: 'usePalette', label: 'Use Palette', type: 'boolean', default: true, group: 'Colors' },
-    { name: 'showDots', label: 'Show Intersections', type: 'boolean', default: true, group: 'Details' },
-    { name: 'transparent', label: 'Transparent Background', type: 'boolean', default: false, group: 'Background' }
+    { name: 'showDots', label: 'Show Intersections', type: 'boolean', default: true, group: 'Details', advanced: true },
+    { name: 'transparent', label: 'Transparent Background', type: 'boolean', default: false, group: 'Background', advanced: true }
   ],
   defaultParams: { cells: 10, thickness: 0.5, paletteId: 'neon-vibe', bgColor: '#0a0a0d', lineColor: '#3a86ff', usePalette: true, showDots: true, transparent: false },
   render: (params) => {
