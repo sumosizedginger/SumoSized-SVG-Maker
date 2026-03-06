@@ -92,6 +92,8 @@ export class MediaService {
 			const serializer = new XMLSerializer();
 			const img = new Image();
 
+			const concatLines: string[] = [];
+
 			// Prepare for encoding
 			for (let i = 0; i < totalFrames; i++) {
 				const time = i / fps;
@@ -112,7 +114,8 @@ export class MediaService {
 					);
 					img.onload = () => {
 						clearTimeout(timeout);
-						ctx.fillStyle = "black"; // Background for transparency handling
+						// Sync background with app state or default to Seahawks Navy
+						ctx.fillStyle = appState.theme === "dark" ? "#002244" : "#ffffff";
 						ctx.fillRect(0, 0, width, height);
 						ctx.drawImage(img, 0, 0, width, height);
 						URL.revokeObjectURL(url);
@@ -137,38 +140,64 @@ export class MediaService {
 					}, "image/png");
 				});
 
-				await this.ffmpeg.writeFile(
-					`frame${i.toString().padStart(5, "0")}.png`,
-					frameData,
-				);
+				const frameName = `frame${i.toString().padStart(5, "0")}.png`;
+				await this.ffmpeg.writeFile(frameName, frameData);
+				concatLines.push(`file '${frameName}'`);
+				concatLines.push(`duration ${1 / fps}`);
 			}
+
+			// Add the final frame duration (FFmpeg logic)
+			concatLines.push(`file 'frame${(totalFrames - 1).toString().padStart(5, "0")}.png'`);
+
+			await this.ffmpeg.writeFile("concat.txt", concatLines.join("\n"));
 
 			appState.renderingStatus = `Encoding ${format.toUpperCase()} (${format === "gif" ? "Fast" : "H.264 High Profile"})...`;
 
 			// Run FFmpeg command for selected format
 			if (format === "mov" || format === "mp4") {
-				// High-quality H.264 output
-				await this.ffmpeg.exec([
-					"-framerate",
-					fps.toString(),
-					"-i",
-					"frame%05d.png",
-					"-c:v",
-					"libx264",
-					"-pix_fmt",
-					"yuv420p",
-					"-preset",
-					"ultrafast",
-					"-crf",
-					"18",
-					"output.mp4",
-				]);
+				try {
+					// High-quality H.264 output
+					await this.ffmpeg.exec([
+						"-f",
+						"concat",
+						"-safe",
+						"0",
+						"-i",
+						"concat.txt",
+						"-c:v",
+						"libx264",
+						"-pix_fmt",
+						"yuv420p",
+						"-preset",
+						"ultrafast",
+						"-crf",
+						"18",
+						"output.mp4",
+					]);
+				} catch (e) {
+					console.warn("libx264 failed, falling back to mpeg4", e);
+					await this.ffmpeg.exec([
+						"-f",
+						"concat",
+						"-safe",
+						"0",
+						"-i",
+						"concat.txt",
+						"-c:v",
+						"mpeg4",
+						"-q:v",
+						"2",
+						"output.mp4",
+					]);
+				}
 			} else if (format === "webm") {
 				await this.ffmpeg.exec([
-					"-framerate",
-					fps.toString(),
+					"-f",
+					"concat",
+					"-safe",
+					"0",
 					"-i",
-					"frame%05d.png",
+					"concat.txt",
 					"-c:v",
 					"libvpx-vp9",
 					"-pix_fmt",
@@ -180,13 +209,32 @@ export class MediaService {
 					"output.webm",
 				]);
 			} else {
+				// Two-Pass High Quality GIF
+				appState.renderingStatus = "Generating GIF Color Palette...";
 				await this.ffmpeg.exec([
-					"-framerate",
-					fps.toString(),
+					"-f",
+					"concat",
+					"-safe",
+					"0",
 					"-i",
-					"frame%05d.png",
+					"concat.txt",
 					"-vf",
-					"split[s0][s1];[s0]palettegen[p];[s1][p]paletteuse",
+					"palettegen=max_colors=256:stats_mode=full",
+					"palette.png",
+				]);
+
+				appState.renderingStatus = "Applying Palette to GIF...";
+				await this.ffmpeg.exec([
+					"-f",
+					"concat",
+					"-safe",
+					"0",
+					"-i",
+					"concat.txt",
+					"-i",
+					"palette.png",
+					"-lavfi",
+					"paletteuse=dither=sierra2_4a:diff_mode=rectangle",
 					"output.gif",
 				]);
 			}
@@ -204,7 +252,9 @@ export class MediaService {
 			for (const file of files) {
 				if (
 					file.name.startsWith("frame") ||
-					file.name.startsWith("output")
+					file.name.startsWith("output") ||
+					file.name === "concat.txt" ||
+					file.name === "palette.png"
 				) {
 					await this.ffmpeg.deleteFile(file.name);
 				}

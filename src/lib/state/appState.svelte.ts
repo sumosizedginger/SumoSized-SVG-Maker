@@ -31,6 +31,7 @@ class AppState {
 	playbackDuration = $state(3); // Default animation length
 	readonly MAX_DURATION = 10; // Production safety limit (seconds)
 	renderingStatus = $state(""); // Status message for long renders
+	theme = $state<"dark" | "light">("dark"); // Global visual theme
 
 	private historyManager = new HistoryManager();
 
@@ -568,22 +569,22 @@ class AppState {
 					opacity: l.o !== undefined ? l.o : 1.0,
 					transforms: l.t
 						? {
-								x: l.t.x || 0,
-								y: l.t.y || 0,
-								scaleX:
-									l.t.scaleX !== undefined
-										? l.t.scaleX
-										: l.t.scale || 1,
-								scaleY:
-									l.t.scaleY !== undefined
-										? l.t.scaleY
-										: l.t.scale || 1,
-								rotation: l.t.rotation || 0,
-								cropX: l.t.cropX,
-								cropY: l.t.cropY,
-								cropW: l.t.cropW,
-								cropH: l.t.cropH,
-							}
+							x: l.t.x || 0,
+							y: l.t.y || 0,
+							scaleX:
+								l.t.scaleX !== undefined
+									? l.t.scaleX
+									: l.t.scale || 1,
+							scaleY:
+								l.t.scaleY !== undefined
+									? l.t.scaleY
+									: l.t.scale || 1,
+							rotation: l.t.rotation || 0,
+							cropX: l.t.cropX,
+							cropY: l.t.cropY,
+							cropW: l.t.cropW,
+							cropH: l.t.cropH,
+						}
 						: { x: 0, y: 0, scaleX: 1, scaleY: 1, rotation: 0 },
 					filter: l.f,
 					maskLayerId: l.m,
@@ -723,7 +724,7 @@ class AppState {
 									rotation: 0,
 								},
 							};
-						} catch (e) {}
+						} catch (e) { }
 					}
 				}
 			}
@@ -756,7 +757,7 @@ class AppState {
 									y: Number(ty.toFixed(2)),
 								},
 							};
-						} catch (e) {}
+						} catch (e) { }
 					}
 				}
 			}
