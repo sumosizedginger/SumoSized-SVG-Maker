@@ -66,7 +66,10 @@ describe("Agent API (window.SumoSvgApp)", () => {
 		agentApi.addLayer("simple-gradient", { color1: "#000000" });
 		expect(appState.activeLayer?.params.color1).toBe("#000000");
 
-		const success = agentApi.setParams({ color1: "#ffffff", invalidParam: true });
+		const success = agentApi.setParams({
+			color1: "#ffffff",
+			invalidParam: true,
+		});
 		expect(success).toBe(true);
 		expect(appState.activeLayer?.params.color1).toBe("#ffffff");
 		expect(appState.activeLayer?.params.invalidParam).toBe(true);
@@ -126,12 +129,16 @@ describe("Agent API (window.SumoSvgApp)", () => {
 
 	it("gracefully catches internal exceptions across all endpoints", async () => {
 		// Suppress console.error noise during intentional failure test
-		const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => { });
+		const consoleSpy = vi
+			.spyOn(console, "error")
+			.mockImplementation(() => {});
 
 		// Force appState getter to throw a catastrophic error
-		const spy = vi.spyOn(appState, 'activeGenerator', 'get').mockImplementation(() => {
-			throw new Error("Simulated catastrophic state failure");
-		});
+		const spy = vi
+			.spyOn(appState, "activeGenerator", "get")
+			.mockImplementation(() => {
+				throw new Error("Simulated catastrophic state failure");
+			});
 
 		expect(agentApi.getCurrentState()).toBeNull();
 		expect(agentApi.setParams({})).toBe(false);
@@ -139,23 +146,29 @@ describe("Agent API (window.SumoSvgApp)", () => {
 		spy.mockRestore();
 
 		// Force getter failures for render output and user data
-		const spySvg = vi.spyOn(appState, 'renderedSvg', 'get').mockImplementation(() => {
-			throw new Error("Simulated catastrophic state failure");
-		});
+		const spySvg = vi
+			.spyOn(appState, "renderedSvg", "get")
+			.mockImplementation(() => {
+				throw new Error("Simulated catastrophic state failure");
+			});
 		expect(agentApi.renderNow()).toBe("");
 		expect(await agentApi.getPreviewDataURL()).toBe("");
 		spySvg.mockRestore();
 
-		const spyUser = vi.spyOn(appState, 'userPresets', 'get').mockImplementation(() => {
-			throw new Error("Simulated catastrophic state failure");
-		});
+		const spyUser = vi
+			.spyOn(appState, "userPresets", "get")
+			.mockImplementation(() => {
+				throw new Error("Simulated catastrophic state failure");
+			});
 		expect(agentApi.listPresets()).toEqual([]);
 		spyUser.mockRestore();
 
 		// Force another failure point for mutation routes
-		const spy2 = vi.spyOn(appState, 'layers', 'set').mockImplementation(() => {
-			throw new Error("Simulated catastrophic state failure");
-		});
+		const spy2 = vi
+			.spyOn(appState, "layers", "set")
+			.mockImplementation(() => {
+				throw new Error("Simulated catastrophic state failure");
+			});
 
 		expect(agentApi.clearLayers()).toBe(false);
 		expect(agentApi.addLayer("quantum-core")).toBe(false);
@@ -166,7 +179,9 @@ describe("Agent API (window.SumoSvgApp)", () => {
 
 	describe("Zod Validation Enforcement", () => {
 		it("addLayer rejects invalid parameters for anim-matrix-rain", () => {
-			const consoleSpy = vi.spyOn(console, "error").mockImplementation(() => { });
+			const consoleSpy = vi
+				.spyOn(console, "error")
+				.mockImplementation(() => {});
 			const success = agentApi.addLayer("anim-matrix-rain", {
 				density: 500, // Max is 100
 			});
@@ -179,7 +194,9 @@ describe("Agent API (window.SumoSvgApp)", () => {
 		});
 
 		it("setParams rejects out-of-range values", () => {
-			const consoleSpy = vi.spyOn(console, "error").mockImplementation(() => { });
+			const consoleSpy = vi
+				.spyOn(console, "error")
+				.mockImplementation(() => {});
 			agentApi.setGenerator("anim-matrix-rain");
 			const success = agentApi.setParams({ density: 1 }); // Min is 5
 			expect(success).toBe(false);
@@ -187,7 +204,9 @@ describe("Agent API (window.SumoSvgApp)", () => {
 		});
 
 		it("setParams rejects incorrect types", () => {
-			const consoleSpy = vi.spyOn(console, "error").mockImplementation(() => { });
+			const consoleSpy = vi
+				.spyOn(console, "error")
+				.mockImplementation(() => {});
 			agentApi.setGenerator("anim-matrix-rain");
 			const success = agentApi.setParams({ density: "lots" as any });
 			expect(success).toBe(false);

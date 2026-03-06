@@ -83,7 +83,7 @@ export const poster: SVGGenerator = {
 		usePalette: true,
 		transparent: false,
 	},
-	render: (params, seed) => {
+	render: (params, seed, viewBox = { x: 0, y: 0, w: 100, h: 100 }) => {
 		const {
 			blockCount,
 			padding,
@@ -116,27 +116,27 @@ export const poster: SVGGenerator = {
 			return (s - 1) / 2147483646;
 		};
 
-		const area = 100 - padding * 2;
+		const pad = padding;
 		for (let i = 0; i < blockCount; i++) {
-			const w = rand() * (area * 0.6) + area * 0.2;
-			const h = rand() * (area * 0.4) + area * 0.1;
-			const x = padding + rand() * (area - w);
-			const y = padding + rand() * (area - h);
+			const w = rand() * (viewBox.w * 0.6) + viewBox.w * 0.2;
+			const h = rand() * (viewBox.h * 0.4) + viewBox.h * 0.1;
+			const x = viewBox.x + pad + rand() * (viewBox.w - w - pad * 2);
+			const y = viewBox.y + pad + rand() * (viewBox.h - h - pad * 2);
 			const color = rand() > 0.6 ? finalAccent : finalSecondary;
 
 			blocks.push(
-				`<rect x="${x}" y="${y}" width="${w}" height="${h}" fill="${color}" opacity="0.8" />`,
+				`<rect x="${x.toFixed(2)}" y="${y.toFixed(2)}" width="${w.toFixed(2)}" height="${h.toFixed(2)}" fill="${color}" opacity="0.8" />`,
 			);
 		}
 
 		return `
-      <svg width="100%" height="100%" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+      <svg width="100%" height="100%" viewBox="${viewBox.x} ${viewBox.y} ${viewBox.w} ${viewBox.h}" xmlns="http://www.w3.org/2000/svg">
         <title>Swiss Poster</title>
-        <desc>Minimalist layout with ${blockCount} geometric blocks and ${padding}% padding.</desc>
+        <desc>Minimalist layout with ${blockCount} geometric blocks and ${padding} padding. Adaptive Cinematic Viewport: ${viewBox.w}:${viewBox.h}</desc>
         <defs>
-          <clipPath id="posterClip-${seed}"><rect width="100" height="100" /></clipPath>
+          <clipPath id="posterClip-${seed}"><rect x="${viewBox.x}" y="${viewBox.y}" width="${viewBox.w}" height="${viewBox.h}" /></clipPath>
         </defs>
-        ${transparent ? "" : `<rect width="100" height="100" fill="${finalBg}" />`}
+        ${transparent ? "" : `<rect x="${viewBox.x}" y="${viewBox.y}" width="${viewBox.w}" height="${viewBox.h}" fill="${finalBg}" />`}
         <g clip-path="url(#posterClip-${seed})">
           ${blocks.join("\n")}
         </g>

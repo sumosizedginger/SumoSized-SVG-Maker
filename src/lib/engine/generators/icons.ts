@@ -79,7 +79,7 @@ export const symbolGrid: SVGGenerator = {
 		variety: 0.5,
 		transparent: false,
 	},
-	render: (params, seed) => {
+	render: (params, seed, viewBox = { x: 0, y: 0, w: 100, h: 100 }) => {
 		const {
 			cells,
 			padding,

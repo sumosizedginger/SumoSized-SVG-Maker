@@ -37,7 +37,11 @@ export interface SVGGenerator extends GeneratorMetadata {
 	params: ParamDefinition[];
 	defaultParams: Record<string, any>;
 	schema?: z.ZodObject<any>; // Optional Zod schema for strict agent validation
-	render: (params: Record<string, any>, seed: number) => string; // full <svg>...</svg>
+	render: (
+		params: Record<string, any>,
+		seed: number,
+		viewBox: { x: number; y: number; w: number; h: number },
+	) => string; // full <svg>...</svg>
 }
 
 export type BlendMode =
@@ -88,6 +92,7 @@ export interface Layer {
 	transforms: LayerTransforms;
 	filter?: FilterConfig;
 	maskLayerId?: string; // Reference to another layer ID for alpha masking
+	selected?: boolean; // For batch export selection
 }
 
 export type PaintTool =

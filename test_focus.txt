@@ -1,0 +1,145 @@
+
+[1m[46m RUN [49m[22m [36mv4.0.18 [39m[90mD:/SVG[39m
+
+ [32mΓ£ô[39m src/lib/engine/generators/generators.test.ts[2m > [22mDynamic Engine Core Tests[2m > [22mEvery registered generator exposes a valid schema[32m 2[2mms[22m[39m
+ [32mΓ£ô[39m src/lib/engine/generators/generators.test.ts[2m > [22mDynamic Engine Core Tests[2m > [22mGenerator [quantum-core][2m > [22mrenders deterministic SVG with default params[32m 4[2mms[22m[39m
+ [32mΓ£ô[39m src/lib/engine/generators/generators.test.ts[2m > [22mDynamic Engine Core Tests[2m > [22mGenerator [quantum-core][2m > [22mhandles boundary parameters without crashing[32m 3[2mms[22m[39m
+ [32mΓ£ô[39m src/lib/engine/generators/generators.test.ts[2m > [22mDynamic Engine Core Tests[2m > [22mGenerator [quantum-core][2m > [22mexhaustively tests all select and toggle branches to guarantee structural coverage[32m 52[2mms[22m[39m
+ [32mΓ£ô[39m src/lib/engine/generators/generators.test.ts[2m > [22mDynamic Engine Core Tests[2m > [22mGenerator [quantum-core][2m > [22mfuzzes schema parameters safely to execute internal logic branches[32m 12[2mms[22m[39m
+ [32mΓ£ô[39m src/lib/engine/generators/generators.test.ts[2m > [22mDynamic Engine Core Tests[2m > [22mGenerator [sacred-geometry][2m > [22mrenders deterministic SVG with default params[32m 1[2mms[22m[39m
+ [32mΓ£ô[39m src/lib/engine/generators/generators.test.ts[2m > [22mDynamic Engine Core Tests[2m > [22mGenerator [sacred-geometry][2m > [22mhandles boundary parameters without crashing[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m src/lib/engine/generators/generators.test.ts[2m > [22mDynamic Engine Core Tests[2m > [22mGenerator [sacred-geometry][2m > [22mexhaustively tests all select and toggle branches to guarantee structural coverage[32m 1[2mms[22m[39m
+ [32mΓ£ô[39m src/lib/engine/generators/generators.test.ts[2m > [22mDynamic Engine Core Tests[2m > [22mGenerator [sacred-geometry][2m > [22mfuzzes schema parameters safely to execute internal logic branches[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m src/lib/engine/generators/generators.test.ts[2m > [22mDynamic Engine Core Tests[2m > [22mGenerator [simple-gradient][2m > [22mrenders deterministic SVG with default params[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m src/lib/engine/generators/generators.test.ts[2m > [22mDynamic Engine Core Tests[2m > [22mGenerator [simple-gradient][2m > [22mhandles boundary parameters without crashing[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m src/lib/engine/generators/generators.test.ts[2m > [22mDynamic Engine Core Tests[2m > [22mGenerator [simple-gradient][2m > [22mexhaustively tests all select and toggle branches to guarantee structural coverage[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m src/lib/engine/generators/generators.test.ts[2m > [22mDynamic Engine Core Tests[2m > [22mGenerator [simple-gradient][2m > [22mfuzzes schema parameters safely to execute internal logic branches[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m src/lib/engine/generators/generators.test.ts[2m > [22mDynamic Engine Core Tests[2m > [22mGenerator [pattern-dots][2m > [22mrenders deterministic SVG with default params[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m src/lib/engine/generators/generators.test.ts[2m > [22mDynamic Engine Core Tests[2m > [22mGenerator [pattern-dots][2m > [22mhandles boundary parameters without crashing[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m src/lib/engine/generators/generators.test.ts[2m > [22mDynamic Engine Core Tests[2m > [22mGenerator [pattern-dots][2m > [22mexhaustively tests all select and toggle branches to guarantee structural coverage[32m 1[2mms[22m[39m
+ [32mΓ£ô[39m src/lib/engine/generators/generators.test.ts[2m > [22mDynamic Engine Core Tests[2m > [22mGenerator [pattern-dots][2m > [22mfuzzes schema parameters safely to execute internal logic branches[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m src/lib/engine/generators/generators.test.ts[2m > [22mDynamic Engine Core Tests[2m > [22mGenerator [pattern-grid][2m > [22mrenders deterministic SVG with default params[32m 1[2mms[22m[39m
+ [32mΓ£ô[39m src/lib/engine/generators/generators.test.ts[2m > [22mDynamic Engine Core Tests[2m > [22mGenerator [pattern-grid][2m > [22mhandles boundary parameters without crashing[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m src/lib/engine/generators/generators.test.ts[2m > [22mDynamic Engine Core Tests[2m > [22mGenerator [pattern-grid][2m > [22mexhaustively tests all select and toggle branches to guarantee structural coverage[32m 1[2mms[22m[39m
+ [32mΓ£ô[39m src/lib/engine/generators/generators.test.ts[2m > [22mDynamic Engine Core Tests[2m > [22mGenerator [pattern-grid][2m > [22mfuzzes schema parameters safely to execute internal logic branches[32m 1[2mms[22m[39m
+ [32mΓ£ô[39m src/lib/engine/generators/generators.test.ts[2m > [22mDynamic Engine Core Tests[2m > [22mGenerator [abstract-flow][2m > [22mrenders deterministic SVG with default params[32m 1[2mms[22m[39m
+ [32mΓ£ô[39m src/lib/engine/generators/generators.test.ts[2m > [22mDynamic Engine Core Tests[2m > [22mGenerator [abstract-flow][2m > [22mhandles boundary parameters without crashing[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m src/lib/engine/generators/generators.test.ts[2m > [22mDynamic Engine Core Tests[2m > [22mGenerator [abstract-flow][2m > [22mexhaustively tests all select and toggle branches to guarantee structural coverage[32m 6[2mms[22m[39m
+ [32mΓ£ô[39m src/lib/engine/generators/generators.test.ts[2m > [22mDynamic Engine Core Tests[2m > [22mGenerator [abstract-flow][2m > [22mfuzzes schema parameters safely to execute internal logic branches[32m 4[2mms[22m[39m
+ [32mΓ£ô[39m src/lib/engine/generators/generators.test.ts[2m > [22mDynamic Engine Core Tests[2m > [22mGenerator [layout-poster][2m > [22mrenders deterministic SVG with default params[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m src/lib/engine/generators/generators.test.ts[2m > [22mDynamic Engine Core Tests[2m > [22mGenerator [layout-poster][2m > [22mhandles boundary parameters without crashing[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m src/lib/engine/generators/generators.test.ts[2m > [22mDynamic Engine Core Tests[2m > [22mGenerator [layout-poster][2m > [22mexhaustively tests all select and toggle branches to guarantee structural coverage[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m src/lib/engine/generators/generators.test.ts[2m > [22mDynamic Engine Core Tests[2m > [22mGenerator [layout-poster][2m > [22mfuzzes schema parameters safely to execute internal logic branches[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m src/lib/engine/generators/generators.test.ts[2m > [22mDynamic Engine Core Tests[2m > [22mGenerator [ui-badge][2m > [22mrenders deterministic SVG with default params[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m src/lib/engine/generators/generators.test.ts[2m > [22mDynamic Engine Core Tests[2m > [22mGenerator [ui-badge][2m > [22mhandles boundary parameters without crashing[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m src/lib/engine/generators/generators.test.ts[2m > [22mDynamic Engine Core Tests[2m > [22mGenerator [ui-badge][2m > [22mexhaustively tests all select and toggle branches to guarantee structural coverage[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m src/lib/engine/generators/generators.test.ts[2m > [22mDynamic Engine Core Tests[2m > [22mGenerator [ui-badge][2m > [22mfuzzes schema parameters safely to execute internal logic branches[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m src/lib/engine/generators/generators.test.ts[2m > [22mDynamic Engine Core Tests[2m > [22mGenerator [anim-orbit][2m > [22mrenders deterministic SVG with default params[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m src/lib/engine/generators/generators.test.ts[2m > [22mDynamic Engine Core Tests[2m > [22mGenerator [anim-orbit][2m > [22mhandles boundary parameters without crashing[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m src/lib/engine/generators/generators.test.ts[2m > [22mDynamic Engine Core Tests[2m > [22mGenerator [anim-orbit][2m > [22mexhaustively tests all select and toggle branches to guarantee structural coverage[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m src/lib/engine/generators/generators.test.ts[2m > [22mDynamic Engine Core Tests[2m > [22mGenerator [anim-orbit][2m > [22mfuzzes schema parameters safely to execute internal logic branches[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m src/lib/engine/generators/generators.test.ts[2m > [22mDynamic Engine Core Tests[2m > [22mGenerator [anim-matrix-rain][2m > [22mrenders deterministic SVG with default params[32m 1[2mms[22m[39m
+ [32mΓ£ô[39m src/lib/engine/generators/generators.test.ts[2m > [22mDynamic Engine Core Tests[2m > [22mGenerator [anim-matrix-rain][2m > [22mhandles boundary parameters without crashing[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m src/lib/engine/generators/generators.test.ts[2m > [22mDynamic Engine Core Tests[2m > [22mGenerator [anim-matrix-rain][2m > [22mexhaustively tests all select and toggle branches to guarantee structural coverage[32m 1[2mms[22m[39m
+ [32mΓ£ô[39m src/lib/engine/generators/generators.test.ts[2m > [22mDynamic Engine Core Tests[2m > [22mGenerator [anim-matrix-rain][2m > [22mfuzzes schema parameters safely to execute internal logic branches[32m 1[2mms[22m[39m
+ [32mΓ£ô[39m src/lib/engine/generators/generators.test.ts[2m > [22mDynamic Engine Core Tests[2m > [22mGenerator [anim-quantum-pulse][2m > [22mrenders deterministic SVG with default params[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m src/lib/engine/generators/generators.test.ts[2m > [22mDynamic Engine Core Tests[2m > [22mGenerator [anim-quantum-pulse][2m > [22mhandles boundary parameters without crashing[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m src/lib/engine/generators/generators.test.ts[2m > [22mDynamic Engine Core Tests[2m > [22mGenerator [anim-quantum-pulse][2m > [22mexhaustively tests all select and toggle branches to guarantee structural coverage[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m src/lib/engine/generators/generators.test.ts[2m > [22mDynamic Engine Core Tests[2m > [22mGenerator [anim-quantum-pulse][2m > [22mfuzzes schema parameters safely to execute internal logic branches[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m src/lib/engine/generators/generators.test.ts[2m > [22mDynamic Engine Core Tests[2m > [22mGenerator [anim-kinetic-flow][2m > [22mrenders deterministic SVG with default params[32m 1[2mms[22m[39m
+ [32mΓ£ô[39m src/lib/engine/generators/generators.test.ts[2m > [22mDynamic Engine Core Tests[2m > [22mGenerator [anim-kinetic-flow][2m > [22mhandles boundary parameters without crashing[32m 1[2mms[22m[39m
+ [32mΓ£ô[39m src/lib/engine/generators/generators.test.ts[2m > [22mDynamic Engine Core Tests[2m > [22mGenerator [anim-kinetic-flow][2m > [22mexhaustively tests all select and toggle branches to guarantee structural coverage[32m 3[2mms[22m[39m
+ [32mΓ£ô[39m src/lib/engine/generators/generators.test.ts[2m > [22mDynamic Engine Core Tests[2m > [22mGenerator [anim-kinetic-flow][2m > [22mfuzzes schema parameters safely to execute internal logic branches[32m 4[2mms[22m[39m
+ [31m├ù[39m src/lib/engine/generators/generators.test.ts[2m > [22mDynamic Engine Core Tests[2m > [22mGenerator [anim-glitch][2m > [22mrenders deterministic SVG with default params[32m 8[2mms[22m[39m
+[31m   ΓåÆ Snapshot `Dynamic Engine Core Tests > Generator [anim-glitch] > renders deterministic SVG with default params 1` mismatched[39m
+ [32mΓ£ô[39m src/lib/engine/generators/generators.test.ts[2m > [22mDynamic Engine Core Tests[2m > [22mGenerator [anim-glitch][2m > [22mhandles boundary parameters without crashing[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m src/lib/engine/generators/generators.test.ts[2m > [22mDynamic Engine Core Tests[2m > [22mGenerator [anim-glitch][2m > [22mexhaustively tests all select and toggle branches to guarantee structural coverage[32m 1[2mms[22m[39m
+ [32mΓ£ô[39m src/lib/engine/generators/generators.test.ts[2m > [22mDynamic Engine Core Tests[2m > [22mGenerator [anim-glitch][2m > [22mfuzzes schema parameters safely to execute internal logic branches[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m src/lib/engine/generators/generators.test.ts[2m > [22mDynamic Engine Core Tests[2m > [22mGenerator [anim-neon-flicker][2m > [22mrenders deterministic SVG with default params[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m src/lib/engine/generators/generators.test.ts[2m > [22mDynamic Engine Core Tests[2m > [22mGenerator [anim-neon-flicker][2m > [22mhandles boundary parameters without crashing[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m src/lib/engine/generators/generators.test.ts[2m > [22mDynamic Engine Core Tests[2m > [22mGenerator [anim-neon-flicker][2m > [22mexhaustively tests all select and toggle branches to guarantee structural coverage[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m src/lib/engine/generators/generators.test.ts[2m > [22mDynamic Engine Core Tests[2m > [22mGenerator [anim-neon-flicker][2m > [22mfuzzes schema parameters safely to execute internal logic branches[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m src/lib/engine/generators/generators.test.ts[2m > [22mDynamic Engine Core Tests[2m > [22mGenerator [anim-scanline][2m > [22mrenders deterministic SVG with default params[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m src/lib/engine/generators/generators.test.ts[2m > [22mDynamic Engine Core Tests[2m > [22mGenerator [anim-scanline][2m > [22mhandles boundary parameters without crashing[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m src/lib/engine/generators/generators.test.ts[2m > [22mDynamic Engine Core Tests[2m > [22mGenerator [anim-scanline][2m > [22mexhaustively tests all select and toggle branches to guarantee structural coverage[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m src/lib/engine/generators/generators.test.ts[2m > [22mDynamic Engine Core Tests[2m > [22mGenerator [anim-scanline][2m > [22mfuzzes schema parameters safely to execute internal logic branches[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m src/lib/engine/generators/generators.test.ts[2m > [22mDynamic Engine Core Tests[2m > [22mGenerator [anim-parallax][2m > [22mrenders deterministic SVG with default params[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m src/lib/engine/generators/generators.test.ts[2m > [22mDynamic Engine Core Tests[2m > [22mGenerator [anim-parallax][2m > [22mhandles boundary parameters without crashing[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m src/lib/engine/generators/generators.test.ts[2m > [22mDynamic Engine Core Tests[2m > [22mGenerator [anim-parallax][2m > [22mexhaustively tests all select and toggle branches to guarantee structural coverage[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m src/lib/engine/generators/generators.test.ts[2m > [22mDynamic Engine Core Tests[2m > [22mGenerator [anim-parallax][2m > [22mfuzzes schema parameters safely to execute internal logic branches[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m src/lib/engine/generators/generators.test.ts[2m > [22mDynamic Engine Core Tests[2m > [22mGenerator [anim-vortex][2m > [22mrenders deterministic SVG with default params[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m src/lib/engine/generators/generators.test.ts[2m > [22mDynamic Engine Core Tests[2m > [22mGenerator [anim-vortex][2m > [22mhandles boundary parameters without crashing[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m src/lib/engine/generators/generators.test.ts[2m > [22mDynamic Engine Core Tests[2m > [22mGenerator [anim-vortex][2m > [22mexhaustively tests all select and toggle branches to guarantee structural coverage[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m src/lib/engine/generators/generators.test.ts[2m > [22mDynamic Engine Core Tests[2m > [22mGenerator [anim-vortex][2m > [22mfuzzes schema parameters safely to execute internal logic branches[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m src/lib/engine/generators/generators.test.ts[2m > [22mDynamic Engine Core Tests[2m > [22mGenerator [anim-chroma][2m > [22mrenders deterministic SVG with default params[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m src/lib/engine/generators/generators.test.ts[2m > [22mDynamic Engine Core Tests[2m > [22mGenerator [anim-chroma][2m > [22mhandles boundary parameters without crashing[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m src/lib/engine/generators/generators.test.ts[2m > [22mDynamic Engine Core Tests[2m > [22mGenerator [anim-chroma][2m > [22mexhaustively tests all select and toggle branches to guarantee structural coverage[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m src/lib/engine/generators/generators.test.ts[2m > [22mDynamic Engine Core Tests[2m > [22mGenerator [anim-chroma][2m > [22mfuzzes schema parameters safely to execute internal logic branches[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m src/lib/engine/generators/generators.test.ts[2m > [22mDynamic Engine Core Tests[2m > [22mGenerator [anim-starfield][2m > [22mrenders deterministic SVG with default params[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m src/lib/engine/generators/generators.test.ts[2m > [22mDynamic Engine Core Tests[2m > [22mGenerator [anim-starfield][2m > [22mhandles boundary parameters without crashing[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m src/lib/engine/generators/generators.test.ts[2m > [22mDynamic Engine Core Tests[2m > [22mGenerator [anim-starfield][2m > [22mexhaustively tests all select and toggle branches to guarantee structural coverage[32m 1[2mms[22m[39m
+ [32mΓ£ô[39m src/lib/engine/generators/generators.test.ts[2m > [22mDynamic Engine Core Tests[2m > [22mGenerator [anim-starfield][2m > [22mfuzzes schema parameters safely to execute internal logic branches[32m 1[2mms[22m[39m
+ [32mΓ£ô[39m src/lib/engine/generators/generators.test.ts[2m > [22mDynamic Engine Core Tests[2m > [22mGenerator [anim-neural][2m > [22mrenders deterministic SVG with default params[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m src/lib/engine/generators/generators.test.ts[2m > [22mDynamic Engine Core Tests[2m > [22mGenerator [anim-neural][2m > [22mhandles boundary parameters without crashing[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m src/lib/engine/generators/generators.test.ts[2m > [22mDynamic Engine Core Tests[2m > [22mGenerator [anim-neural][2m > [22mexhaustively tests all select and toggle branches to guarantee structural coverage[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m src/lib/engine/generators/generators.test.ts[2m > [22mDynamic Engine Core Tests[2m > [22mGenerator [anim-neural][2m > [22mfuzzes schema parameters safely to execute internal logic branches[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m src/lib/engine/generators/generators.test.ts[2m > [22mDynamic Engine Core Tests[2m > [22mGenerator [anim-morph][2m > [22mrenders deterministic SVG with default params[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m src/lib/engine/generators/generators.test.ts[2m > [22mDynamic Engine Core Tests[2m > [22mGenerator [anim-morph][2m > [22mhandles boundary parameters without crashing[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m src/lib/engine/generators/generators.test.ts[2m > [22mDynamic Engine Core Tests[2m > [22mGenerator [anim-morph][2m > [22mexhaustively tests all select and toggle branches to guarantee structural coverage[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m src/lib/engine/generators/generators.test.ts[2m > [22mDynamic Engine Core Tests[2m > [22mGenerator [anim-morph][2m > [22mfuzzes schema parameters safely to execute internal logic branches[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m src/lib/engine/generators/generators.test.ts[2m > [22mDynamic Engine Core Tests[2m > [22mGenerator [icon-symbol-grid][2m > [22mrenders deterministic SVG with default params[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m src/lib/engine/generators/generators.test.ts[2m > [22mDynamic Engine Core Tests[2m > [22mGenerator [icon-symbol-grid][2m > [22mhandles boundary parameters without crashing[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m src/lib/engine/generators/generators.test.ts[2m > [22mDynamic Engine Core Tests[2m > [22mGenerator [icon-symbol-grid][2m > [22mexhaustively tests all select and toggle branches to guarantee structural coverage[32m 1[2mms[22m[39m
+ [32mΓ£ô[39m src/lib/engine/generators/generators.test.ts[2m > [22mDynamic Engine Core Tests[2m > [22mGenerator [icon-symbol-grid][2m > [22mfuzzes schema parameters safely to execute internal logic branches[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m src/lib/engine/generators/generators.test.ts[2m > [22mDynamic Engine Core Tests[2m > [22mGenerator [free-draw][2m > [22mrenders deterministic SVG with default params[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m src/lib/engine/generators/generators.test.ts[2m > [22mDynamic Engine Core Tests[2m > [22mGenerator [free-draw][2m > [22mhandles boundary parameters without crashing[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m src/lib/engine/generators/generators.test.ts[2m > [22mDynamic Engine Core Tests[2m > [22mGenerator [free-draw][2m > [22mexhaustively tests all select and toggle branches to guarantee structural coverage[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m src/lib/engine/generators/generators.test.ts[2m > [22mDynamic Engine Core Tests[2m > [22mGenerator [free-draw][2m > [22mfuzzes schema parameters safely to execute internal logic branches[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m src/lib/engine/generators/generators.test.ts[2m > [22mDynamic Engine Core Tests[2m > [22mGenerator [text-effects][2m > [22mrenders deterministic SVG with default params[32m 1[2mms[22m[39m
+ [32mΓ£ô[39m src/lib/engine/generators/generators.test.ts[2m > [22mDynamic Engine Core Tests[2m > [22mGenerator [text-effects][2m > [22mhandles boundary parameters without crashing[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m src/lib/engine/generators/generators.test.ts[2m > [22mDynamic Engine Core Tests[2m > [22mGenerator [text-effects][2m > [22mexhaustively tests all select and toggle branches to guarantee structural coverage[32m 2[2mms[22m[39m
+ [32mΓ£ô[39m src/lib/engine/generators/generators.test.ts[2m > [22mDynamic Engine Core Tests[2m > [22mGenerator [text-effects][2m > [22mfuzzes schema parameters safely to execute internal logic branches[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m src/lib/engine/generators/generators.test.ts[2m > [22mDynamic Engine Core Tests[2m > [22mGenerator [unified-import][2m > [22mrenders deterministic SVG with default params[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m src/lib/engine/generators/generators.test.ts[2m > [22mDynamic Engine Core Tests[2m > [22mGenerator [unified-import][2m > [22mhandles boundary parameters without crashing[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m src/lib/engine/generators/generators.test.ts[2m > [22mDynamic Engine Core Tests[2m > [22mGenerator [unified-import][2m > [22mexhaustively tests all select and toggle branches to guarantee structural coverage[32m 0[2mms[22m[39m
+ [32mΓ£ô[39m src/lib/engine/generators/generators.test.ts[2m > [22mDynamic Engine Core Tests[2m > [22mGenerator [unified-import][2m > [22mfuzzes schema parameters safely to execute internal logic branches[32m 0[2mms[22m[39m
+
+ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ» Failed Tests 1 ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»
+
+ FAIL  src/lib/engine/generators/generators.test.ts > Dynamic Engine Core Tests > Generator [anim-glitch] > renders deterministic SVG with default params
+Error: Snapshot `Dynamic Engine Core Tests > Generator [anim-glitch] > renders deterministic SVG with default params 1` mismatched
+
+- Expected
++ Received
+
+@@ -16,11 +16,11 @@
+  				<g filter="url(#glitchFilter-12345)">
+  					<g transform-origin="50 50">
+  						<animateTransform 
+  							attributeName="transform" 
+  							type="translate" 
+- 							values="-0.8185795728269285; -1.5239946828555084; 1.9694855884179008; 1.852434305388465; -0.857006055145072; 0.7258762044992251; -0.8185795728269285" 
++ 							values="-1.6909621897960792; -2.2742024775779623; 0.34624677931705317; 1.1904198834110535; 2.3716293744313086; 0.2518324774659142; -1.6909621897960792" 
+  							dur="0.50s" 
+  							repeatCount="indefinite" 
+  							calcMode="discrete"
+  						/>
+  						
+
+ Γ¥» src/lib/engine/generators/generators.test.ts:28:17
+     26| 
+     27|     // Optional: Snapshot to prevent regression
+     28|     expect(svg).toMatchSnapshot();
+       |                 ^
+     29|    });
+     30| 
+
+ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»[1/1]ΓÄ»
+
+
+[2m  Snapshots [22m [1m[31m1 failed[39m[22m
+[2m Test Files [22m [1m[31m1 failed[39m[22m[90m (1)[39m
+[2m      Tests [22m [1m[31m1 failed[39m[22m[2m | [22m[1m[32m100 passed[39m[22m[90m (101)[39m
+[2m   Start at [22m 09:50:35
+[2m   Duration [22m 637ms[2m (transform 148ms, setup 0ms, import 386ms, tests 127ms, environment 0ms)[22m
+

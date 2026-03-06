@@ -16,7 +16,7 @@ export const quantumCoreGenerator: SVGGenerator = {
 	name: "Quantum Core",
 	description:
 		"Face-melting mathematical spirographs with true Sacred Geometry, hyper-dimensional symmetry, and intense native SVG neon filters.",
-	category: "Abstract",
+	category: "Pro",
 	tags: [
 		"pro",
 		"math",
@@ -183,7 +183,7 @@ export const quantumCoreGenerator: SVGGenerator = {
 		glitchIntensity: z.number().min(1).max(100),
 		transparent: z.boolean(),
 	}),
-	render: (params, seed) => {
+	render: (params, seed, viewBox = { x: 0, y: 0, w: 100, h: 100 }) => {
 		let currentSeed = seed;
 		const random = () => seededRandom(currentSeed++);
 
@@ -213,15 +213,15 @@ export const quantumCoreGenerator: SVGGenerator = {
 		const bgColors = ["#05050a", "#020205", "#080510", "#0a0005"];
 		const bgColor = bgColors[Math.floor(random() * bgColors.length)];
 
-		let svgMarkup = `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" style="background-color: ${transparent ? "transparent" : bgColor};">\n`;
+		let svgMarkup = `<svg viewBox="${viewBox.x} ${viewBox.y} ${viewBox.w} ${viewBox.h}" xmlns="http://www.w3.org/2000/svg" style="background-color: ${transparent ? "transparent" : bgColor};">\n`;
 		svgMarkup += `<title>${params.name || "Quantum Core"}</title>\n`;
-		svgMarkup += `<desc>A complex mathematical spirograph with ${symmetry}-fold symmetry and neon glow effects.</desc>\n`;
+		svgMarkup += `<desc>A complex mathematical spirograph with ${symmetry}-fold symmetry and neon glow effects. Optimized for ${viewBox.w}:${viewBox.h} viewport.</desc>\n`;
 
 		// Intense Pro Neon Glow Filter
 		svgMarkup += `
             <defs>
                 <clipPath id="quantum-bounds-${seed}">
-                    <rect x="0" y="0" width="100" height="100" />
+                    <rect x="${viewBox.x}" y="${viewBox.y}" width="${viewBox.w}" height="${viewBox.h}" />
                 </clipPath>
                 
                 <!-- Hyper-Glow Filter -->
@@ -253,12 +253,12 @@ export const quantumCoreGenerator: SVGGenerator = {
 
 		if (quantumGlitch) {
 			svgMarkup += `
-            < !--Quantum Glitch Filter(Turbulence + Displacement)-- >
-                <filter id="quantum-glitch-${seed}" x = "-50%" y = "-50%" width = "200%" height = "200%" >
-                    <feTurbulence type="fractalNoise" baseFrequency = "0.05" numOctaves = "2" result = "noise" seed = "${seed}" />
-                        <feDisplacementMap in="SourceGraphic" in2 = "noise" scale = "${glitchIntensity}" xChannelSelector = "R" yChannelSelector = "G" />
-                            </filter>
-                                `;
+                <!-- Quantum Glitch Filter (Turbulence + Displacement) -->
+                <filter id="quantum-glitch-${seed}" x="-50%" y="-50%" width="200%" height="200%">
+                    <feTurbulence type="fractalNoise" baseFrequency="0.05" numOctaves="2" result="noise" seed="${seed}" />
+                    <feDisplacementMap in="SourceGraphic" in2="noise" scale="${glitchIntensity}" xChannelSelector="R" yChannelSelector="G" />
+                </filter>
+            `;
 		}
 
 		if (depthWeaving) {
@@ -270,7 +270,7 @@ export const quantumCoreGenerator: SVGGenerator = {
 
 			svgMarkup += `
                 <mask id="depth-mask-front-${seed}">
-                    <rect x="0" y="0" width="100" height="100" fill="white" />
+                    <rect x="${viewBox.x}" y="${viewBox.y}" width="${viewBox.w}" height="${viewBox.h}" fill="white" />
                     ${maskBandsForward}
                 </mask>
             `;
@@ -306,8 +306,8 @@ export const quantumCoreGenerator: SVGGenerator = {
 				const r =
 					layerAmplitude * Math.cos(complexity * t) +
 					layerAmplitude *
-					0.4 *
-					Math.sin(complexity * frequencyRatio * t + phaseShift);
+						0.4 *
+						Math.sin(complexity * frequencyRatio * t + phaseShift);
 
 				const x = 50 + r * Math.cos(t);
 				const y = 50 + r * Math.sin(t);

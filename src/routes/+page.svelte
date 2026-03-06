@@ -11,6 +11,7 @@
 	import { copyToClipboard } from "$lib/utils/export";
 	import { logExport } from "$lib/services/telemetry.svelte";
 	import GeneratorGallery from "$lib/ui/GeneratorGallery.svelte";
+	import ExportPanel from "$lib/ui/ExportPanel.svelte";
 
 	let searchQuery = $state("");
 	let selectedCategory = $state("All");
@@ -319,6 +320,8 @@
 	</div>
 {/if}
 
+<ExportPanel />
+
 <style>
 	.layers-section {
 		display: flex;
@@ -356,8 +359,8 @@
 	:global(body) {
 		margin: 0;
 		overflow: hidden;
-		font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
-			sans-serif;
+		font-family:
+			-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 		background: #1f2328; /* Charcoal Blue */
 		color: #e2e8f0;
 	}

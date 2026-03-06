@@ -82,7 +82,7 @@ export const techBadge: SVGGenerator = {
 		usePalette: true,
 		glow: 5,
 	},
-	render: (params, seed) => {
+	render: (params, seed, viewBox = { x: 0, y: 0, w: 100, h: 100 }) => {
 		const {
 			width,
 			height,

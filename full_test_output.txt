@@ -1,0 +1,188 @@
+
+> svg@1.1.0 test
+> vitest run
+
+
+[1m[46m RUN [49m[22m [36mv4.0.18 [39m[90mD:/SVG[39m
+
+ [31mΓ¥»[39m src/lib/engine/generators/generators.test.ts [2m([22m[2m101 tests[22m[2m | [22m[31m1 failed[39m[2m)[22m[32m 130[2mms[22m[39m
+     [32mΓ£ô[39m Every registered generator exposes a valid schema[32m 2[2mms[22m[39m
+       [32mΓ£ô[39m renders deterministic SVG with default params[32m 4[2mms[22m[39m
+       [32mΓ£ô[39m handles boundary parameters without crashing[32m 3[2mms[22m[39m
+       [32mΓ£ô[39m exhaustively tests all select and toggle branches to guarantee structural coverage[32m 55[2mms[22m[39m
+       [32mΓ£ô[39m fuzzes schema parameters safely to execute internal logic branches[32m 12[2mms[22m[39m
+       [32mΓ£ô[39m renders deterministic SVG with default params[32m 1[2mms[22m[39m
+       [32mΓ£ô[39m handles boundary parameters without crashing[32m 0[2mms[22m[39m
+       [32mΓ£ô[39m exhaustively tests all select and toggle branches to guarantee structural coverage[32m 2[2mms[22m[39m
+       [32mΓ£ô[39m fuzzes schema parameters safely to execute internal logic branches[32m 1[2mms[22m[39m
+       [32mΓ£ô[39m renders deterministic SVG with default params[32m 0[2mms[22m[39m
+       [32mΓ£ô[39m handles boundary parameters without crashing[32m 0[2mms[22m[39m
+       [32mΓ£ô[39m exhaustively tests all select and toggle branches to guarantee structural coverage[32m 0[2mms[22m[39m
+       [32mΓ£ô[39m fuzzes schema parameters safely to execute internal logic branches[32m 0[2mms[22m[39m
+       [32mΓ£ô[39m renders deterministic SVG with default params[32m 0[2mms[22m[39m
+       [32mΓ£ô[39m handles boundary parameters without crashing[32m 0[2mms[22m[39m
+       [32mΓ£ô[39m exhaustively tests all select and toggle branches to guarantee structural coverage[32m 1[2mms[22m[39m
+       [32mΓ£ô[39m fuzzes schema parameters safely to execute internal logic branches[32m 0[2mms[22m[39m
+       [32mΓ£ô[39m renders deterministic SVG with default params[32m 1[2mms[22m[39m
+       [32mΓ£ô[39m handles boundary parameters without crashing[32m 0[2mms[22m[39m
+       [32mΓ£ô[39m exhaustively tests all select and toggle branches to guarantee structural coverage[32m 1[2mms[22m[39m
+       [32mΓ£ô[39m fuzzes schema parameters safely to execute internal logic branches[32m 1[2mms[22m[39m
+       [32mΓ£ô[39m renders deterministic SVG with default params[32m 1[2mms[22m[39m
+       [32mΓ£ô[39m handles boundary parameters without crashing[32m 0[2mms[22m[39m
+       [32mΓ£ô[39m exhaustively tests all select and toggle branches to guarantee structural coverage[32m 5[2mms[22m[39m
+       [32mΓ£ô[39m fuzzes schema parameters safely to execute internal logic branches[32m 4[2mms[22m[39m
+       [32mΓ£ô[39m renders deterministic SVG with default params[32m 0[2mms[22m[39m
+       [32mΓ£ô[39m handles boundary parameters without crashing[32m 0[2mms[22m[39m
+       [32mΓ£ô[39m exhaustively tests all select and toggle branches to guarantee structural coverage[32m 0[2mms[22m[39m
+       [32mΓ£ô[39m fuzzes schema parameters safely to execute internal logic branches[32m 0[2mms[22m[39m
+       [32mΓ£ô[39m renders deterministic SVG with default params[32m 0[2mms[22m[39m
+       [32mΓ£ô[39m handles boundary parameters without crashing[32m 0[2mms[22m[39m
+       [32mΓ£ô[39m exhaustively tests all select and toggle branches to guarantee structural coverage[32m 0[2mms[22m[39m
+       [32mΓ£ô[39m fuzzes schema parameters safely to execute internal logic branches[32m 0[2mms[22m[39m
+       [32mΓ£ô[39m renders deterministic SVG with default params[32m 0[2mms[22m[39m
+       [32mΓ£ô[39m handles boundary parameters without crashing[32m 0[2mms[22m[39m
+       [32mΓ£ô[39m exhaustively tests all select and toggle branches to guarantee structural coverage[32m 0[2mms[22m[39m
+       [32mΓ£ô[39m fuzzes schema parameters safely to execute internal logic branches[32m 0[2mms[22m[39m
+       [32mΓ£ô[39m renders deterministic SVG with default params[32m 0[2mms[22m[39m
+       [32mΓ£ô[39m handles boundary parameters without crashing[32m 0[2mms[22m[39m
+       [32mΓ£ô[39m exhaustively tests all select and toggle branches to guarantee structural coverage[32m 1[2mms[22m[39m
+       [32mΓ£ô[39m fuzzes schema parameters safely to execute internal logic branches[32m 1[2mms[22m[39m
+       [32mΓ£ô[39m renders deterministic SVG with default params[32m 0[2mms[22m[39m
+       [32mΓ£ô[39m handles boundary parameters without crashing[32m 0[2mms[22m[39m
+       [32mΓ£ô[39m exhaustively tests all select and toggle branches to guarantee structural coverage[32m 0[2mms[22m[39m
+       [32mΓ£ô[39m fuzzes schema parameters safely to execute internal logic branches[32m 0[2mms[22m[39m
+       [32mΓ£ô[39m renders deterministic SVG with default params[32m 1[2mms[22m[39m
+       [32mΓ£ô[39m handles boundary parameters without crashing[32m 1[2mms[22m[39m
+       [32mΓ£ô[39m exhaustively tests all select and toggle branches to guarantee structural coverage[32m 3[2mms[22m[39m
+       [32mΓ£ô[39m fuzzes schema parameters safely to execute internal logic branches[32m 3[2mms[22m[39m
+[31m       [31m├ù[31m renders deterministic SVG with default params[39m[32m 8[2mms[22m[39m
+       [32mΓ£ô[39m handles boundary parameters without crashing[32m 0[2mms[22m[39m
+       [32mΓ£ô[39m exhaustively tests all select and toggle branches to guarantee structural coverage[32m 0[2mms[22m[39m
+       [32mΓ£ô[39m fuzzes schema parameters safely to execute internal logic branches[32m 0[2mms[22m[39m
+       [32mΓ£ô[39m renders deterministic SVG with default params[32m 0[2mms[22m[39m
+       [32mΓ£ô[39m handles boundary parameters without crashing[32m 0[2mms[22m[39m
+       [32mΓ£ô[39m exhaustively tests all select and toggle branches to guarantee structural coverage[32m 0[2mms[22m[39m
+       [32mΓ£ô[39m fuzzes schema parameters safely to execute internal logic branches[32m 0[2mms[22m[39m
+       [32mΓ£ô[39m renders deterministic SVG with default params[32m 0[2mms[22m[39m
+       [32mΓ£ô[39m handles boundary parameters without crashing[32m 0[2mms[22m[39m
+       [32mΓ£ô[39m exhaustively tests all select and toggle branches to guarantee structural coverage[32m 0[2mms[22m[39m
+       [32mΓ£ô[39m fuzzes schema parameters safely to execute internal logic branches[32m 0[2mms[22m[39m
+       [32mΓ£ô[39m renders deterministic SVG with default params[32m 0[2mms[22m[39m
+       [32mΓ£ô[39m handles boundary parameters without crashing[32m 0[2mms[22m[39m
+       [32mΓ£ô[39m exhaustively tests all select and toggle branches to guarantee structural coverage[32m 0[2mms[22m[39m
+       [32mΓ£ô[39m fuzzes schema parameters safely to execute internal logic branches[32m 0[2mms[22m[39m
+       [32mΓ£ô[39m renders deterministic SVG with default params[32m 0[2mms[22m[39m
+       [32mΓ£ô[39m handles boundary parameters without crashing[32m 0[2mms[22m[39m
+       [32mΓ£ô[39m exhaustively tests all select and toggle branches to guarantee structural coverage[32m 0[2mms[22m[39m
+       [32mΓ£ô[39m fuzzes schema parameters safely to execute internal logic branches[32m 0[2mms[22m[39m
+       [32mΓ£ô[39m renders deterministic SVG with default params[32m 0[2mms[22m[39m
+       [32mΓ£ô[39m handles boundary parameters without crashing[32m 0[2mms[22m[39m
+       [32mΓ£ô[39m exhaustively tests all select and toggle branches to guarantee structural coverage[32m 0[2mms[22m[39m
+       [32mΓ£ô[39m fuzzes schema parameters safely to execute internal logic branches[32m 0[2mms[22m[39m
+       [32mΓ£ô[39m renders deterministic SVG with default params[32m 0[2mms[22m[39m
+       [32mΓ£ô[39m handles boundary parameters without crashing[32m 0[2mms[22m[39m
+       [32mΓ£ô[39m exhaustively tests all select and toggle branches to guarantee structural coverage[32m 1[2mms[22m[39m
+       [32mΓ£ô[39m fuzzes schema parameters safely to execute internal logic branches[32m 1[2mms[22m[39m
+       [32mΓ£ô[39m renders deterministic SVG with default params[32m 0[2mms[22m[39m
+       [32mΓ£ô[39m handles boundary parameters without crashing[32m 0[2mms[22m[39m
+       [32mΓ£ô[39m exhaustively tests all select and toggle branches to guarantee structural coverage[32m 0[2mms[22m[39m
+       [32mΓ£ô[39m fuzzes schema parameters safely to execute internal logic branches[32m 0[2mms[22m[39m
+       [32mΓ£ô[39m renders deterministic SVG with default params[32m 0[2mms[22m[39m
+       [32mΓ£ô[39m handles boundary parameters without crashing[32m 0[2mms[22m[39m
+       [32mΓ£ô[39m exhaustively tests all select and toggle branches to guarantee structural coverage[32m 0[2mms[22m[39m
+       [32mΓ£ô[39m fuzzes schema parameters safely to execute internal logic branches[32m 0[2mms[22m[39m
+       [32mΓ£ô[39m renders deterministic SVG with default params[32m 0[2mms[22m[39m
+       [32mΓ£ô[39m handles boundary parameters without crashing[32m 0[2mms[22m[39m
+       [32mΓ£ô[39m exhaustively tests all select and toggle branches to guarantee structural coverage[32m 1[2mms[22m[39m
+       [32mΓ£ô[39m fuzzes schema parameters safely to execute internal logic branches[32m 0[2mms[22m[39m
+       [32mΓ£ô[39m renders deterministic SVG with default params[32m 0[2mms[22m[39m
+       [32mΓ£ô[39m handles boundary parameters without crashing[32m 0[2mms[22m[39m
+       [32mΓ£ô[39m exhaustively tests all select and toggle branches to guarantee structural coverage[32m 0[2mms[22m[39m
+       [32mΓ£ô[39m fuzzes schema parameters safely to execute internal logic branches[32m 0[2mms[22m[39m
+       [32mΓ£ô[39m renders deterministic SVG with default params[32m 1[2mms[22m[39m
+       [32mΓ£ô[39m handles boundary parameters without crashing[32m 0[2mms[22m[39m
+       [32mΓ£ô[39m exhaustively tests all select and toggle branches to guarantee structural coverage[32m 3[2mms[22m[39m
+       [32mΓ£ô[39m fuzzes schema parameters safely to execute internal logic branches[32m 0[2mms[22m[39m
+       [32mΓ£ô[39m renders deterministic SVG with default params[32m 0[2mms[22m[39m
+       [32mΓ£ô[39m handles boundary parameters without crashing[32m 0[2mms[22m[39m
+       [32mΓ£ô[39m exhaustively tests all select and toggle branches to guarantee structural coverage[32m 0[2mms[22m[39m
+       [32mΓ£ô[39m fuzzes schema parameters safely to execute internal logic branches[32m 0[2mms[22m[39m
+[90mstdout[2m | src/lib/services/agentApi.test.ts[2m > [22m[2mAgent API (window.SumoSvgApp)[2m > [22m[2msetGenerator successfully changes active layer's generator
+[22m[39m[State] URL updated via native history (Router not ready)
+[State] URL updated via native history (Router not ready)
+
+[90mstdout[2m | src/lib/services/agentApi.test.ts[2m > [22m[2mAgent API (window.SumoSvgApp)[2m > [22m[2msetParams successfully updates layer parameters
+[22m[39m[State] URL updated via native history (Router not ready)
+[State] URL updated via native history (Router not ready)
+
+[90mstdout[2m | src/lib/services/agentApi.test.ts[2m > [22m[2mAgent API (window.SumoSvgApp)[2m > [22m[2msetSeed successfully updates deterministic entropy
+[22m[39m[State] URL updated via native history (Router not ready)
+[State] URL updated via native history (Router not ready)
+
+[90mstdout[2m | src/lib/services/agentApi.test.ts[2m > [22m[2mAgent API (window.SumoSvgApp)[2m > [22m[2mrenderNow returns a valid SVG string
+[22m[39m[State] URL updated via native history (Router not ready)
+
+[90mstdout[2m | src/lib/services/agentApi.test.ts[2m > [22m[2mAgent API (window.SumoSvgApp)[2m > [22m[2mgetPreviewDataURL resolves to a base64 Data URI
+[22m[39m[State] URL updated via native history (Router not ready)
+
+[90mstdout[2m | src/lib/services/agentApi.test.ts[2m > [22m[2mAgent API (window.SumoSvgApp)[2m > [22m[2msavePreset and listPresets properly write and read to local storage emulation
+[22m[39m[State] URL updated via native history (Router not ready)
+
+[90mstdout[2m | src/lib/services/agentApi.test.ts[2m > [22m[2mAgent API (window.SumoSvgApp)[2m > [22m[2mclearLayers successfully zeroes out the composition
+[22m[39m[State] URL updated via native history (Router not ready)
+[State] URL updated via native history (Router not ready)
+
+[90mstdout[2m | src/lib/services/agentApi.test.ts[2m > [22m[2mAgent API (window.SumoSvgApp)[2m > [22m[2msetGenerator falls back to fuzzy name matching if exact ID fails
+[22m[39m[State] URL updated via native history (Router not ready)
+
+[90mstdout[2m | src/lib/services/agentApi.test.ts[2m > [22m[2mAgent API (window.SumoSvgApp)[2m > [22m[2mZod Validation Enforcement[2m > [22m[2msetParams rejects out-of-range values
+[22m[39m[State] URL updated via native history (Router not ready)
+
+[90mstdout[2m | src/lib/services/agentApi.test.ts[2m > [22m[2mAgent API (window.SumoSvgApp)[2m > [22m[2mZod Validation Enforcement[2m > [22m[2msetParams rejects incorrect types
+[22m[39m[State] URL updated via native history (Router not ready)
+
+[90mstdout[2m | src/lib/services/agentApi.test.ts[2m > [22m[2mAgent API (window.SumoSvgApp)[2m > [22m[2mZod Validation Enforcement[2m > [22m[2msetParams accepts valid parameters for orbit
+[22m[39m[State] URL updated via native history (Router not ready)
+[State] URL updated via native history (Router not ready)
+
+ [32mΓ£ô[39m src/lib/services/agentApi.test.ts [2m([22m[2m19 tests[22m[2m)[22m[32m 30[2mms[22m[39m
+
+ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ» Failed Tests 1 ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»
+
+ FAIL  src/lib/engine/generators/generators.test.ts > Dynamic Engine Core Tests > Generator [anim-glitch] > renders deterministic SVG with default params
+Error: Snapshot `Dynamic Engine Core Tests > Generator [anim-glitch] > renders deterministic SVG with default params 1` mismatched
+
+- Expected
++ Received
+
+@@ -16,11 +16,11 @@
+  				<g filter="url(#glitchFilter-12345)">
+  					<g transform-origin="50 50">
+  						<animateTransform 
+  							attributeName="transform" 
+  							type="translate" 
+- 							values="-0.8185795728269285; -1.5239946828555084; 1.9694855884179008; 1.852434305388465; -0.857006055145072; 0.7258762044992251; -0.8185795728269285" 
++ 							values="0.9484905689383671; 0.6636075736154867; 1.5184264556261906; -1.8604485388384018; 0.010712997872965868; 0.6667852449862888; 0.9484905689383671" 
+  							dur="0.50s" 
+  							repeatCount="indefinite" 
+  							calcMode="discrete"
+  						/>
+  						
+
+ Γ¥» src/lib/engine/generators/generators.test.ts:28:17
+     26| 
+     27|     // Optional: Snapshot to prevent regression
+     28|     expect(svg).toMatchSnapshot();
+       |                 ^
+     29|    });
+     30| 
+
+ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»[1/1]ΓÄ»
+
+
+[2m  Snapshots [22m [1m[31m1 failed[39m[22m
+[2m Test Files [22m [1m[31m1 failed[39m[22m[2m | [22m[1m[32m1 passed[39m[22m[90m (2)[39m
+[2m      Tests [22m [1m[31m1 failed[39m[22m[2m | [22m[1m[32m119 passed[39m[22m[90m (120)[39m
+[2m   Start at [22m 09:49:15
+[2m   Duration [22m 2.42s[2m (transform 992ms, setup 0ms, import 2.74s, tests 160ms, environment 0ms)[22m
+

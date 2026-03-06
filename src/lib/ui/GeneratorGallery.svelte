@@ -27,6 +27,7 @@
 				const svg = gen.render(
 					{ ...gen.defaultParams, ...l.params },
 					42,
+					{ x: 0, y: 0, w: 100, h: 100 },
 				);
 				const blend = `mix-blend-mode: ${l.blendMode || "normal"}; opacity: ${l.opacity ?? 1.0};`;
 				inner += `<g style="${blend}">${svg}</g>`;
@@ -64,7 +65,12 @@
 			{#each generators as gen}
 				<button class="gen-card" onclick={() => addGenerator(gen.id)}>
 					<div class="thumb">
-						{@html gen.render(gen.defaultParams, 42)}
+						{@html gen.render(gen.defaultParams, 42, {
+							x: 0,
+							y: 0,
+							w: 100,
+							h: 100,
+						})}
 					</div>
 					<div class="info">
 						<span class="name">{gen.name}</span>

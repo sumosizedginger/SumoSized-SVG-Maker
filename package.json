@@ -1,7 +1,27 @@
 {
 	"name": "svg",
-	"private": true,
-	"version": "1.0.0",
+	"private": false,
+	"version": "1.1.0",
+	"description": "The first agentic Picasso of SVG generation engines. Procedural, physics-simulated, and professional-grade.",
+	"keywords": [
+		"svg",
+		"generative-art",
+		"agentic-ai",
+		"svelte5",
+		"photoshop-killer",
+		"procedural-graphics",
+		"animation-engine"
+	],
+	"homepage": "https://github.com/sumosizedginger/SumoSized-SVG-Maker#readme",
+	"bugs": {
+		"url": "https://github.com/sumosizedginger/SumoSized-SVG-Maker/issues"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/sumosizedginger/SumoSized-SVG-Maker.git"
+	},
+	"license": "MIT",
+	"author": "SumoSized Ginger & Antigravity AI",
 	"type": "module",
 	"main": "./src/lib/engine/index.ts",
 	"types": "./src/lib/engine/index.ts",
@@ -42,9 +62,12 @@
 		"vitest": "^4.0.18"
 	},
 	"dependencies": {
+		"@ffmpeg/core": "^0.12.6",
 		"@ffmpeg/ffmpeg": "^0.12.15",
 		"@ffmpeg/util": "^0.12.2",
+		"@types/jszip": "^3.4.0",
 		"coi-serviceworker": "^0.1.7",
+		"jszip": "^3.10.1",
 		"lz-string": "^1.5.0",
 		"zod": "^4.3.6"
 	}

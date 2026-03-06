@@ -1,5 +1,6 @@
 import { generators, getGenerator } from "$lib/engine/core/registry";
 import * as storage from "$lib/services/storage";
+import { replaceState } from "$app/navigation";
 import { HistoryManager } from "./history.svelte";
 import type { Preset } from "$lib/services/storage";
 import type {
@@ -10,7 +11,10 @@ import type {
 } from "$lib/engine/core/types";
 import { logRender, logError } from "$lib/services/telemetry.svelte";
 import LZString from "lz-string";
-import { STARTER_TEMPLATES, type StarterTemplate } from "$lib/engine/core/starters";
+import {
+	STARTER_TEMPLATES,
+	type StarterTemplate,
+} from "$lib/engine/core/starters";
 import { filterDefinitions } from "$lib/engine/generators/filters";
 
 class AppState {
@@ -19,8 +23,14 @@ class AppState {
 	userPresets = $state<Preset[]>([]);
 	simpleMode = $state(false); // Default to showing all parameters for discovery
 	isGalleryOpen = $state(false); // Controls global modal visibility
+	isExportDrawerOpen = $state(false); // Controls side-drawer visibility
 	activeTool: PaintTool = $state("pointer");
 	documentViewBox = $state({ x: 0, y: 0, w: 100, h: 100 }); // Global canvas viewport
+	documentAspectRatio = $state("1:1"); // NanoBanana Standard
+	currentTime = $state(0); // Current playhead position in seconds
+	playbackDuration = $state(3); // Default animation length
+	readonly MAX_DURATION = 10; // Production safety limit (seconds)
+	renderingStatus = $state(""); // Status message for long renders
 
 	private historyManager = new HistoryManager();
 
@@ -48,7 +58,11 @@ class AppState {
 				const gen = getGenerator(layer.generatorId);
 				if (!gen) continue;
 
-				let svgString = gen.render(layer.params, layer.seed);
+				let svgString = gen.render(
+					layer.params,
+					layer.seed,
+					this.documentViewBox,
+				);
 
 				// Strip the outer <svg> wrapper from generator output.
 				// Generators return full SVG documents with their own viewBox,
@@ -58,7 +72,7 @@ class AppState {
 					.replace(/^<svg[^>]*>/, "")
 					.replace(/<\/svg>\s*$/, "");
 
-				const blendStyle = `mix-blend-mode: ${layer.blendMode}; opacity: ${layer.opacity};`;
+				const blendStyle = `mix - blend - mode: ${layer.blendMode}; opacity: ${layer.opacity}; `;
 
 				const tr = layer.transforms || {
 					x: 0,
@@ -85,7 +99,7 @@ class AppState {
 
 				let maskAttr = "";
 				if (layer.maskLayerId) {
-					maskAttr = `mask="url(#mask-${layer.id})"`;
+					maskAttr = `mask = "url(#mask-${layer.id})"`;
 				}
 
 				innerSvgs += `\n<!-- Layer: ${layer.name} -->\n<g class="layer-${layer.id}" role="graphics-object" aria-label="${layer.name}" style="${blendStyle}" ${transformAttr} ${filterAttr} ${maskAttr}>\n${svgString}\n</g>\n`;
@@ -96,15 +110,26 @@ class AppState {
 			for (const layer of this.layers) {
 				if (layer.filter && filterDefinitions[layer.filter.type]) {
 					const filterDef = filterDefinitions[layer.filter.type];
-					defContent += filterDef.render(layer.filter.params, `filter-${layer.id}`);
+					defContent += filterDef.render(
+						layer.filter.params,
+						`filter-${layer.id}`,
+					);
 				}
 				if (layer.maskLayerId) {
-					const maskSourceLayer = this.layers.find(l => l.id === layer.maskLayerId);
+					const maskSourceLayer = this.layers.find(
+						(l) => l.id === layer.maskLayerId,
+					);
 					if (maskSourceLayer) {
 						const gen = getGenerator(maskSourceLayer.generatorId);
 						if (gen) {
-							let maskSvg = gen.render(maskSourceLayer.params, maskSourceLayer.seed);
-							maskSvg = maskSvg.replace(/^<svg[^>]*>/, "").replace(/<\/svg>\s*$/, "");
+							let maskSvg = gen.render(
+								maskSourceLayer.params,
+								maskSourceLayer.seed,
+								this.documentViewBox,
+							);
+							maskSvg = maskSvg
+								.replace(/^<svg[^>]*>/, "")
+								.replace(/<\/svg>\s*$/, "");
 							defContent += `\n<mask id="mask-${layer.id}" maskUnits="userSpaceOnUse" x="0" y="0" width="100" height="100">\n${maskSvg}\n</mask>\n`;
 						}
 					}
@@ -132,6 +157,34 @@ class AppState {
 	constructor() {
 		if (typeof window !== "undefined") {
 			this.init();
+
+			// 2026 Headless API: Elite Interface for Agents & Browser Subagents
+			(window as any).SumoSvgApp = {
+				ready: async () => true,
+				listGenerators: () =>
+					generators.map((g) => ({
+						id: g.id,
+						name: g.name,
+						category: g.category,
+					})),
+				setGenerator: (id: string) => this.setGenerator(id),
+				updateParam: (key: string, value: any) =>
+					this.updateParam(key, value),
+				renderNow: () => this.renderedSvg,
+				exportPng: (options?: any) =>
+					this.renderComposition("png", options),
+				exportMov: (options?: any) =>
+					this.renderComposition("mov", options),
+				exportMp4: (options?: any) =>
+					this.renderComposition("mp4", options),
+				exportSvg: (options?: any) =>
+					this.renderComposition("svg", options),
+				getState: () => this.serializeState(),
+				loadState: (hash: string) => {
+					window.location.hash = hash;
+					this.loadFromHash();
+				},
+			};
 
 			// Listen for hash changes to support remote state injection
 			window.addEventListener("hashchange", () => this.loadFromHash());
@@ -171,7 +224,19 @@ class AppState {
 
 		const savedState = storage.getCompositionState();
 		if (savedState && savedState.length > 0) {
-			this.layers = savedState;
+			const DEFAULT_TRANSFORMS = {
+				x: 0,
+				y: 0,
+				scaleX: 1,
+				scaleY: 1,
+				rotation: 0,
+			};
+			this.layers = savedState.map((l: any) => ({
+				...l,
+				transforms: l.transforms
+					? { ...DEFAULT_TRANSFORMS, ...l.transforms }
+					: DEFAULT_TRANSFORMS,
+			}));
 			this.activeLayerId = this.layers[this.layers.length - 1].id;
 		} else {
 			// "Golden Preset" Onboarding Setup
@@ -188,6 +253,270 @@ class AppState {
 
 		// Initial commit
 		this.commit();
+	}
+
+	private async saveBlobToDisk(blob: Blob, suggestedName: string) {
+		const mimeType = blob.type.split(";")[0].trim();
+
+		// 1. Native File System Access API (Elite / 100/100)
+		// This is the ONLY way to guarantee human-readable names in 2026 Chromium on localhost.
+		if ("showSaveFilePicker" in window) {
+			try {
+				const extension = suggestedName.split(".").pop() || "";
+				const handle = await (window as any).showSaveFilePicker({
+					suggestedName,
+					types: [
+						{
+							description: `${extension.toUpperCase()} File`,
+							accept: { [mimeType]: [`.${extension}`] },
+						},
+					],
+				});
+				const writable = await handle.createWritable();
+				await writable.write(blob);
+				await writable.close();
+				console.log(`[Save] Native Save Successful: ${suggestedName}`);
+				return;
+			} catch (err: any) {
+				if (err.name === "AbortError") return;
+				console.warn(
+					"[Save] Native picker failed or cancelled, falling back to legacy link.",
+					err,
+				);
+			}
+		}
+
+		// 2. Legacy Fallback (Subject to GUID renaming on localhost/2026)
+		const url = URL.createObjectURL(blob);
+		const link = document.createElement("a");
+		link.href = url;
+		link.download = suggestedName;
+		document.body.appendChild(link);
+		link.click();
+		setTimeout(() => {
+			document.body.removeChild(link);
+			URL.revokeObjectURL(url);
+		}, 100);
+
+		console.log(
+			`[Save] Legacy Link Triggered: ${suggestedName} (Potential browser rename on localhost)`,
+		);
+	}
+
+	toggleExportDrawer() {
+		this.isExportDrawerOpen = !this.isExportDrawerOpen;
+	}
+
+	setCurrentTime(time: number) {
+		this.currentTime = Math.max(0, Math.min(time, this.playbackDuration));
+	}
+
+	setDocumentAspectRatio(ratio: string) {
+		this.documentAspectRatio = ratio;
+		const [w, h] = ratio.split(":").map(Number);
+		if (!isNaN(w) && !isNaN(h)) {
+			// TOP-LEFT ANCHOR logic (Elite/100/100)
+			// We ensure the 100x100 art space is ALWAYS visible.
+			// Instead of cropping the 100 area, we expand the viewBox to fit the ratio
+			// while keeping the 100-base dimension.
+			if (w >= h) {
+				// Landscape: Height is 100, Width expands
+				this.documentViewBox.h = 100;
+				this.documentViewBox.w = 100 * (w / h);
+				this.documentViewBox.x = (100 - this.documentViewBox.w) / 2; // Center horizontally
+				this.documentViewBox.y = 0;
+			} else {
+				// Portrait: Width is 100, Height expands
+				this.documentViewBox.w = 100;
+				this.documentViewBox.h = 100 * (h / w);
+				this.documentViewBox.y = (100 - this.documentViewBox.h) / 2; // Center vertically
+				this.documentViewBox.x = 0;
+			}
+		}
+		this.commit();
+	}
+
+	toggleLayerSelection(id: string) {
+		const layer = this.layers.find((l) => l.id === id);
+		if (layer) {
+			layer.selected = !layer.selected;
+		}
+	}
+
+	toggleSelectAll(selected: boolean) {
+		for (const layer of this.layers) {
+			layer.selected = selected;
+		}
+	}
+
+	async exportOriginalAssets() {
+		// Filter layers that are selected. If none are selected, use all import layers as a fallback convenience.
+		const selectedLayers = this.layers.filter((l) => l.selected);
+		const targetLayers =
+			selectedLayers.length > 0 ? selectedLayers : this.layers;
+
+		const assets = targetLayers
+			.filter((l) => l.generatorId === "unified-import" && l.params.url)
+			.map((l) => ({
+				id: l.id,
+				name: l.params.name || l.name || `asset-${l.id}`,
+				url: l.params.url,
+				type: l.params.sourceType,
+			}));
+
+		if (assets.length === 0) {
+			alert(
+				"No imported assets found to export. Use the 'Import' button first!",
+			);
+			return;
+		}
+
+		console.log(
+			`[Export] Professional Bundle initialized for ${assets.length} assets...`,
+		);
+
+		try {
+			const JSZip = (await import("jszip")).default;
+			const zip = new JSZip();
+			const folder = zip.folder("sumosized-assets");
+
+			for (const asset of assets) {
+				let fileContent: any;
+				let fileName = asset.name;
+
+				if (!fileName.includes(".")) {
+					const ext =
+						asset.type === "svg"
+							? ".svg"
+							: asset.type === "video"
+								? ".mp4"
+								: ".png";
+					fileName += ext;
+				}
+
+				if (
+					asset.type === "svg" &&
+					asset.url.trim().startsWith("<svg")
+				) {
+					fileContent = asset.url.trim();
+				} else if (asset.url.startsWith("data:")) {
+					const base64Data = asset.url.split(",")[1];
+					fileContent = base64Data;
+					folder?.file(fileName, fileContent, { base64: true });
+					continue;
+				} else {
+					const response = await fetch(asset.url);
+					fileContent = await response.blob();
+				}
+
+				folder?.file(fileName, fileContent);
+			}
+
+			const content = await zip.generateAsync({ type: "blob" });
+			const zipName = `SumoSized_Assets_${new Date().toISOString().split("T")[0]}.zip`;
+
+			await this.saveBlobToDisk(content, zipName);
+			alert(
+				`Elite Export Success: ${zipName} saved via Native File System. 🦾⚡🇺🇸`,
+			);
+		} catch (err) {
+			console.error("[Export] ZIP process failed:", err);
+			alert("Hybrid export failed. Opening assets in individual tabs...");
+			for (const asset of assets) {
+				window.open(asset.url, "_blank");
+			}
+		}
+	}
+
+	async exportLayerAsset(layerId: string) {
+		const layer = this.layers.find((l) => l.id === layerId);
+		if (
+			!layer ||
+			layer.generatorId !== "unified-import" ||
+			!layer.params.url
+		) {
+			alert("This layer has no recoverable original asset.");
+			return;
+		}
+
+		const asset = {
+			name: layer.params.name || layer.name || `asset-${layer.id}`,
+			url: layer.params.url,
+			type: layer.params.sourceType,
+		};
+
+		console.log(`[Export] Recovering individual asset: ${asset.name}...`);
+
+		try {
+			let content: Blob;
+			let suggestedName = asset.name;
+
+			// Force correct extension if missing
+			if (!suggestedName.includes(".")) {
+				const ext =
+					asset.type === "svg"
+						? ".svg"
+						: asset.type === "video"
+							? ".mp4"
+							: ".png";
+				suggestedName += ext;
+			}
+
+			if (asset.type === "svg" && asset.url.trim().startsWith("<svg")) {
+				content = new Blob([asset.url.trim()], {
+					type: "image/svg+xml",
+				});
+			} else {
+				const response = await fetch(asset.url);
+				content = await response.blob();
+			}
+
+			const mimeType =
+				content.type ||
+				(asset.type === "video" ? "video/mp4" : "image/png");
+			const extension = suggestedName.slice(
+				suggestedName.lastIndexOf("."),
+			);
+
+			// INDUSTRY STANDARD: Use File System Access API for 100/100 naming reliability
+			if ("showSaveFilePicker" in window) {
+				try {
+					const handle = await (window as any).showSaveFilePicker({
+						suggestedName,
+						types: [
+							{
+								description: "Original Asset",
+								accept: { [mimeType]: [extension] },
+							},
+						],
+					});
+					const writable = await handle.createWritable();
+					await writable.write(content);
+					await writable.close();
+					console.log(
+						`[Export] Individual Recovery Complete: ${suggestedName}`,
+					);
+					return;
+				} catch (err: any) {
+					if (err.name === "AbortError") return;
+					console.warn(
+						"[Export] Native pick failed for individual asset, falling back to anchor:",
+						err,
+					);
+				}
+			}
+
+			// Fallback: Classic Anchor Trigger
+			const link = document.createElement("a");
+			link.href = URL.createObjectURL(content);
+			link.download = suggestedName;
+			document.body.appendChild(link);
+			link.click();
+			document.body.removeChild(link);
+		} catch (err) {
+			console.error("[Export] Individual recovery failed:", err);
+			alert("Failed to recover original asset.");
+		}
 	}
 
 	serializeState(): string {
@@ -239,22 +568,22 @@ class AppState {
 					opacity: l.o !== undefined ? l.o : 1.0,
 					transforms: l.t
 						? {
-							x: l.t.x || 0,
-							y: l.t.y || 0,
-							scaleX:
-								l.t.scaleX !== undefined
-									? l.t.scaleX
-									: l.t.scale || 1,
-							scaleY:
-								l.t.scaleY !== undefined
-									? l.t.scaleY
-									: l.t.scale || 1,
-							rotation: l.t.rotation || 0,
-							cropX: l.t.cropX,
-							cropY: l.t.cropY,
-							cropW: l.t.cropW,
-							cropH: l.t.cropH,
-						}
+								x: l.t.x || 0,
+								y: l.t.y || 0,
+								scaleX:
+									l.t.scaleX !== undefined
+										? l.t.scaleX
+										: l.t.scale || 1,
+								scaleY:
+									l.t.scaleY !== undefined
+										? l.t.scaleY
+										: l.t.scale || 1,
+								rotation: l.t.rotation || 0,
+								cropX: l.t.cropX,
+								cropY: l.t.cropY,
+								cropW: l.t.cropW,
+								cropH: l.t.cropH,
+							}
 						: { x: 0, y: 0, scaleX: 1, scaleY: 1, rotation: 0 },
 					filter: l.f,
 					maskLayerId: l.m,
@@ -281,12 +610,22 @@ class AppState {
 		}
 	}
 
-	updateUrlHash() {
+	private updateUrlHash() {
 		if (typeof window === "undefined") return;
 		const hash = this.serializeState();
-		// Use replaceState so we don't spam the browser back-history,
-		// but the address bar always accurately reflects the shareable URL!
-		window.history.replaceState(null, "", `#${hash}`);
+
+		try {
+			// SvelteKit's replaceState requires the router to be initialized.
+			// We use a try-catch to fallback to native history if the router isn't ready yet.
+			replaceState(`#${hash}`, {});
+			console.log("[State] URL updated via SvelteKit replaceState");
+		} catch (e) {
+			// Fallback for early initialization
+			window.history.replaceState(null, "", `#${hash}`);
+			console.log(
+				"[State] URL updated via native history (Router not ready)",
+			);
+		}
 	}
 
 	generateShareUrl(): string {
@@ -384,7 +723,7 @@ class AppState {
 									rotation: 0,
 								},
 							};
-						} catch (e) { }
+						} catch (e) {}
 					}
 				}
 			}
@@ -417,7 +756,7 @@ class AppState {
 									y: Number(ty.toFixed(2)),
 								},
 							};
-						} catch (e) { }
+						} catch (e) {}
 					}
 				}
 			}
@@ -522,7 +861,11 @@ class AppState {
 					const gen = getGenerator(layer.generatorId);
 					if (!gen) continue;
 
-					const svgString = gen.render(layer.params, layer.seed);
+					const svgString = gen.render(
+						layer.params,
+						layer.seed,
+						this.documentViewBox,
+					);
 					const blendStyle = `mix-blend-mode: ${layer.blendMode}; opacity: ${layer.opacity};`;
 					const tr = layer.transforms || {
 						x: 0,
@@ -605,6 +948,97 @@ class AppState {
 				this.activeLayerId = this.layers[this.layers.length - 1].id;
 			}
 			this.saveState();
+		}
+	}
+
+	async renderComposition(
+		format:
+			| "png"
+			| "mov"
+			| "gif"
+			| "svg"
+			| "jpeg"
+			| "webp"
+			| "webm"
+			| "mp4",
+		options: {
+			width?: number;
+			height?: number;
+			fps?: number;
+			duration?: number;
+		} = {},
+	) {
+		// ELITE TARGETING: Find the main preview SVG, not UI icons!
+		const svgElement = document.querySelector(
+			".svg-wrapper > svg",
+		) as SVGSVGElement | null;
+		if (!svgElement) {
+			console.error(
+				"Export failed: Preview SVG element not found in .svg-wrapper",
+			);
+			return;
+		}
+
+		const { width = 2000, height = 2000, fps = 24, duration = 3 } = options;
+
+		try {
+			let blob: Blob;
+
+			if (format === "svg") {
+				blob = new Blob([this.renderedSvg], {
+					type: "image/svg+xml;charset=utf-8",
+				});
+			} else if (
+				format === "png" ||
+				format === "jpeg" ||
+				format === "webp"
+			) {
+				const canvas = document.createElement("canvas");
+				canvas.width = width;
+				canvas.height = height;
+				const ctx = canvas.getContext("2d")!;
+				const svgBlob = new Blob([this.renderedSvg], {
+					type: "image/svg+xml;charset=utf-8",
+				});
+				const url = URL.createObjectURL(svgBlob);
+				const img = new Image();
+
+				blob = await new Promise((resolve) => {
+					img.onload = () => {
+						// JPEGs don't support transparency, so we always fill black
+						ctx.fillStyle = "black";
+						ctx.fillRect(0, 0, width, height);
+						ctx.drawImage(img, 0, 0, width, height);
+						URL.revokeObjectURL(url);
+
+						const mimeType =
+							format === "jpeg"
+								? "image/jpeg"
+								: format === "webp"
+									? "image/webp"
+									: "image/png";
+						canvas.toBlob((b) => resolve(b!), mimeType, 0.95);
+					};
+					img.src = url;
+				});
+			} else {
+				// Animated formats (MOV, GIF)
+				const { mediaService } =
+					await import("$lib/services/mediaService");
+				blob = await mediaService.exportAnimation(
+					format as "mov" | "gif" | "webm" | "mp4",
+					duration,
+					fps,
+					width,
+					height,
+				);
+			}
+
+			// Download the final asset using the Smart Save utility
+			const fileName = `sumosized-render.${format}`;
+			await this.saveBlobToDisk(blob, fileName);
+		} catch (error) {
+			console.error("Composition Render Failed", error);
 		}
 	}
 

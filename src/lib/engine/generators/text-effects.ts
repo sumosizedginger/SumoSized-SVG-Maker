@@ -2,12 +2,13 @@ import type { SVGGenerator } from "../core/types";
 
 // 2026 High-Performance Precision and Security Cap
 const fix = (n: number) => Number(n.toFixed(2));
-const esc = (t: string) => t
-	.replace(/&/g, '&amp;')
-	.replace(/</g, '&lt;')
-	.replace(/>/g, '&gt;')
-	.replace(/"/g, '&quot;')
-	.replace(/'/g, '&apos;');
+const esc = (t: string) =>
+	t
+		.replace(/&/g, "&amp;")
+		.replace(/</g, "&lt;")
+		.replace(/>/g, "&gt;")
+		.replace(/"/g, "&quot;")
+		.replace(/'/g, "&apos;");
 
 export const textEffects: SVGGenerator = {
 	id: "text-effects",
@@ -114,10 +115,11 @@ export const textEffects: SVGGenerator = {
 		const strokeWidth = Number(params.strokeWidth || 0);
 		const r = Number(params.radius || 40);
 		const spacing = Number(params.spacing || 0);
-		const offset = params.startOffset !== undefined ? Number(params.startOffset) : 50;
+		const offset =
+			params.startOffset !== undefined ? Number(params.startOffset) : 50;
 
 		// 100% Deterministic ID to prevent snapshot regression and DOM collision
-		const safeText = text.replace(/[^a-z0-9]/gi, '').substring(0, 10);
+		const safeText = text.replace(/[^a-z0-9]/gi, "").substring(0, 10);
 		const id = `path-${seed}-${effect}-${safeText}`;
 
 		let pathData = "";
@@ -161,13 +163,13 @@ export const textEffects: SVGGenerator = {
 				pathData += `Q ${x0 + waveLength / 4},${50 - r} ${x0 + waveLength / 2},50 T ${x0 + waveLength},50 `;
 			}
 		} else if (effect === "spiral") {
-			// "Breathing Spiral": significantly faster growth rate (r/30) to prevent 
+			// "Breathing Spiral": significantly faster growth rate (r/30) to prevent
 			// letter overlapping in tight coils.
 			const centerX = 50;
 			const centerY = 50;
 			const loops = 5; // Fewer loops, higher growth = cleaner look
 			const points = [];
-			const growth = 0.5 + (r / 30);
+			const growth = 0.5 + r / 30;
 			for (let theta = 0; theta < loops * 2 * Math.PI; theta += 0.2) {
 				const currentRadius = 2 + growth * theta;
 				const x = centerX + currentRadius * Math.cos(theta);

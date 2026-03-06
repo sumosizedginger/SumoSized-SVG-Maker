@@ -1,13 +1,18 @@
 # SumoSized SVG Maker
+
 A 100/100 Production-Grade, Procedural SVG Generator.
 
 ## 🔓 100/100 Open Source Software (OSS)
+
 This project is licensed under the **MIT License**. All core engine logic, AI skilling APIs, and procedural generators are fully open and community-owned.
 
-### Contribution Vision
-- **New Generators**: Build procedural art primitives.
-- **Animation Modules**: Implement the elite 12 animated effects.
-- **Agentic Tools**: Help us integrate FFmpeg.wasm and Transformers.js.
+### 🦾 Mission Roadmap: The Elite 12 & Beyond
+
+- [x] **Phase 1-4**: Core Engine, Layer Selection, and Cinematic Timeline.
+- [x] **Phase 5**: Universal Export (SVG, PNG, JPEG, WebP).
+- [x] **Phase 6**: Pro Filter Audit & Category Sync.
+- [/] **Phase 7**: FFmpeg Resilience & Universal Video (MOV, MP4, WebM, GIF). [IN PROGRESS]
+- [ ] **Phase 8**: AI Style Injection & Transformers.js Integration.
 
 ---
 
@@ -53,14 +58,15 @@ SumoSized SVG Generator is a static web application built with SvelteKit that ge
 
 ## Key Features
 
--   **Elite 12 Animations**: Physics-simulated, Zod-validated SVG generators.
--   **Unified Import Engine**: Support for SVG vectors, Raster images (PNG/JPG/GIF), and Videos (MP4/WebM).
--   **Visual Filter Pipeline**: Professional-grade post-processing (Gaussian Blur, Turbulent Displacement).
--   **Dynamic Masking**: Non-destructive layer-to-layer alpha masking.
--   **100/100 OSS Identity**: This project is and will remain Open Source Software (MIT License). No corporate gatekeeping.
-- **Media Injection (Alpha)**: Integration with FFmpeg.wasm for high-performance GIF/WebP/APNG exports from procedural canvas frames.
+- **Elite 12 Animations**: Physics-simulated, Zod-validated SVG generators.
+- **Unified Import Engine**: Support for SVG vectors, Raster images (PNG/JPG/GIF), and Videos (MP4/WebM).
+- **Visual Filter Pipeline**: Professional-grade post-processing (Gaussian Blur, Turbulent Displacement).
+- **Dynamic Masking**: Non-destructive layer-to-layer alpha masking.
+- **100/100 OSS Identity**: This project is and will remain Open Source Software (MIT License). No corporate gatekeeping.
+- **Media Injection (Alpha)**: Integration with FFmpeg.wasm for high-performance GIF/WebP/WebM/MOV exports from procedural canvas frames.
+- **Nanoscale ViewBox Standard**: Automated "Proper Placement" for 16:9, 9:16, 21:9, and 4:5 ratios without artwork cropping.
 - **Strict Zod-Validated Generators**: Every math engine conforms to strict schemas for deterministic, agent-friendly SVG creation.
-- **Cross-Origin Isolation**: Enabled via `coi-serviceworker` to allow multi-threaded WASM processing on any host.
+- **Cross-Origin Isolation**: Enabled via COOP/COEP headers to allow multi-threaded WASM processing on any host.
 - **Layer Composition**: Stack unlimited generators, apply standard CSS blend modes (`screen`, `multiply`, `overlay`, etc.), and reorder layers effortlessly.
 - **High-Performance Renders**: GPU-promoted compositing guarantees stutter-free UI interactions even with 10k+ nodes.
 - **Headless AI Pipeline**: Exposes `window.SumoSvgApp`—a surface designed explicitly for LLMs and browser-agents to programmatically direct artwork.
@@ -132,15 +138,18 @@ For external agents, the application exposes a global API for manipulation:
 // List available generators
 const generators = window.SumoSvgApp.listGenerators();
 
-// Add a new Sacred Geometry layer
-const newLayerId = window.SumoSvgApp.setGenerator("sacred-geometry");
+// Add a new Matrix Rain layer
+const newLayerId = window.SumoSvgApp.setGenerator("animation-matrix");
 
-// Tweak the geometric complexity
-window.SumoSvgApp.setParams({ scale: 1.5, sacredLineWidth: 2.0 });
+// Tweak parameters for the 16:9 cinematic viewport
+window.SumoSvgApp.setParams({ density: 40, speed: 3 });
 
-// Render the final SVG markup
-const svgString = window.SumoSvgApp.renderNow();
-console.log(svgString);
+// Trigger a professional WebM render
+await window.SumoSvgApp.renderComposition("webm", {
+	width: 1920,
+	height: 1080,
+	fps: 24,
+});
 ```
 
 - `listPresets(generatorId)`: Returns all saved looks.
@@ -157,6 +166,7 @@ This project is built upon the following exceptional open-source foundations:
 See the [LICENSE](LICENSE) file for the full project license terms.
 
 ## 💼 Support & Mission Fuel
+
 SumoSized SVG Maker is 100% free and OSS. Supporting the project is **entirely optional** and goes directly toward fueling the "Elite 12" animation roadmap and agentic toolkits.
 
 - **Tips/Donations**: Help keep the engine running and the animations flowing.
@@ -164,6 +174,7 @@ SumoSized SVG Maker is 100% free and OSS. Supporting the project is **entirely o
 - **Support**: [Fuel the Mission (Optional)](https://github.com/sponsors/sumosizedginger)
 
 ## 🧠 Mission Knowledge Hub
+
 In the spirit of **100/100 Transparency**, the entire development history, technical plans, and verification media for this project have been archived directly in the repository.
 
 - **[Technical Plans](docs/plans/)**: Research and implementation designs.
@@ -172,4 +183,5 @@ In the spirit of **100/100 Transparency**, the entire development history, techn
 - **[Media Gallery](docs/media/)**: Visual verification and masterpiece renders.
 
 ---
+
 © 2026 SumoSized & Antigravity. Built for Humans. Optimized for Agents.

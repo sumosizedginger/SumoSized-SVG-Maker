@@ -6,7 +6,21 @@ import { dots, grid } from "../generators/patterns";
 import { flowField } from "../generators/abstract";
 import { poster } from "../generators/layouts";
 import { techBadge } from "../generators/ui-assets";
-import { orbit, matrixRain, quantumPulse, kineticFlow, glitchInterference, neonFlicker, scanlineSweep, parallaxDrift, eventHorizon, chromaDisplacement, starfieldJump, neuralSynthesis, vectorMorphing } from "../generators/animations";
+import {
+	orbit,
+	matrixRain,
+	quantumPulse,
+	kineticFlow,
+	glitchInterference,
+	neonFlicker,
+	scanlineSweep,
+	parallaxDrift,
+	eventHorizon,
+	chromaDisplacement,
+	starfieldJump,
+	neuralSynthesis,
+	vectorMorphing,
+} from "../generators/animations";
 import { symbolGrid } from "../generators/icons";
 import { freeDraw } from "../generators/free-draw";
 import { textEffects } from "../generators/text-effects";

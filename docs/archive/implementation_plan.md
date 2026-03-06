@@ -16,6 +16,7 @@ Refine the `text-effects` generator to ensure text fits professionally within th
 ## Verification Plan
 
 ### Manual Verification
+
 - Open the SVG Maker in the browser.
 - Select the **Advanced Text** generator.
 - Toggle the **Spiral** effect.

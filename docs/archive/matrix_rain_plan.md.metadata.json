@@ -1,5 +1,5 @@
 {
-  "artifactType":  "ARTIFACT_TYPE_IMPLEMENTATION_PLAN",
-  "summary":  "Technical plan for implementing a high-performance, deterministic Matrix Rain animated generator.",
-  "updatedAt":  "2026-03-05T20:55:12.545824Z"
+	"artifactType": "ARTIFACT_TYPE_IMPLEMENTATION_PLAN",
+	"summary": "Technical plan for implementing a high-performance, deterministic Matrix Rain animated generator.",
+	"updatedAt": "2026-03-05T20:55:12.545824Z"
 }

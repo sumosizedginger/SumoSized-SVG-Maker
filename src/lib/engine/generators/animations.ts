@@ -79,7 +79,7 @@ export const orbit: SVGGenerator = {
 		usePalette: z.boolean(),
 		thickness: z.number().min(0.1).max(5),
 	}),
-	render: (params, seed) => {
+	render: (params, seed, viewBox = { x: 0, y: 0, w: 100, h: 100 }) => {
 		const { orbits, duration, paletteId, color, usePalette, thickness } =
 			params;
 
@@ -195,7 +195,7 @@ export const matrixRain: SVGGenerator = {
 		color: z.string().regex(/^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/),
 		trailLength: z.number().min(10).max(100),
 	}),
-	render: (params, seed) => {
+	render: (params, seed, viewBox = { x: 0, y: 0, w: 100, h: 100 }) => {
 		const density = Math.floor(Number(params.density || 20));
 		const speed = Number(params.speed || 2);
 		const fontSize = Number(params.fontSize || 4);
@@ -208,14 +208,18 @@ export const matrixRain: SVGGenerator = {
 			return x - Math.floor(x);
 		};
 
-		const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789$+-*/=%\"\'#&_(),.;:?!\\|{}<>[]^~".split("");
-		const getChar = (id: number) => chars[Math.floor(pseudoRandom(id) * chars.length)];
+		const chars =
+			"ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789$+-*/=%\"\'#&_(),.;:?!\\|{}<>[]^~".split(
+				"",
+			);
+		const getChar = (id: number) =>
+			chars[Math.floor(pseudoRandom(id) * chars.length)];
 
 		const drops: string[] = [];
-		const columnWidth = 100 / density;
+		const columnWidth = viewBox.w / density;
 
 		for (let i = 0; i < density; i++) {
-			const x = i * columnWidth + columnWidth / 2;
+			const x = viewBox.x + i * columnWidth + columnWidth / 2;
 			const dur = (speed * (0.8 + pseudoRandom(i) * 0.4)).toFixed(2);
 			const delay = (pseudoRandom(i + 100) * -speed).toFixed(2);
 			const length = Math.floor(5 + pseudoRandom(i + 200) * 15);
@@ -231,8 +235,8 @@ export const matrixRain: SVGGenerator = {
 					<animateTransform 
 						attributeName="transform" 
 						type="translate" 
-						from="${x} -100" 
-						to="${x} 120" 
+						from="${x} ${viewBox.y - 100}" 
+						to="${x} ${viewBox.y + viewBox.h + 20}" 
 						dur="${dur}s" 
 						begin="${delay}s" 
 						repeatCount="indefinite" 
@@ -250,7 +254,7 @@ export const matrixRain: SVGGenerator = {
 		}
 
 		return `
-			<svg width="100%" height="100%" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+			<svg width="100%" height="100%" viewBox="${viewBox.x} ${viewBox.y} ${viewBox.w} ${viewBox.h}" xmlns="http://www.w3.org/2000/svg">
 				<title>Matrix Rain</title>
 				<defs>
 					<linearGradient id="matrixGradient-${seed}" x1="0" y1="0" x2="0" y2="1">
@@ -259,7 +263,7 @@ export const matrixRain: SVGGenerator = {
 						<stop offset="100%" stop-color="${color}" stop-opacity="1" />
 					</linearGradient>
 				</defs>
-				<rect width="100%" height="100%" fill="black" />
+				<rect x="${viewBox.x}" y="${viewBox.y}" width="${viewBox.w}" height="${viewBox.h}" fill="black" />
 				${drops.join("")}
 			</svg>
 		`.trim();
@@ -312,7 +316,7 @@ export const quantumPulse: SVGGenerator = {
 		intensity: z.number().min(0).max(1),
 		color: z.string().regex(/^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/),
 	}),
-	render: (params, seed) => {
+	render: (params, seed, viewBox = { x: 0, y: 0, w: 100, h: 100 }) => {
 		const frequency = Number(params.frequency || 2);
 		const intensity = Number(params.intensity || 0.2);
 		const color = String(params.color || "#9b5de5");
@@ -410,7 +414,7 @@ export const kineticFlow: SVGGenerator = {
 		complexity: z.number().min(0.01).max(0.3),
 		color: z.string().regex(/^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/),
 	}),
-	render: (params, seed) => {
+	render: (params, seed, viewBox = { x: 0, y: 0, w: 100, h: 100 }) => {
 		const count = Number(params.count || 40);
 		const speed = Number(params.speed || 1.5);
 		const complexity = Number(params.complexity || 0.08);
@@ -540,7 +544,7 @@ export const glitchInterference: SVGGenerator = {
 		split: z.number().min(0).max(5),
 		color: z.string().regex(/^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/),
 	}),
-	render: (params, seed) => {
+	render: (params, seed, viewBox = { x: 0, y: 0, w: 100, h: 100 }) => {
 		const intensity = Number(params.intensity || 5);
 		const frequency = Number(params.frequency || 2);
 		const split = Number(params.split || 1.5);
@@ -548,19 +552,28 @@ export const glitchInterference: SVGGenerator = {
 
 		const dur = (1 / frequency).toFixed(2);
 
+		// Deterministic random generator
+		const pseudoRandom = (offset: number) => {
+			const x = Math.sin(seed + offset) * 10000;
+			return x - Math.floor(x);
+		};
+
 		// Create randomized keyframes for jitter
-		const generateKeyframes = (range: number) => {
+		const generateKeyframes = (range: number, offset: number) => {
 			const steps = 6;
 			let values = [];
 			for (let i = 0; i < steps; i++) {
-				values.push((Math.random() - 0.5) * range);
+				const val = ((pseudoRandom(offset + i) - 0.5) * range).toFixed(
+					2,
+				);
+				values.push(val);
 			}
 			values.push(values[0]); // Loop back
 			return values.join("; ");
 		};
 
-		const jitterX = generateKeyframes(intensity);
-		const jitterY = generateKeyframes(intensity);
+		const jitterX = generateKeyframes(intensity, 1000);
+		const jitterY = generateKeyframes(intensity, 2000);
 
 		return `
 			<svg width="100%" height="100%" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" style="background: black;">
@@ -614,7 +627,8 @@ export const glitchInterference: SVGGenerator = {
 export const neonFlicker: SVGGenerator = {
 	id: "anim-neon-flicker",
 	name: "Neon Flicker",
-	description: "Irregular hardware-failure simulation via drop-shadow and opacity.",
+	description:
+		"Irregular hardware-failure simulation via drop-shadow and opacity.",
 	category: "Animations",
 	tags: ["animation", "neon", "flicker", "retro"],
 	version: "1.0.0",
@@ -657,7 +671,7 @@ export const neonFlicker: SVGGenerator = {
 		voltage: z.number().min(0).max(1),
 		color: z.string().regex(/^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/),
 	}),
-	render: (params, seed) => {
+	render: (params, seed, viewBox = { x: 0, y: 0, w: 100, h: 100 }) => {
 		const speed = Number(params.speed || 5);
 		const voltage = Number(params.voltage || 0.4);
 		const color = String(params.color || "#ff00ff");
@@ -741,7 +755,7 @@ export const scanlineSweep: SVGGenerator = {
 		thickness: z.number().min(1).max(20),
 		bgColor: z.string().regex(/^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/),
 	}),
-	render: (params, seed) => {
+	render: (params, seed, viewBox = { x: 0, y: 0, w: 100, h: 100 }) => {
 		const speed = Number(params.speed || 2);
 		const thickness = Number(params.thickness || 5);
 		const bgColor = String(params.bgColor || "#111");
@@ -762,9 +776,12 @@ export const scanlineSweep: SVGGenerator = {
 				<rect width="100" height="${thickness}" fill="url(#scanlineGrad-${seed})">
 					<animate attributeName="y" from="-${thickness}" to="100" dur="${dur}s" repeatCount="indefinite" />
 				</rect>
-				${Array.from({ length: 20 }).map((_, i) =>
-			`<line x1="0" y1="${i * 5}" x2="100" y2="${i * 5}" stroke="black" stroke-width="0.5" opacity="0.3" />`
-		).join("")}
+				${Array.from({ length: 20 })
+					.map(
+						(_, i) =>
+							`<line x1="0" y1="${i * 5}" x2="100" y2="${i * 5}" stroke="black" stroke-width="0.5" opacity="0.3" />`,
+					)
+					.join("")}
 			</svg>
 		`.trim();
 	},
@@ -773,7 +790,8 @@ export const scanlineSweep: SVGGenerator = {
 export const parallaxDrift: SVGGenerator = {
 	id: "anim-parallax",
 	name: "Parallax Drift",
-	description: "Slow, orbital drift for background/foreground depth simulation.",
+	description:
+		"Slow, orbital drift for background/foreground depth simulation.",
 	category: "Animations",
 	tags: ["animation", "parallax", "drift", "depth"],
 	version: "1.0.0",
@@ -807,7 +825,7 @@ export const parallaxDrift: SVGGenerator = {
 		speed: z.number().min(0.1).max(5),
 		intensity: z.number().min(1).max(20),
 	}),
-	render: (params, seed) => {
+	render: (params, seed, viewBox = { x: 0, y: 0, w: 100, h: 100 }) => {
 		const speed = Number(params.speed || 1);
 		const intensity = Number(params.intensity || 10);
 		const dur = (10 / speed).toFixed(2);
@@ -868,7 +886,7 @@ export const eventHorizon: SVGGenerator = {
 		speed: z.number().min(0.1).max(10),
 		power: z.number().min(0.1).max(2),
 	}),
-	render: (params, seed) => {
+	render: (params, seed, viewBox = { x: 0, y: 0, w: 100, h: 100 }) => {
 		const speed = Number(params.speed || 2);
 		const power = Number(params.power || 1);
 		const dur = (5 / speed).toFixed(2);
@@ -884,16 +902,18 @@ export const eventHorizon: SVGGenerator = {
 						dur="${dur}s" 
 						repeatCount="indefinite" 
 					/>
-					${Array.from({ length: 12 }).map((_, i) => {
-			const angle = (i * Math.PI * 2) / 12;
-			const x = 50 + Math.cos(angle) * 30;
-			const y = 50 + Math.sin(angle) * 30;
-			return `
+					${Array.from({ length: 12 })
+						.map((_, i) => {
+							const angle = (i * Math.PI * 2) / 12;
+							const x = 50 + Math.cos(angle) * 30;
+							const y = 50 + Math.sin(angle) * 30;
+							return `
 							<circle cx="${x}" cy="${y}" r="${2 * power}" fill="white" opacity="${0.1 + (i / 12) * 0.9}">
 								<animate attributeName="r" values="${2 * power}; ${8 * power}; ${2 * power}" dur="${dur}s" repeatCount="indefinite" />
 							</circle>
 						`;
-		}).join("")}
+						})
+						.join("")}
 				</g>
 			</svg>
 		`.trim();
@@ -925,7 +945,7 @@ export const chromaDisplacement: SVGGenerator = {
 	schema: z.object({
 		speed: z.number().min(0.1).max(10),
 	}),
-	render: (params, seed) => {
+	render: (params, seed, viewBox = { x: 0, y: 0, w: 100, h: 100 }) => {
 		const speed = Number(params.speed || 1);
 		const dur = (10 / speed).toFixed(2);
 
@@ -990,7 +1010,7 @@ export const starfieldJump: SVGGenerator = {
 		density: z.number().int().min(50).max(500),
 		speed: z.number().min(0.1).max(10),
 	}),
-	render: (params, seed) => {
+	render: (params, seed, viewBox = { x: 0, y: 0, w: 100, h: 100 }) => {
 		const density = Number(params.density || 200);
 		const speed = Number(params.speed || 3);
 		const dur = (5 / speed).toFixed(2);
@@ -1001,11 +1021,12 @@ export const starfieldJump: SVGGenerator = {
 			return (s - 1) / 2147483646;
 		};
 
-		const stars = Array.from({ length: density }).map((_, i) => {
-			const x = (rand() * 100).toFixed(2);
-			const y = (rand() * 100).toFixed(2);
-			const delay = (rand() * -5).toFixed(2);
-			return `
+		const stars = Array.from({ length: density })
+			.map((_, i) => {
+				const x = (rand() * 100).toFixed(2);
+				const y = (rand() * 100).toFixed(2);
+				const delay = (rand() * -5).toFixed(2);
+				return `
 				<circle cx="${x}" cy="${y}" r="0.2" fill="white">
 					<animate attributeName="r" values="0; 1; 0" dur="${dur}s" begin="${delay}s" repeatCount="indefinite" />
 					<animateTransform 
@@ -1019,7 +1040,8 @@ export const starfieldJump: SVGGenerator = {
 					/>
 				</circle>
 			`;
-		}).join("");
+			})
+			.join("");
 
 		return `
 			<svg width="100%" height="100%" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" style="background: black;">
@@ -1057,7 +1079,7 @@ export const neuralSynthesis: SVGGenerator = {
 	schema: z.object({
 		nodes: z.number().int().min(5).max(30),
 	}),
-	render: (params, seed) => {
+	render: (params, seed, viewBox = { x: 0, y: 0, w: 100, h: 100 }) => {
 		const count = Number(params.nodes || 15);
 
 		let s = seed;
@@ -1069,13 +1091,16 @@ export const neuralSynthesis: SVGGenerator = {
 		const nodeList = Array.from({ length: count }).map((_, i) => ({
 			x: rand() * 100,
 			y: rand() * 100,
-			delay: rand() * 3
+			delay: rand() * 3,
 		}));
 
 		const lines = [];
 		for (let i = 0; i < nodeList.length; i++) {
 			for (let j = i + 1; j < nodeList.length; j++) {
-				const dist = Math.hypot(nodeList[i].x - nodeList[j].x, nodeList[i].y - nodeList[j].y);
+				const dist = Math.hypot(
+					nodeList[i].x - nodeList[j].x,
+					nodeList[i].y - nodeList[j].y,
+				);
 				if (dist < 30) {
 					lines.push(`
 						<line x1="${nodeList[i].x}" y1="${nodeList[i].y}" x2="${nodeList[j].x}" y2="${nodeList[j].y}" stroke="white" stroke-width="0.1" opacity="0.2">
@@ -1086,12 +1111,16 @@ export const neuralSynthesis: SVGGenerator = {
 			}
 		}
 
-		const nodes = nodeList.map(n => `
+		const nodes = nodeList
+			.map(
+				(n) => `
 			<circle cx="${n.x}" cy="${n.y}" r="1" fill="#4ade80">
 				<animate attributeName="r" values="1; 1.5; 1" dur="2s" begin="${n.delay}s" repeatCount="indefinite" />
 				<animate attributeName="opacity" values="0.5; 1; 0.5" dur="2s" begin="${n.delay}s" repeatCount="indefinite" />
 			</circle>
-		`).join("");
+		`,
+			)
+			.join("");
 
 		return `
 			<svg width="100%" height="100%" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
@@ -1138,7 +1167,7 @@ export const vectorMorphing: SVGGenerator = {
 		speed: z.number().min(0.1).max(10),
 		color: z.string().regex(/^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/),
 	}),
-	render: (params, seed) => {
+	render: (params, seed, viewBox = { x: 0, y: 0, w: 100, h: 100 }) => {
 		const speed = Number(params.speed || 2);
 		const color = String(params.color || "#3b82f6");
 		const dur = (5 / speed).toFixed(2);

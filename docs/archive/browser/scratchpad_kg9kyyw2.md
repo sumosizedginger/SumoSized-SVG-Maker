@@ -1,4 +1,5 @@
 # Verification Log
+
 - [x] Navigate to http://localhost:5173/
 - [x] Select Matrix Rain generator.
 - [x] Verify Density slider is visible under Geometry.

@@ -93,7 +93,7 @@ export const dots: SVGGenerator = {
 		usePalette: true,
 		transparent: false,
 	},
-	render: (params, seed) => {
+	render: (params, seed, viewBox = { x: 0, y: 0, w: 100, h: 100 }) => {
 		const {
 			dotSize,
 			spacing,
@@ -125,8 +125,19 @@ export const dots: SVGGenerator = {
 			return (s - 1) / 2147483646;
 		};
 
-		for (let x = 0; x <= 100 + spacing; x += spacing) {
-			for (let y = 0; y <= 100 + spacing; y += spacing) {
+		const startX = Math.floor(viewBox.x / spacing) * spacing;
+		const startY = Math.floor(viewBox.y / spacing) * spacing;
+
+		for (
+			let x = startX;
+			x <= viewBox.x + viewBox.w + spacing;
+			x += spacing
+		) {
+			for (
+				let y = startY;
+				y <= viewBox.y + viewBox.h + spacing;
+				y += spacing
+			) {
 				const ox = jitter ? (rand() - 0.5) * jitter : 0;
 				const oy = jitter ? (rand() - 0.5) * jitter : 0;
 				dotsList.push(
@@ -136,13 +147,13 @@ export const dots: SVGGenerator = {
 		}
 
 		return `
-      <svg width="100%" height="100%" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+      <svg width="100%" height="100%" viewBox="${viewBox.x} ${viewBox.y} ${viewBox.w} ${viewBox.h}" xmlns="http://www.w3.org/2000/svg">
         <title>Polka Dots</title>
         <desc>Pattern of dots with ${dotSize} size and ${spacing} spacing.</desc>
         <defs>
-          <clipPath id="dotsClip-${seed}"><rect width="100" height="100" /></clipPath>
+          <clipPath id="dotsClip-${seed}"><rect x="${viewBox.x}" y="${viewBox.y}" width="${viewBox.w}" height="${viewBox.h}" /></clipPath>
         </defs>
-        ${transparent ? "" : `<rect width="100" height="100" fill="${finalBg}" />`}
+        ${transparent ? "" : `<rect x="${viewBox.x}" y="${viewBox.y}" width="${viewBox.w}" height="${viewBox.h}" fill="${finalBg}" />`}
         <g clip-path="url(#dotsClip-${seed})">
           ${dotsList.join("\n")}
         </g>
@@ -236,7 +247,7 @@ export const grid: SVGGenerator = {
 		showDots: true,
 		transparent: false,
 	},
-	render: (params, seed) => {
+	render: (params, seed, viewBox = { x: 0, y: 0, w: 100, h: 100 }) => {
 		const {
 			cells,
 			thickness,
@@ -263,32 +274,40 @@ export const grid: SVGGenerator = {
 		const lines: string[] = [];
 		const dotsList: string[] = [];
 
-		for (let i = 0; i <= cells; i++) {
-			const pos = i * step;
+		// Horizontal lines
+		const startY = Math.floor(viewBox.y / step) * step;
+		for (let y = startY; y <= viewBox.y + viewBox.h; y += step) {
 			lines.push(
-				`<line x1="${pos}" y1="0" x2="${pos}" y2="100" stroke="${finalLine}" stroke-width="${thickness}" opacity="0.3" />`,
+				`<line x1="${viewBox.x}" y1="${y}" x2="${viewBox.x + viewBox.w}" y2="${y}" stroke="${finalLine}" stroke-width="${thickness}" opacity="0.3" />`,
 			);
+		}
+		// Vertical lines
+		const startX = Math.floor(viewBox.x / step) * step;
+		for (let x = startX; x <= viewBox.x + viewBox.w; x += step) {
 			lines.push(
-				`<line x1="0" y1="${pos}" x2="100" y2="${pos}" stroke="${finalLine}" stroke-width="${thickness}" opacity="0.3" />`,
+				`<line x1="${x}" y1="${viewBox.y}" x2="${x}" y2="${viewBox.y + viewBox.h}" stroke="${finalLine}" stroke-width="${thickness}" opacity="0.3" />`,
 			);
+		}
 
-			if (showDots) {
-				for (let j = 0; j <= cells; j++) {
+		// Intersections
+		if (showDots) {
+			for (let x = startX; x <= viewBox.x + viewBox.w; x += step) {
+				for (let y = startY; y <= viewBox.y + viewBox.h; y += step) {
 					dotsList.push(
-						`<circle cx="${fix(pos)}" cy="${fix(j * step)}" r="${fix(thickness * 1.5)}" fill="${finalLine}" />`,
+						`<circle cx="${fix(x)}" cy="${fix(y)}" r="${fix(thickness * 1.5)}" fill="${finalLine}" />`,
 					);
 				}
 			}
 		}
 
 		return `
-      <svg width="100%" height="100%" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+      <svg width="100%" height="100%" viewBox="${viewBox.x} ${viewBox.y} ${viewBox.w} ${viewBox.h}" xmlns="http://www.w3.org/2000/svg">
         <title>Tech Grid</title>
         <desc>A technical grid with ${cells} cells and glowing intersections.</desc>
         <defs>
-          <clipPath id="gridClip-${seed}"><rect width="100" height="100" /></clipPath>
+          <clipPath id="gridClip-${seed}"><rect x="${viewBox.x}" y="${viewBox.y}" width="${viewBox.w}" height="${viewBox.h}" /></clipPath>
         </defs>
-        ${transparent ? "" : `<rect width="100" height="100" fill="${finalBg}" />`}
+        ${transparent ? "" : `<rect x="${viewBox.x}" y="${viewBox.y}" width="${viewBox.w}" height="${viewBox.h}" fill="${finalBg}" />`}
         <g clip-path="url(#gridClip-${seed})" stroke-linecap="round">
           ${lines.join("\n")}
           ${dotsList.join("\n")}

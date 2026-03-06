@@ -101,7 +101,7 @@ export const flowField: SVGGenerator = {
 		opacity: 0.6,
 		transparent: false,
 	},
-	render: (params, seed) => {
+	render: (params, seed, viewBox = { x: 0, y: 0, w: 100, h: 100 }) => {
 		const {
 			count,
 			steps,
@@ -144,8 +144,8 @@ export const flowField: SVGGenerator = {
 		};
 
 		for (let i = 0; i < count; i++) {
-			let x = rand() * 100;
-			let y = rand() * 100;
+			let x = viewBox.x + rand() * viewBox.w;
+			let y = viewBox.y + rand() * viewBox.h;
 			let d = `M ${x.toFixed(2)} ${y.toFixed(2)}`;
 
 			for (let j = 0; j < steps; j++) {
@@ -155,7 +155,13 @@ export const flowField: SVGGenerator = {
 				d += ` L ${x.toFixed(2)} ${y.toFixed(2)}`;
 
 				// Stop if hitting the exact boundary
-				if (x < 0 || x > 100 || y < 0 || y > 100) break;
+				if (
+					x < viewBox.x ||
+					x > viewBox.x + viewBox.w ||
+					y < viewBox.y ||
+					y > viewBox.y + viewBox.h
+				)
+					break;
 			}
 			paths.push(
 				`<path d="${d}" fill="none" stroke="${finalLine}" stroke-width="0.5" stroke-opacity="${opacity}" />`,
@@ -163,13 +169,13 @@ export const flowField: SVGGenerator = {
 		}
 
 		return `
-      <svg width="100%" height="100%" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+      <svg width="100%" height="100%" viewBox="${viewBox.x} ${viewBox.y} ${viewBox.w} ${viewBox.h}" xmlns="http://www.w3.org/2000/svg">
         <title>Flow Field</title>
         <desc>Organic flowing ribbons generated with ${count} paths and ${complexity} complexity.</desc>
         <defs>
-          <clipPath id="flowClip-${seed}"><rect width="100" height="100" /></clipPath>
+          <clipPath id="flowClip-${seed}"><rect x="${viewBox.x}" y="${viewBox.y}" width="${viewBox.w}" height="${viewBox.h}" /></clipPath>
         </defs>
-        ${transparent ? "" : `<rect width="100" height="100" fill="${finalBg}" />`}
+        ${transparent ? "" : `<rect x="${viewBox.x}" y="${viewBox.y}" width="${viewBox.w}" height="${viewBox.h}" fill="${finalBg}" />`}
         <g clip-path="url(#flowClip-${seed})">
           ${paths.join("\n")}
         </g>

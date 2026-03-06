@@ -24,9 +24,11 @@ Implement a new animated generator, `anim-matrix-rain`, that simulates the iconi
 ## Verification Plan
 
 ### Automated Tests
+
 - Add a new test case in `generators.test.ts` to verify the `matrixRain` output is deterministic and valid SVG.
 
 ### Manual Verification
+
 - Open the SVG Maker in the browser.
 - Select **Matrix Rain** from the **Animations** category.
 - Verify that sliders for `Density` and `Speed` work as expected.

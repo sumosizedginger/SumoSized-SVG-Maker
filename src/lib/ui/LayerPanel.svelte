@@ -146,14 +146,76 @@
 </script>
 
 <div class="layer-panel">
-	<button class="import-btn" onclick={handleImport}>
-		<svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
-			<path
-				d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM14 13v4h-4v-4H7l5-5 5 5h-3z"
-			/>
-		</svg>
-		Import
-	</button>
+	<div class="panel-actions">
+		<button class="import-btn" onclick={handleImport}>
+			<svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+				<path
+					d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM14 13v4h-4v-4H7l5-5 5 5h-3z"
+				/>
+			</svg>
+			Import
+		</button>
+		<button
+			class="export-assets-btn"
+			onclick={() => (appState.isExportDrawerOpen = true)}
+			title="Open Export & Save Hub"
+		>
+			<svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+				<path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z" />
+			</svg>
+			Export Assets
+		</button>
+		<div class="selection-actions">
+			<button
+				class="batch-btn"
+				onclick={() => appState.toggleSelectAll(true)}
+				title="Select All for Export"
+			>
+				Select All
+			</button>
+			<button
+				class="batch-btn"
+				onclick={() => appState.toggleSelectAll(false)}
+				title="Deselect All"
+			>
+				Clear
+			</button>
+		</div>
+	</div>
+
+	<div class="document-settings">
+		<label class="doc-label" for="ratio-select"
+			>Aspect Ratio (Nano Standard)</label
+		>
+		<select
+			id="ratio-select"
+			class="ratio-select"
+			value={appState.documentAspectRatio}
+			onchange={(e) =>
+				appState.setDocumentAspectRatio(e.currentTarget.value)}
+		>
+			<optgroup label="Standard">
+				<option value="1:1">1:1 Square</option>
+				<option value="4:3">4:3 TV</option>
+				<option value="3:4">3:4 Tablet</option>
+				<option value="16:9">16:9 HD</option>
+				<option value="9:16">9:16 Reels/TikTok</option>
+			</optgroup>
+			<optgroup label="Photography">
+				<option value="3:2">3:2 Classic</option>
+				<option value="2:3">2:3 Portrait</option>
+				<option value="5:4">5:4 Print</option>
+				<option value="4:5">4:5 Vertical</option>
+			</optgroup>
+			<optgroup label="Cinematic & Extreme">
+				<option value="21:9">21:9 Ultra-Wide</option>
+				<option value="4:1">4:1 Panorama</option>
+				<option value="1:4">1:4 Vertical Slice</option>
+				<option value="8:1">8:1 Horizon</option>
+				<option value="1:8">1:8 Skyscraper</option>
+			</optgroup>
+		</select>
+	</div>
 	{#if displayLayers.length === 0}
 		<div class="empty-state">No layers. Click a generator to add one.</div>
 	{:else}
@@ -201,6 +263,7 @@
 					<input
 						type="checkbox"
 						title="Toggle Visibility"
+						class="visibility-checkbox"
 						checked={layer.visible}
 						onclick={(e) => e.stopPropagation()}
 						onchange={(e) =>
@@ -208,15 +271,48 @@
 								visible: e.currentTarget.checked,
 							})}
 					/>
-					<span class="layer-name">{layer.name}</span>
-					<button
-						class="delete-btn"
-						title="Delete Layer"
-						onclick={(e) => {
+					<input
+						type="checkbox"
+						title="Select for Export (Elite Choice)"
+						class="selection-checkbox"
+						checked={layer.selected}
+						onchange={(e) => {
 							e.stopPropagation();
-							appState.removeLayer(layer.id);
-						}}>×</button
-					>
+							appState.toggleLayerSelection(layer.id);
+						}}
+					/>
+					<span class="layer-name">{layer.name}</span>
+					<div class="layer-actions">
+						{#if layer.generatorId === "unified-import"}
+							<button
+								class="recover-btn"
+								title="Recover Original Asset (.mov, .png, .svg, etc.)"
+								onclick={(e) => {
+									e.stopPropagation();
+									appState.exportLayerAsset(layer.id);
+								}}
+							>
+								<svg
+									viewBox="0 0 24 24"
+									width="14"
+									height="14"
+									fill="currentColor"
+								>
+									<path
+										d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"
+									/>
+								</svg>
+							</button>
+						{/if}
+						<button
+							class="delete-btn"
+							title="Delete Layer"
+							onclick={(e) => {
+								e.stopPropagation();
+								appState.removeLayer(layer.id);
+							}}>×</button
+						>
+					</div>
 				</div>
 
 				{#if appState.activeLayerId === layer.id && !isDraggingId}
@@ -350,13 +446,20 @@
 										});
 									} else {
 										const def = filterDefinitions[type];
+										const defaultParams = {
+											...def.schema.parse({}),
+										};
+										// Reset specific defaults for Color Matrix types
+										if (type === "color-matrix") {
+											defaultParams.type = "matrix";
+											defaultParams.values =
+												"1 0 0 0 0 0 1 0 0 0 0 0 1 0 0 0 0 0 1 0";
+										}
 										appState.updateLayer(layer.id, {
 											filter: {
 												id: `filter-${layer.id}`,
 												type,
-												params: {
-													...def.schema.parse({}),
-												},
+												params: defaultParams,
 											},
 										});
 									}
@@ -443,7 +546,7 @@
 											id={`disp-freq-${layer.id}`}
 											type="range"
 											min="0.001"
-											max="0.2"
+											max="0.5"
 											step="0.001"
 											value={layer.filter.params
 												.baseFrequency}
@@ -466,6 +569,134 @@
 											}}
 										/>
 									</div>
+									<div class="control-row sub">
+										<label for={`disp-octaves-${layer.id}`}
+											>Noise Detail ({layer.filter.params
+												.numOctaves})</label
+										>
+										<input
+											id={`disp-octaves-${layer.id}`}
+											type="range"
+											min="1"
+											max="5"
+											step="1"
+											value={layer.filter.params
+												.numOctaves}
+											oninput={(e) => {
+												const f = layer.filter!;
+												appState.updateLayer(layer.id, {
+													filter: {
+														...f,
+														params: {
+															...f.params,
+															numOctaves:
+																parseInt(
+																	e
+																		.currentTarget
+																		.value,
+																),
+														},
+													},
+												});
+											}}
+										/>
+									</div>
+									<div class="control-row sub">
+										<label for={`cm-type-${layer.id}`}
+											>Matrix Type</label
+										>
+										<select
+											id={`cm-type-${layer.id}`}
+											value={layer.filter.params.type}
+											onchange={(e) => {
+												const f = layer.filter!;
+												const newType =
+													e.currentTarget.value;
+												let newValues = f.params.values;
+
+												// Clamp/Set defaults on type change to fix jumpy UI
+												if (newType === "matrix")
+													newValues =
+														"1 0 0 0 0 0 1 0 0 0 0 0 1 0 0 0 0 0 1 0";
+												else if (newType === "saturate")
+													newValues = "1";
+												else if (
+													newType === "hueRotate"
+												)
+													newValues = "0";
+												else if (
+													newType ===
+													"luminanceToAlpha"
+												)
+													newValues = "";
+
+												appState.updateLayer(layer.id, {
+													filter: {
+														...f,
+														params: {
+															...f.params,
+															type: newType,
+															values: newValues,
+														},
+													},
+												});
+											}}
+										>
+											<option value="matrix"
+												>Matrix</option
+											>
+											<option value="saturate"
+												>Saturate</option
+											>
+											<option value="hueRotate"
+												>Hue Rotate</option
+											>
+											<option value="luminanceToAlpha"
+												>Luminance to Alpha</option
+											>
+										</select>
+									</div>
+									{#if layer.filter.params.type === "saturate" || layer.filter.params.type === "hueRotate"}
+										<div class="control-row sub">
+											<label for={`cm-val-${layer.id}`}
+												>Value ({layer.filter.params
+													.values})</label
+											>
+											<input
+												id={`cm-val-${layer.id}`}
+												type="range"
+												min={layer.filter.params
+													.type === "hueRotate"
+													? "0"
+													: "0"}
+												max={layer.filter.params
+													.type === "hueRotate"
+													? "360"
+													: "10"}
+												step="0.1"
+												value={parseFloat(
+													layer.filter.params.values,
+												) || 0}
+												oninput={(e) => {
+													const f = layer.filter!;
+													appState.updateLayer(
+														layer.id,
+														{
+															filter: {
+																...f,
+																params: {
+																	...f.params,
+																	values: e
+																		.currentTarget
+																		.value,
+																},
+															},
+														},
+													);
+												}}
+											/>
+										</div>
+									{/if}
 								{/if}
 							</div>
 						{/if}
@@ -523,7 +754,15 @@
 		gap: 0.5rem;
 	}
 
-	.import-btn {
+	.panel-actions {
+		display: flex;
+		gap: 0.5rem;
+		margin-bottom: 0.25rem;
+	}
+
+	.import-btn,
+	.export-assets-btn {
+		flex: 1;
 		background: #003153; /* Prussian Blue */
 		border: 1px solid #082567; /* Dark Sapphire */
 		color: #4dff00; /* Action Green */
@@ -537,10 +776,10 @@
 		justify-content: center;
 		gap: 0.5rem;
 		transition: all 0.2s;
-		margin-bottom: 0.25rem;
 	}
 
-	.import-btn:hover {
+	.import-btn:hover,
+	.export-assets-btn:hover {
 		background: #082567;
 		box-shadow: 0 0 10px rgba(77, 255, 0, 0.2);
 		border-color: #4dff00;
@@ -609,6 +848,72 @@
 		cursor: grabbing;
 	}
 
+	.document-settings {
+		padding: 0.75rem;
+		background: #002244;
+		border: 1px solid #1a1a1a;
+		border-radius: 6px;
+		margin-bottom: 0.75rem;
+		display: flex;
+		flex-direction: column;
+		gap: 0.4rem;
+	}
+
+	.doc-label {
+		font-size: 0.65rem;
+		font-weight: bold;
+		color: #888;
+		text-transform: uppercase;
+		letter-spacing: 0.05em;
+	}
+
+	.ratio-select {
+		background: #1f2328;
+		border: 1px solid #003153;
+		color: white;
+		padding: 0.4rem;
+		border-radius: 4px;
+		font-size: 0.85rem;
+		cursor: pointer;
+	}
+
+	.selection-actions {
+		display: flex;
+		gap: 0.25rem;
+		margin-top: 0.25rem;
+		width: 100%;
+	}
+
+	.batch-btn {
+		flex: 1;
+		background: #003153; /* Prussian Blue */
+		border: 1px solid #1a1a1a;
+		color: #a0aec0;
+		padding: 0.25rem;
+		border-radius: 4px;
+		font-size: 0.7rem;
+		cursor: pointer;
+		transition: all 0.2s;
+	}
+
+	.batch-btn:hover {
+		background: #191970; /* Midnight Blue */
+		color: white;
+		border-color: #2b6cb0;
+	}
+
+	.visibility-checkbox,
+	.selection-checkbox {
+		cursor: pointer;
+		accent-color: #2b6cb0; /* Professional Blue */
+		width: 14px;
+		height: 14px;
+	}
+
+	.selection-checkbox {
+		accent-color: #228b22; /* Success Green for Export */
+	}
+
 	.layer-name {
 		flex: 1;
 		font-size: 0.85rem;
@@ -616,6 +921,30 @@
 		white-space: nowrap;
 		overflow: hidden;
 		text-overflow: ellipsis;
+	}
+
+	.layer-actions {
+		display: flex;
+		align-items: center;
+		gap: 0.25rem;
+	}
+
+	.recover-btn {
+		background: none;
+		border: none;
+		color: #555;
+		cursor: pointer;
+		padding: 4px;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		border-radius: 4px;
+		transition: all 0.2s;
+	}
+
+	.recover-btn:hover {
+		background: rgba(255, 255, 255, 0.1);
+		color: #228b22; /* Forest Green */
 	}
 
 	.delete-btn {
@@ -651,6 +980,9 @@
 		font-size: 0.75rem;
 		color: #a0aec0;
 		text-transform: uppercase;
+		white-space: nowrap;
+		overflow: hidden;
+		text-overflow: ellipsis;
 	}
 
 	.control-row select,
@@ -701,5 +1033,6 @@
 	.control-row.sub label {
 		font-size: 0.65rem;
 		color: #718096;
+		white-space: normal; /* Allow sub-labels for filters to wrap if long */
 	}
 </style>

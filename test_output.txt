@@ -1,108 +1,108 @@
 
-[1m[46m RUN [49m[22m [36mv4.0.18 [39m[90mD:/SVG[39m
+ RUN  v4.0.18 D:/SVG
 
- [31mΓ¥»[39m src/lib/engine/generators/generators.test.ts [2m([22m[2m101 tests[22m[2m | [22m[31m1 failed[39m[2m)[22m[32m 125[2mms[22m[39m
-     [32mΓ£ô[39m Every registered generator exposes a valid schema[32m 2[2mms[22m[39m
-       [32mΓ£ô[39m renders deterministic SVG with default params[32m 4[2mms[22m[39m
-       [32mΓ£ô[39m handles boundary parameters without crashing[32m 4[2mms[22m[39m
-       [32mΓ£ô[39m exhaustively tests all select and toggle branches to guarantee structural coverage[32m 53[2mms[22m[39m
-       [32mΓ£ô[39m fuzzes schema parameters safely to execute internal logic branches[32m 12[2mms[22m[39m
-       [32mΓ£ô[39m renders deterministic SVG with default params[32m 1[2mms[22m[39m
-       [32mΓ£ô[39m handles boundary parameters without crashing[32m 0[2mms[22m[39m
-       [32mΓ£ô[39m exhaustively tests all select and toggle branches to guarantee structural coverage[32m 1[2mms[22m[39m
-       [32mΓ£ô[39m fuzzes schema parameters safely to execute internal logic branches[32m 0[2mms[22m[39m
-       [32mΓ£ô[39m renders deterministic SVG with default params[32m 0[2mms[22m[39m
-       [32mΓ£ô[39m handles boundary parameters without crashing[32m 0[2mms[22m[39m
-       [32mΓ£ô[39m exhaustively tests all select and toggle branches to guarantee structural coverage[32m 0[2mms[22m[39m
-       [32mΓ£ô[39m fuzzes schema parameters safely to execute internal logic branches[32m 0[2mms[22m[39m
-       [32mΓ£ô[39m renders deterministic SVG with default params[32m 0[2mms[22m[39m
-       [32mΓ£ô[39m handles boundary parameters without crashing[32m 0[2mms[22m[39m
-       [32mΓ£ô[39m exhaustively tests all select and toggle branches to guarantee structural coverage[32m 1[2mms[22m[39m
-       [32mΓ£ô[39m fuzzes schema parameters safely to execute internal logic branches[32m 0[2mms[22m[39m
-       [32mΓ£ô[39m renders deterministic SVG with default params[32m 0[2mms[22m[39m
-       [32mΓ£ô[39m handles boundary parameters without crashing[32m 0[2mms[22m[39m
-       [32mΓ£ô[39m exhaustively tests all select and toggle branches to guarantee structural coverage[32m 1[2mms[22m[39m
-       [32mΓ£ô[39m fuzzes schema parameters safely to execute internal logic branches[32m 0[2mms[22m[39m
-       [32mΓ£ô[39m renders deterministic SVG with default params[32m 1[2mms[22m[39m
-       [32mΓ£ô[39m handles boundary parameters without crashing[32m 0[2mms[22m[39m
-       [32mΓ£ô[39m exhaustively tests all select and toggle branches to guarantee structural coverage[32m 5[2mms[22m[39m
-       [32mΓ£ô[39m fuzzes schema parameters safely to execute internal logic branches[32m 2[2mms[22m[39m
-       [32mΓ£ô[39m renders deterministic SVG with default params[32m 0[2mms[22m[39m
-       [32mΓ£ô[39m handles boundary parameters without crashing[32m 0[2mms[22m[39m
-       [32mΓ£ô[39m exhaustively tests all select and toggle branches to guarantee structural coverage[32m 0[2mms[22m[39m
-       [32mΓ£ô[39m fuzzes schema parameters safely to execute internal logic branches[32m 0[2mms[22m[39m
-       [32mΓ£ô[39m renders deterministic SVG with default params[32m 0[2mms[22m[39m
-       [32mΓ£ô[39m handles boundary parameters without crashing[32m 0[2mms[22m[39m
-       [32mΓ£ô[39m exhaustively tests all select and toggle branches to guarantee structural coverage[32m 0[2mms[22m[39m
-       [32mΓ£ô[39m fuzzes schema parameters safely to execute internal logic branches[32m 0[2mms[22m[39m
-       [32mΓ£ô[39m renders deterministic SVG with default params[32m 0[2mms[22m[39m
-       [32mΓ£ô[39m handles boundary parameters without crashing[32m 0[2mms[22m[39m
-       [32mΓ£ô[39m exhaustively tests all select and toggle branches to guarantee structural coverage[32m 0[2mms[22m[39m
-       [32mΓ£ô[39m fuzzes schema parameters safely to execute internal logic branches[32m 0[2mms[22m[39m
-       [32mΓ£ô[39m renders deterministic SVG with default params[32m 0[2mms[22m[39m
-       [32mΓ£ô[39m handles boundary parameters without crashing[32m 0[2mms[22m[39m
-       [32mΓ£ô[39m exhaustively tests all select and toggle branches to guarantee structural coverage[32m 1[2mms[22m[39m
-       [32mΓ£ô[39m fuzzes schema parameters safely to execute internal logic branches[32m 1[2mms[22m[39m
-       [32mΓ£ô[39m renders deterministic SVG with default params[32m 0[2mms[22m[39m
-       [32mΓ£ô[39m handles boundary parameters without crashing[32m 0[2mms[22m[39m
-       [32mΓ£ô[39m exhaustively tests all select and toggle branches to guarantee structural coverage[32m 0[2mms[22m[39m
-       [32mΓ£ô[39m fuzzes schema parameters safely to execute internal logic branches[32m 0[2mms[22m[39m
-       [32mΓ£ô[39m renders deterministic SVG with default params[32m 1[2mms[22m[39m
-       [32mΓ£ô[39m handles boundary parameters without crashing[32m 1[2mms[22m[39m
-       [32mΓ£ô[39m exhaustively tests all select and toggle branches to guarantee structural coverage[32m 3[2mms[22m[39m
-       [32mΓ£ô[39m fuzzes schema parameters safely to execute internal logic branches[32m 3[2mms[22m[39m
-[31m       [31m├ù[31m renders deterministic SVG with default params[39m[32m 8[2mms[22m[39m
-       [32mΓ£ô[39m handles boundary parameters without crashing[32m 0[2mms[22m[39m
-       [32mΓ£ô[39m exhaustively tests all select and toggle branches to guarantee structural coverage[32m 0[2mms[22m[39m
-       [32mΓ£ô[39m fuzzes schema parameters safely to execute internal logic branches[32m 0[2mms[22m[39m
-       [32mΓ£ô[39m renders deterministic SVG with default params[32m 0[2mms[22m[39m
-       [32mΓ£ô[39m handles boundary parameters without crashing[32m 0[2mms[22m[39m
-       [32mΓ£ô[39m exhaustively tests all select and toggle branches to guarantee structural coverage[32m 0[2mms[22m[39m
-       [32mΓ£ô[39m fuzzes schema parameters safely to execute internal logic branches[32m 0[2mms[22m[39m
-       [32mΓ£ô[39m renders deterministic SVG with default params[32m 0[2mms[22m[39m
-       [32mΓ£ô[39m handles boundary parameters without crashing[32m 0[2mms[22m[39m
-       [32mΓ£ô[39m exhaustively tests all select and toggle branches to guarantee structural coverage[32m 0[2mms[22m[39m
-       [32mΓ£ô[39m fuzzes schema parameters safely to execute internal logic branches[32m 0[2mms[22m[39m
-       [32mΓ£ô[39m renders deterministic SVG with default params[32m 0[2mms[22m[39m
-       [32mΓ£ô[39m handles boundary parameters without crashing[32m 0[2mms[22m[39m
-       [32mΓ£ô[39m exhaustively tests all select and toggle branches to guarantee structural coverage[32m 0[2mms[22m[39m
-       [32mΓ£ô[39m fuzzes schema parameters safely to execute internal logic branches[32m 0[2mms[22m[39m
-       [32mΓ£ô[39m renders deterministic SVG with default params[32m 0[2mms[22m[39m
-       [32mΓ£ô[39m handles boundary parameters without crashing[32m 0[2mms[22m[39m
-       [32mΓ£ô[39m exhaustively tests all select and toggle branches to guarantee structural coverage[32m 0[2mms[22m[39m
-       [32mΓ£ô[39m fuzzes schema parameters safely to execute internal logic branches[32m 0[2mms[22m[39m
-       [32mΓ£ô[39m renders deterministic SVG with default params[32m 0[2mms[22m[39m
-       [32mΓ£ô[39m handles boundary parameters without crashing[32m 0[2mms[22m[39m
-       [32mΓ£ô[39m exhaustively tests all select and toggle branches to guarantee structural coverage[32m 0[2mms[22m[39m
-       [32mΓ£ô[39m fuzzes schema parameters safely to execute internal logic branches[32m 0[2mms[22m[39m
-       [32mΓ£ô[39m renders deterministic SVG with default params[32m 0[2mms[22m[39m
-       [32mΓ£ô[39m handles boundary parameters without crashing[32m 0[2mms[22m[39m
-       [32mΓ£ô[39m exhaustively tests all select and toggle branches to guarantee structural coverage[32m 1[2mms[22m[39m
-       [32mΓ£ô[39m fuzzes schema parameters safely to execute internal logic branches[32m 1[2mms[22m[39m
-       [32mΓ£ô[39m renders deterministic SVG with default params[32m 0[2mms[22m[39m
-       [32mΓ£ô[39m handles boundary parameters without crashing[32m 0[2mms[22m[39m
-       [32mΓ£ô[39m exhaustively tests all select and toggle branches to guarantee structural coverage[32m 0[2mms[22m[39m
-       [32mΓ£ô[39m fuzzes schema parameters safely to execute internal logic branches[32m 0[2mms[22m[39m
-       [32mΓ£ô[39m renders deterministic SVG with default params[32m 0[2mms[22m[39m
-       [32mΓ£ô[39m handles boundary parameters without crashing[32m 0[2mms[22m[39m
-       [32mΓ£ô[39m exhaustively tests all select and toggle branches to guarantee structural coverage[32m 0[2mms[22m[39m
-       [32mΓ£ô[39m fuzzes schema parameters safely to execute internal logic branches[32m 0[2mms[22m[39m
-       [32mΓ£ô[39m renders deterministic SVG with default params[32m 0[2mms[22m[39m
-       [32mΓ£ô[39m handles boundary parameters without crashing[32m 0[2mms[22m[39m
-       [32mΓ£ô[39m exhaustively tests all select and toggle branches to guarantee structural coverage[32m 1[2mms[22m[39m
-       [32mΓ£ô[39m fuzzes schema parameters safely to execute internal logic branches[32m 0[2mms[22m[39m
-       [32mΓ£ô[39m renders deterministic SVG with default params[32m 0[2mms[22m[39m
-       [32mΓ£ô[39m handles boundary parameters without crashing[32m 0[2mms[22m[39m
-       [32mΓ£ô[39m exhaustively tests all select and toggle branches to guarantee structural coverage[32m 0[2mms[22m[39m
-       [32mΓ£ô[39m fuzzes schema parameters safely to execute internal logic branches[32m 0[2mms[22m[39m
-       [32mΓ£ô[39m renders deterministic SVG with default params[32m 1[2mms[22m[39m
-       [32mΓ£ô[39m handles boundary parameters without crashing[32m 0[2mms[22m[39m
-       [32mΓ£ô[39m exhaustively tests all select and toggle branches to guarantee structural coverage[32m 2[2mms[22m[39m
-       [32mΓ£ô[39m fuzzes schema parameters safely to execute internal logic branches[32m 0[2mms[22m[39m
-       [32mΓ£ô[39m renders deterministic SVG with default params[32m 0[2mms[22m[39m
-       [32mΓ£ô[39m handles boundary parameters without crashing[32m 0[2mms[22m[39m
-       [32mΓ£ô[39m exhaustively tests all select and toggle branches to guarantee structural coverage[32m 0[2mms[22m[39m
-       [32mΓ£ô[39m fuzzes schema parameters safely to execute internal logic branches[32m 0[2mms[22m[39m
+ Γ¥» src/lib/engine/generators/generators.test.ts (101 tests | 1 failed) 132ms
+     Γ£ô Every registered generator exposes a valid schema 2ms
+       Γ£ô renders deterministic SVG with default params 4ms
+       Γ£ô handles boundary parameters without crashing 3ms
+       Γ£ô exhaustively tests all select and toggle branches to guarantee structural coverage 56ms
+       Γ£ô fuzzes schema parameters safely to execute internal logic branches 12ms
+       Γ£ô renders deterministic SVG with default params 1ms
+       Γ£ô handles boundary parameters without crashing 0ms
+       Γ£ô exhaustively tests all select and toggle branches to guarantee structural coverage 1ms
+       Γ£ô fuzzes schema parameters safely to execute internal logic branches 0ms
+       Γ£ô renders deterministic SVG with default params 0ms
+       Γ£ô handles boundary parameters without crashing 0ms
+       Γ£ô exhaustively tests all select and toggle branches to guarantee structural coverage 0ms
+       Γ£ô fuzzes schema parameters safely to execute internal logic branches 0ms
+       Γ£ô renders deterministic SVG with default params 0ms
+       Γ£ô handles boundary parameters without crashing 0ms
+       Γ£ô exhaustively tests all select and toggle branches to guarantee structural coverage 1ms
+       Γ£ô fuzzes schema parameters safely to execute internal logic branches 0ms
+       Γ£ô renders deterministic SVG with default params 1ms
+       Γ£ô handles boundary parameters without crashing 0ms
+       Γ£ô exhaustively tests all select and toggle branches to guarantee structural coverage 1ms
+       Γ£ô fuzzes schema parameters safely to execute internal logic branches 0ms
+       Γ£ô renders deterministic SVG with default params 1ms
+       Γ£ô handles boundary parameters without crashing 0ms
+       Γ£ô exhaustively tests all select and toggle branches to guarantee structural coverage 6ms
+       Γ£ô fuzzes schema parameters safely to execute internal logic branches 4ms
+       Γ£ô renders deterministic SVG with default params 0ms
+       Γ£ô handles boundary parameters without crashing 0ms
+       Γ£ô exhaustively tests all select and toggle branches to guarantee structural coverage 0ms
+       Γ£ô fuzzes schema parameters safely to execute internal logic branches 0ms
+       Γ£ô renders deterministic SVG with default params 0ms
+       Γ£ô handles boundary parameters without crashing 0ms
+       Γ£ô exhaustively tests all select and toggle branches to guarantee structural coverage 0ms
+       Γ£ô fuzzes schema parameters safely to execute internal logic branches 0ms
+       Γ£ô renders deterministic SVG with default params 0ms
+       Γ£ô handles boundary parameters without crashing 0ms
+       Γ£ô exhaustively tests all select and toggle branches to guarantee structural coverage 0ms
+       Γ£ô fuzzes schema parameters safely to execute internal logic branches 0ms
+       Γ£ô renders deterministic SVG with default params 1ms
+       Γ£ô handles boundary parameters without crashing 0ms
+       Γ£ô exhaustively tests all select and toggle branches to guarantee structural coverage 2ms
+       Γ£ô fuzzes schema parameters safely to execute internal logic branches 1ms
+       Γ£ô renders deterministic SVG with default params 0ms
+       Γ£ô handles boundary parameters without crashing 0ms
+       Γ£ô exhaustively tests all select and toggle branches to guarantee structural coverage 0ms
+       Γ£ô fuzzes schema parameters safely to execute internal logic branches 0ms
+       Γ£ô renders deterministic SVG with default params 1ms
+       Γ£ô handles boundary parameters without crashing 1ms
+       Γ£ô exhaustively tests all select and toggle branches to guarantee structural coverage 3ms
+       Γ£ô fuzzes schema parameters safely to execute internal logic branches 3ms
+       ├ù renders deterministic SVG with default params 7ms
+       Γ£ô handles boundary parameters without crashing 0ms
+       Γ£ô exhaustively tests all select and toggle branches to guarantee structural coverage 0ms
+       Γ£ô fuzzes schema parameters safely to execute internal logic branches 0ms
+       Γ£ô renders deterministic SVG with default params 0ms
+       Γ£ô handles boundary parameters without crashing 0ms
+       Γ£ô exhaustively tests all select and toggle branches to guarantee structural coverage 0ms
+       Γ£ô fuzzes schema parameters safely to execute internal logic branches 0ms
+       Γ£ô renders deterministic SVG with default params 0ms
+       Γ£ô handles boundary parameters without crashing 0ms
+       Γ£ô exhaustively tests all select and toggle branches to guarantee structural coverage 0ms
+       Γ£ô fuzzes schema parameters safely to execute internal logic branches 0ms
+       Γ£ô renders deterministic SVG with default params 0ms
+       Γ£ô handles boundary parameters without crashing 0ms
+       Γ£ô exhaustively tests all select and toggle branches to guarantee structural coverage 0ms
+       Γ£ô fuzzes schema parameters safely to execute internal logic branches 0ms
+       Γ£ô renders deterministic SVG with default params 0ms
+       Γ£ô handles boundary parameters without crashing 0ms
+       Γ£ô exhaustively tests all select and toggle branches to guarantee structural coverage 0ms
+       Γ£ô fuzzes schema parameters safely to execute internal logic branches 0ms
+       Γ£ô renders deterministic SVG with default params 0ms
+       Γ£ô handles boundary parameters without crashing 0ms
+       Γ£ô exhaustively tests all select and toggle branches to guarantee structural coverage 0ms
+       Γ£ô fuzzes schema parameters safely to execute internal logic branches 0ms
+       Γ£ô renders deterministic SVG with default params 0ms
+       Γ£ô handles boundary parameters without crashing 0ms
+       Γ£ô exhaustively tests all select and toggle branches to guarantee structural coverage 1ms
+       Γ£ô fuzzes schema parameters safely to execute internal logic branches 1ms
+       Γ£ô renders deterministic SVG with default params 0ms
+       Γ£ô handles boundary parameters without crashing 0ms
+       Γ£ô exhaustively tests all select and toggle branches to guarantee structural coverage 0ms
+       Γ£ô fuzzes schema parameters safely to execute internal logic branches 0ms
+       Γ£ô renders deterministic SVG with default params 0ms
+       Γ£ô handles boundary parameters without crashing 0ms
+       Γ£ô exhaustively tests all select and toggle branches to guarantee structural coverage 0ms
+       Γ£ô fuzzes schema parameters safely to execute internal logic branches 0ms
+       Γ£ô renders deterministic SVG with default params 0ms
+       Γ£ô handles boundary parameters without crashing 0ms
+       Γ£ô exhaustively tests all select and toggle branches to guarantee structural coverage 1ms
+       Γ£ô fuzzes schema parameters safely to execute internal logic branches 0ms
+       Γ£ô renders deterministic SVG with default params 0ms
+       Γ£ô handles boundary parameters without crashing 0ms
+       Γ£ô exhaustively tests all select and toggle branches to guarantee structural coverage 0ms
+       Γ£ô fuzzes schema parameters safely to execute internal logic branches 0ms
+       Γ£ô renders deterministic SVG with default params 1ms
+       Γ£ô handles boundary parameters without crashing 0ms
+       Γ£ô exhaustively tests all select and toggle branches to guarantee structural coverage 2ms
+       Γ£ô fuzzes schema parameters safely to execute internal logic branches 0ms
+       Γ£ô renders deterministic SVG with default params 0ms
+       Γ£ô handles boundary parameters without crashing 0ms
+       Γ£ô exhaustively tests all select and toggle branches to guarantee structural coverage 0ms
+       Γ£ô fuzzes schema parameters safely to execute internal logic branches 0ms
 
 ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ» Failed Tests 1 ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»
 
@@ -118,28 +118,28 @@ Error: Snapshot `Dynamic Engine Core Tests > Generator [anim-glitch] > renders d
   						<animateTransform 
   							attributeName="transform" 
   							type="translate" 
-- 							values="-1.185107674088035; -0.37862422899664017; -0.953174603661241; 2.3894827672550645; 1.8221702617139768; 2.0403652252165916; -1.185107674088035" 
-+ 							values="0.15026403483589412; -0.9548363494558332; 0.7264568973639796; 1.375917299583782; 2.228446941255633; -0.4251871297290044; 0.15026403483589412" 
+- 							values="-0.8185795728269285; -1.5239946828555084; 1.9694855884179008; 1.852434305388465; -0.857006055145072; 0.7258762044992251; -0.8185795728269285" 
++ 							values="-1.8456179315144594; 0.15511720501517612; 2.3085935792492265; 1.046393970767917; 2.278955408972995; -2.471384256398297; -1.8456179315144594" 
   							dur="0.50s" 
   							repeatCount="indefinite" 
   							calcMode="discrete"
   						/>
   						
 
- Γ¥» src/lib/engine/generators/generators.test.ts:23:17
-     21| 
-     22|     // Optional: Snapshot to prevent regression
-     23|     expect(svg).toMatchSnapshot();
+ Γ¥» src/lib/engine/generators/generators.test.ts:28:17
+     26| 
+     27|     // Optional: Snapshot to prevent regression
+     28|     expect(svg).toMatchSnapshot();
        |                 ^
-     24|    });
-     25| 
+     29|    });
+     30| 
 
 ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»[1/1]ΓÄ»
 
 
-[2m  Snapshots [22m [1m[31m1 failed[39m[22m
-[2m Test Files [22m [1m[31m1 failed[39m[22m[90m (1)[39m
-[2m      Tests [22m [1m[31m1 failed[39m[22m[2m | [22m[1m[32m100 passed[39m[22m[90m (101)[39m
-[2m   Start at [22m 18:09:06
-[2m   Duration [22m 607ms[2m (transform 143ms, setup 0ms, import 364ms, tests 125ms, environment 0ms)[22m
+  Snapshots  1 failed
+ Test Files  1 failed (1)
+      Tests  1 failed | 100 passed (101)
+   Start at  09:51:37
+   Duration  666ms (transform 146ms, setup 0ms, import 405ms, tests 132ms, environment 0ms)
 

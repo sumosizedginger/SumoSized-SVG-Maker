@@ -2,6 +2,21 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.1.0] - 2026-03-06 (Cinematic & Encoding Resilience)
+
+### Added
+
+- **Nanoscale ViewBox Standard**: All 12 generators now dynamically adapt to any aspect ratio (16:9, 9:16, 21:9) without cropping.
+- **WebM (VP9) Export**: Professional-grade video export with optional alpha transparency support via `ffmpeg.wasm`.
+- **JPEG & WebP Support**: Expanded static export options for maximum web compatibility.
+- **Native File System Access**: Integrated the `showSaveFilePicker` API for reliable, user-directed file saving.
+
+### Changed
+
+- **Hardened MediaService**: Specialized error handling and timeouts to prevent "Preparing..." hangs during long encodes.
+- **Refactored Patterns**: Dots and Grid generators now support infinite tiling across arbitrary viewports.
+- **Centered Asset Logic**: Central elements in Sacred Geometry and Text Effects now utilize `viewBox` context for perfect centering in wide/narrow aspect ratios.
+
 ## [1.0.0] - 2026-03-05 (100/100 Production Grade)
 
 ### Added

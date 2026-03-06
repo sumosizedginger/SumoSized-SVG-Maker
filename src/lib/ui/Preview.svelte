@@ -14,17 +14,18 @@
 	let containerEl: HTMLDivElement;
 	let playing = $state(true);
 
-	// When SVG changes, re-apply pause state after render
+	// Sync SVG playhead with appState.currentTime
 	$effect(() => {
-		// Access svg to make this reactive
-		void svg;
+		const time = appState.currentTime;
 		tick().then(() => {
 			const svgEl = containerEl?.querySelector("svg");
 			if (!svgEl) return;
-			if (!playing) {
-				svgEl.pauseAnimations?.();
-			} else {
-				svgEl.unpauseAnimations?.();
+			// Only set if not playing, or if manually scrubbed
+			// For simplicity in v1, we always set it when state changes
+			try {
+				svgEl.setCurrentTime(time);
+			} catch (e) {
+				// Some browsers might be picky about SMIL state
 			}
 		});
 	});
@@ -39,10 +40,24 @@
 		}
 		playing = !playing;
 	}
+
+	function handleTimelineInput(e: Event) {
+		const val = parseFloat((e.target as HTMLInputElement).value);
+		appState.setCurrentTime(val);
+		if (playing) {
+			const svgEl = containerEl?.querySelector("svg");
+			svgEl?.pauseAnimations?.();
+			playing = false;
+		}
+	}
+
+	let aspectRatioStyle = $derived(
+		`--aspect-ratio: ${appState.documentAspectRatio.replace(":", "/")}`,
+	);
 </script>
 
 <div class="preview-outer">
-	<div class="svg-wrapper" bind:this={containerEl}>
+	<div class="svg-wrapper" bind:this={containerEl} style={aspectRatioStyle}>
 		{@html svg}
 		{#if ["pencil", "brush", "eraser", "line", "rect", "ellipse", "text"].includes(appState.activeTool)}
 			<DrawingSurface />
@@ -60,30 +75,42 @@
 				aria-label={playing ? "Pause" : "Play"}
 			>
 				{#if playing}
-					<!-- Pause icon -->
 					<svg
 						viewBox="0 0 24 24"
-						width="20"
-						height="20"
+						width="18"
+						height="18"
 						fill="currentColor"
 					>
 						<rect x="6" y="4" width="4" height="16" />
 						<rect x="14" y="4" width="4" height="16" />
 					</svg>
-					Pause
 				{:else}
-					<!-- Play icon -->
 					<svg
 						viewBox="0 0 24 24"
-						width="20"
-						height="20"
+						width="18"
+						height="18"
 						fill="currentColor"
 					>
 						<polygon points="5,3 19,12 5,21" />
 					</svg>
-					Play
 				{/if}
 			</button>
+
+			<div class="timeline-container">
+				<span class="time-display"
+					>{appState.currentTime.toFixed(2)}s</span
+				>
+				<input
+					type="range"
+					class="timeline-slider"
+					min="0"
+					max={appState.playbackDuration}
+					step="0.01"
+					value={appState.currentTime}
+					oninput={handleTimelineInput}
+				/>
+				<span class="time-display">{appState.playbackDuration}s</span>
+			</div>
 		</div>
 	{/if}
 </div>
@@ -106,6 +133,11 @@
 		border: 1px solid #003153; /* Prussian Blue */
 		border-bottom: none;
 		position: relative;
+		/* Aspect Ratio Fitting */
+		aspect-ratio: var(--aspect-ratio, 1/1);
+		max-width: 100%;
+		max-height: 100%;
+		margin: auto;
 	}
 
 	:global(.svg-wrapper > svg:first-child) {
@@ -131,29 +163,71 @@
 	.playback-bar {
 		display: flex;
 		align-items: center;
-		gap: 0.75rem;
-		padding: 0.5rem 0.75rem;
-		background: #002147; /* Oxford Blue */
+		gap: 1rem;
+		padding: 0.6rem 1.25rem;
+		background: #001a33; /* Darker navy */
 		border: 1px solid #003153;
 		border-top: none;
 		border-radius: 0 0 8px 8px;
 	}
 
+	.timeline-container {
+		flex: 1;
+		display: flex;
+		align-items: center;
+		gap: 0.75rem;
+	}
+
+	.time-display {
+		font-family: "JetBrains Mono", monospace;
+		font-size: 0.75rem;
+		color: #4dff00;
+		min-width: 45px;
+	}
+
+	.timeline-slider {
+		flex: 1;
+		appearance: none;
+		height: 6px;
+		background: #003153;
+		border-radius: 3px;
+		outline: none;
+		cursor: pointer;
+	}
+
+	.timeline-slider::-webkit-slider-thumb {
+		appearance: none;
+		width: 14px;
+		height: 14px;
+		background: #4dff00;
+		border-radius: 50%;
+		cursor: pointer;
+		box-shadow: 0 0 10px rgba(77, 255, 0, 0.5);
+		transition: transform 0.1s;
+	}
+
+	.timeline-slider::-webkit-slider-thumb:hover {
+		transform: scale(1.2);
+	}
+
 	.play-btn {
 		display: flex;
 		align-items: center;
-		gap: 0.5rem;
-		padding: 0.4rem 1rem;
+		justify-content: center;
+		width: 36px;
+		height: 36px;
 		background: #003153; /* Prussian Blue */
-		color: white;
+		color: #4dff00;
 		border: 1px solid #082567;
-		border-radius: 4px;
+		border-radius: 50%;
 		cursor: pointer;
-		font-size: 0.9rem;
-		width: auto;
+		transition: all 0.2s;
 	}
 
 	.play-btn:hover {
-		background: #191970; /* Midnight Blue */
+		background: #082567;
+		border-color: #4dff00;
+		transform: scale(1.1);
+		box-shadow: 0 0 15px rgba(77, 255, 0, 0.3);
 	}
 </style>

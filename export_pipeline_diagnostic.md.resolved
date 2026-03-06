@@ -1,0 +1,52 @@
+# 🛠️ Export Pipeline Diagnostic: SumoSized SVG Maker
+**Target Audience**: Senior Software Engineer / Fullstack Architect
+**Context**: 100% In-Browser Media Suite using Svelte 5 + FFmpeg.wasm + WebCodecs.
+
+## 🚨 Reported Issues
+Manual testing confirms a "PREPARING" hang on `MOV`, `WebM`, and `GIF` exports. [SVG](file:///d:/SVG/src/lib/engine/core/types.ts#36-46) export is yielding incomplete or inconsistent data.
+
+---
+
+## 1. Video/GIF Export: The "Preparing" Hang
+The UI is stuck in the `PREPARING` state, which maps to the `mediaService.load()` and `ffmpeg.load()` lifecycle.
+
+### Likely Root Causes
+1. **SharedArrayBuffer Security (COOP/COEP)**:
+   - While [vite.config.ts](file:///d:/SVG/vite.config.ts) includes the headers, `ffmpeg.wasm` requires strict `require-corp` and `same-origin`.
+   - **Diagnosis**: If running on `localhost` without HTTPS (or a reverse proxy stripping headers), `ffmpeg.load()` will hang silently or throw a `ReferenceError: SharedArrayBuffer is not defined`.
+   - **Solution**: Verify the headers in Chrome DevTools Network tab. If they are present but it still hangs, the WASM fetch might be timing out or blocked by CORS from `unpkg.com`.
+
+2. **Uncaught Async re-entrance**:
+   - [MediaService](file:///d:/SVG/src/lib/services/mediaService.ts#5-163) uses a `private loading = false` guard, but if `ffmpeg.load()` fails once, the state might be trapped.
+   - **Solution**: Need a robust timeout on `ffmpeg.load()` and a fallback to a "Software-only" mode or a clear error surfacing.
+
+3. **FFmpeg FS Bloat**:
+   - The capture loop writes PNG frames to the virtual FS. If the browser is memory-constrained, `writeFile` might hang before encoding starts.
+
+---
+
+## 2. SVG Export: Serialization Integrity
+The `renderedSvg` is a derived property that synthesizes layers.
+
+### Likely Root Causes
+1. **Namespace Collisions**:
+   - When exporting, we use `XMLSerializer`. If manual edits were made to generators (e.g., adding `mask` or `clipPath`), IDs must be globally unique. Duplicate IDs cause the browser to render the first one it finds, leading to "blank" or "frozen" exports.
+2. **ViewBox / Transform Mismatch**:
+   - The export logic in `AppState.renderComposition` pulls from a specific query selector `.svg-wrapper > svg`. If the UI scales this element, the serializer may grab the scaled dimensions instead of the underlying `viewBox` coordinates.
+   - **Solution**: Use `appState.renderedSvg` (the raw string) for SVG exports rather than re-serializing the DOM.
+
+---
+
+## 3. WebM (VP9) Specific Failure
+1. **Alpha Channel Encoding**:
+   - The `webm` command uses `-pix_fmt yuva420p` (with Alpha). Some FFmpeg.wasm builds (specifically `0.12.x` core) struggle with VP9 alpha encoding without specific hardware-acceleration flags.
+   - **Solution**: Fallback to standard `yuv420p` if alpha is not a strict requirement, or switch to the `WebCodecs API` for WebM (which is natively supported and faster).
+
+---
+
+## Technical Recommendations for Senior SWE
+1. **Promisify FFmpeg Log Monitoring**: Move the `ffmpeg.on("log", ...)` into a state-aware listener that can detect "Fatal" errors and break the UI hang.
+2. **Offload Capture to Worker**: Use an OffscreenCanvas and a WebWorker for the frame-capture-to-PNG loop to keep the Main Thread responsive.
+3. **Blob-First SVG Export**: Refactor [exportOriginalAssets](file:///d:/SVG/src/lib/state/appState.svelte.ts#303-366) and [renderComposition('svg')](file:///d:/SVG/src/lib/state/appState.svelte.ts#854-931) to use the state-string directly to ensure what's in memory is what's on disk.
+
+**Mission Status**: Engine Architecture is 100/100, but the Encoding Middle-layer is experiencing browser-security-context friction. 🦾⚡🇺🇸

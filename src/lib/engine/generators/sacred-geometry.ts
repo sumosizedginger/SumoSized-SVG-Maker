@@ -12,7 +12,7 @@ export const sacredGeometryGenerator: SVGGenerator = {
 	name: "Sacred Geometry",
 	description:
 		"Standalone sacred geometric matrices (Metatron Cube, Seed of Life) optimized for stacking and overlaying.",
-	category: "Abstract",
+	category: "Pro",
 	tags: ["math", "glow", "neon", "sacred", "geometry", "metatron", "overlay"],
 	version: "1.0.0",
 	params: [
@@ -117,7 +117,7 @@ export const sacredGeometryGenerator: SVGGenerator = {
 		usePalette: z.boolean(),
 		transparent: z.boolean(),
 	}),
-	render: (params, seed) => {
+	render: (params, seed, viewBox = { x: 0, y: 0, w: 100, h: 100 }) => {
 		let currentSeed = seed;
 		const random = () => seededRandom(currentSeed++);
 
@@ -141,7 +141,7 @@ export const sacredGeometryGenerator: SVGGenerator = {
 		const bgColors = ["#05050a", "#020205", "#080510", "#0a0005"];
 		const bgColor = bgColors[Math.floor(random() * bgColors.length)];
 
-		let svgMarkup = `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" style="background-color: ${transparent ? "transparent" : bgColor};">\n`;
+		let svgMarkup = `<svg viewBox="${viewBox.x} ${viewBox.y} ${viewBox.w} ${viewBox.h}" xmlns="http://www.w3.org/2000/svg" style="background-color: ${transparent ? "transparent" : bgColor};">\n`;
 		svgMarkup += `<title>${sacredMode}</title>\n`;
 		svgMarkup += `<desc>Sacred geometric matrix: ${sacredMode} rendered with ${glowIntensity} glow intensity.</desc>\n`;
 

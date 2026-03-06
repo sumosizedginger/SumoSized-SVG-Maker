@@ -11,7 +11,7 @@ The SumoSized SVG Generator ecosystem currently formally supports the latest rel
 
 ## Reporting a Vulnerability
 
-Because the engine evaluates mathematical matrices entirely on the client without database synchronization or server endpoints, traditional RCE and DB vulnerabilities are fundamentally non-existent by architecture. 
+Because the engine evaluates mathematical matrices entirely on the client without database synchronization or server endpoints, traditional RCE and DB vulnerabilities are fundamentally non-existent by architecture.
 
 However, if you uncover any memory-leak vectors, SSR hydration attacks natively rooted in the standalone NPM Engine package, or SvelteKit route misconfigurations, please DO NOT report them directly via public GitHub issues.
 

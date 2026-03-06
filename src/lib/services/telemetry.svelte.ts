@@ -6,7 +6,7 @@
 
 // In a real app, this would point to an actual ingestion endpoint (e.g. PostHog, custom API)
 const TELEMETRY_ENDPOINT = "https://api.example.com/telemetry";
-const IS_ENABLED = true; // Feature flag
+const IS_ENABLED = false; // Feature flag
 
 type TelemetryPayload = {
 	generatorId: string;
