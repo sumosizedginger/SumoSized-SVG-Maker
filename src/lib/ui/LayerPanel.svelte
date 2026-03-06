@@ -74,17 +74,47 @@
 			appState.saveState();
 		}
 	}
-	async function handleImportSVG() {
+	async function handleImport() {
 		const input = document.createElement("input");
 		input.type = "file";
-		input.accept = ".svg";
+		input.accept = ".svg,.png,.apng,.jpg,.jpeg,.webp,.gif,.mp4,.webm";
 		input.onchange = async (e) => {
 			const file = (e.target as HTMLInputElement).files?.[0];
 			if (!file) return;
-			const text = await file.text();
 
-			// Atomic add: avoids intermediate render of placeholder circle
-			appState.addLayer("svg-import", { svgData: text });
+			let url = "";
+			let sourceType: "svg" | "image" | "video" = "image";
+
+			if (file.name.toLowerCase().endsWith(".svg")) {
+				url = await file.text();
+				sourceType = "svg";
+			} else if (
+				file.name.toLowerCase().endsWith(".mp4") ||
+				file.name.toLowerCase().endsWith(".webm")
+			) {
+				url = await new Promise((resolve) => {
+					const reader = new FileReader();
+					reader.onload = () => resolve(reader.result as string);
+					reader.readAsDataURL(file);
+				});
+				sourceType = "video";
+			} else {
+				// PNG, JPG, GIF
+				url = await new Promise((resolve) => {
+					const reader = new FileReader();
+					reader.onload = () => resolve(reader.result as string);
+					reader.readAsDataURL(file);
+				});
+				sourceType = "image";
+			}
+
+			// Use unified-import for everything
+			appState.addLayer("unified-import", {
+				url,
+				sourceType,
+				name: file.name,
+			});
+
 			const newLayerId = appState.activeLayerId;
 
 			let retries = 0;
@@ -97,7 +127,6 @@
 				if (g && g.getBBox) {
 					try {
 						const b = g.getBBox();
-						// Verify we have real dimensions
 						if (b.width > 2 && b.height > 2) {
 							appState.fitLayerToCanvas(newLayerId);
 							return;
@@ -117,13 +146,13 @@
 </script>
 
 <div class="layer-panel">
-	<button class="import-btn" onclick={handleImportSVG}>
+	<button class="import-btn" onclick={handleImport}>
 		<svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
 			<path
 				d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM14 13v4h-4v-4H7l5-5 5 5h-3z"
 			/>
 		</svg>
-		Import SVG
+		Import
 	</button>
 	{#if displayLayers.length === 0}
 		<div class="empty-state">No layers. Click a generator to add one.</div>

@@ -53,7 +53,11 @@ SumoSized SVG Generator is a static web application built with SvelteKit that ge
 
 ## Key Features
 
-- **Elite 12 Animation Suite**: Professional, Zod-validated SVG animation generators (Matrix Rain, Neural Synthesis, Quantum Pulse, Event Horizon, and more).
+-   **Elite 12 Animations**: Physics-simulated, Zod-validated SVG generators.
+-   **Unified Import Engine**: Support for SVG vectors, Raster images (PNG/JPG/GIF), and Videos (MP4/WebM).
+-   **Visual Filter Pipeline**: Professional-grade post-processing (Gaussian Blur, Turbulent Displacement).
+-   **Dynamic Masking**: Non-destructive layer-to-layer alpha masking.
+-   **100/100 OSS Identity**: This project is and will remain Open Source Software (MIT License). No corporate gatekeeping.
 - **Media Injection (Alpha)**: Integration with FFmpeg.wasm for high-performance GIF/WebP/APNG exports from procedural canvas frames.
 - **Strict Zod-Validated Generators**: Every math engine conforms to strict schemas for deterministic, agent-friendly SVG creation.
 - **Cross-Origin Isolation**: Enabled via `coi-serviceworker` to allow multi-threaded WASM processing on any host.

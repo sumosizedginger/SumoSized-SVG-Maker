@@ -10,8 +10,7 @@ import { orbit, matrixRain, quantumPulse, kineticFlow, glitchInterference, neonF
 import { symbolGrid } from "../generators/icons";
 import { freeDraw } from "../generators/free-draw";
 import { textEffects } from "../generators/text-effects";
-import { svgImport } from "../generators/svg-import";
-import { imageLayer } from "../generators/image-layer";
+import { unifiedImport } from "../generators/unified-import";
 
 export const generators: SVGGenerator[] = [
 	quantumCoreGenerator,
@@ -38,8 +37,7 @@ export const generators: SVGGenerator[] = [
 	symbolGrid,
 	freeDraw,
 	textEffects,
-	svgImport,
-	imageLayer,
+	unifiedImport,
 ];
 
 export function getGenerator(id: string): SVGGenerator | undefined {
