@@ -63,6 +63,765 @@ exports[`Dynamic Engine Core Tests > Generator [abstract-flow] > renders determi
       </svg>"
 `;
 
+exports[`Dynamic Engine Core Tests > Generator [anim-chroma] > renders deterministic SVG with default params 1`] = `
+"<svg width="100%" height="100%" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+				<title>Chroma Displacement</title>
+				<defs>
+					<linearGradient id="chromaGrad-12345" x1="0" y1="0" x2="1" y2="1">
+						<stop offset="0%" stop-color="#ff0000" />
+						<stop offset="33%" stop-color="#00ff00" />
+						<stop offset="66%" stop-color="#0000ff" />
+						<stop offset="100%" stop-color="#ff0000" />
+						<animateTransform 
+							attributeName="gradientTransform" 
+							type="rotate" 
+							from="0 0.5 0.5" to="360 0.5 0.5" 
+							dur="10.00s" 
+							repeatCount="indefinite" 
+						/>
+					</linearGradient>
+				</defs>
+				<rect width="100" height="100" fill="url(#chromaGrad-12345)" opacity="0.6" />
+			</svg>"
+`;
+
+exports[`Dynamic Engine Core Tests > Generator [anim-glitch] > renders deterministic SVG with default params 1`] = `
+"<svg width="100%" height="100%" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" style="background: black;">
+				<title>Glitch Interference</title>
+				<defs>
+					<filter id="glitchFilter-12345">
+						<feOffset in="SourceGraphic" dx="1.5" dy="0" result="red" />
+						<feOffset in="SourceGraphic" dx="-1.5" dy="0" result="cyan" />
+						<feColorMatrix in="red" type="matrix" values="1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 0" result="red_only" />
+						<feColorMatrix in="cyan" type="matrix" values="0 0 0 0 0 0 1 0 0 0 0 0 1 0 0 0 0 0 1 0" result="cyan_only" />
+						<feBlend in="red_only" in2="cyan_only" mode="screen" result="split" />
+						<feBlend in="split" in2="SourceGraphic" mode="screen" />
+					</filter>
+				</defs>
+				
+				<rect width="100" height="100" fill="black" />
+				
+				<g filter="url(#glitchFilter-12345)">
+					<g transform-origin="50 50">
+						<animateTransform 
+							attributeName="transform" 
+							type="translate" 
+							values="1.9226691613039382; -2.031887078886254; 1.3569177337782834; -0.09759505848343286; 0.5680257906787856; -0.15878464608920617; 1.9226691613039382" 
+							dur="0.50s" 
+							repeatCount="indefinite" 
+							calcMode="discrete"
+						/>
+						
+						<!-- Glitch Bars -->
+						<rect x="10" y="20" width="80" height="2" fill="#ffffff" opacity="0.8">
+							<animate attributeName="y" values="20; 80; 10; 50; 20" dur="0.75s" repeatCount="indefinite" calcMode="discrete" />
+							<animate attributeName="width" values="80; 20; 90; 40; 80" dur="0.35s" repeatCount="indefinite" calcMode="discrete" />
+						</rect>
+						
+						<rect x="10" y="70" width="80" height="1" fill="#ffffff" opacity="0.5">
+							<animate attributeName="y" values="70; 10; 40; 90; 70" dur="1.00s" repeatCount="indefinite" calcMode="discrete" />
+							<animate attributeName="x" values="10; 50; 0; 30; 10" dur="0.25s" repeatCount="indefinite" calcMode="discrete" />
+						</rect>
+
+						<text x="50" y="55" font-family="monospace" font-size="12" fill="#ffffff" text-anchor="middle" font-weight="bold">
+							ERROR_SYSTEM_FAILURE
+							<animate attributeName="opacity" values="1; 0; 1; 0.2; 1" dur="0.15s" repeatCount="indefinite" calcMode="discrete" />
+						</text>
+					</g>
+				</g>
+			</svg>"
+`;
+
+exports[`Dynamic Engine Core Tests > Generator [anim-kinetic-flow] > renders deterministic SVG with default params 1`] = `
+"<svg width="100%" height="100%" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" style="background: black;">
+				<title>Kinetic Flow</title>
+				<rect width="100" height="100" fill="black" />
+				<g style="mix-blend-mode: screen;">
+					
+				<path 
+					d="M 9.66 83.40 L 11.37 80.93 L 11.85 77.97 L 9.20 76.57 L 8.40 79.47 L 5.44 79.90 L 3.46 82.16 L 0.53 82.81 L -2.32 83.74 L -5.32 83.62 L -8.21 82.80 L -10.82 81.32" 
+					fill="none" 
+					stroke="#00f5f4" 
+					stroke-width="0.6" 
+					stroke-opacity="0.8" 
+					stroke-dasharray="10 33"
+				>
+					<animate 
+						attributeName="stroke-dashoffset" 
+						from="43" 
+						to="0" 
+						dur="3.33s" 
+						repeatCount="indefinite" 
+					/>
+				</path>
+			
+				<path 
+					d="M 94.77 3.59 L 95.18 6.56 L 92.24 7.18 L 91.70 10.13 L 89.25 11.86 L 88.21 14.68 L 86.82 17.33 L 86.21 20.27 L 86.43 23.27 L 87.64 26.01 L 89.47 28.38 L 91.43 30.66 L 93.47 32.86 L 95.54 35.03 L 97.64 37.17 L 99.76 39.29 L 101.91 41.39 L 104.08 43.46 L 106.28 45.50 L 108.52 47.50 L 110.82 49.42" 
+					fill="none" 
+					stroke="#00f5f4" 
+					stroke-width="0.6" 
+					stroke-opacity="0.8" 
+					stroke-dasharray="10 60"
+				>
+					<animate 
+						attributeName="stroke-dashoffset" 
+						from="70" 
+						to="0" 
+						dur="3.33s" 
+						repeatCount="indefinite" 
+					/>
+				</path>
+			
+				<path 
+					d="M 1.15 5.12 L -1.83 4.77 L -4.79 5.26 L -7.67 4.44 L -10.36 3.10" 
+					fill="none" 
+					stroke="#00f5f4" 
+					stroke-width="0.6" 
+					stroke-opacity="0.8" 
+					stroke-dasharray="10 12"
+				>
+					<animate 
+						attributeName="stroke-dashoffset" 
+						from="22" 
+						to="0" 
+						dur="3.33s" 
+						repeatCount="indefinite" 
+					/>
+				</path>
+			
+				<path 
+					d="M 76.58 58.49 L 79.58 58.57 L 82.55 58.99 L 84.99 60.74 L 85.48 63.70 L 83.96 66.29 L 81.75 68.32 L 79.14 69.79 L 76.24 70.58 L 73.24 70.56 L 70.36 69.71 L 67.77 68.21 L 65.49 66.25 L 63.56 63.96 L 62.03 61.38 L 60.99 58.57 L 60.59 55.59 L 60.92 52.61 L 61.96 49.79 L 63.50 47.22 L 65.39 44.90 L 67.55 42.81 L 69.93 40.98 L 72.52 39.47 L 75.31 38.37 L 78.26 37.83 L 81.26 37.97 L 84.14 38.82 L 86.80 40.21 L 89.25 41.94 L 91.51 43.91" 
+					fill="none" 
+					stroke="#00f5f4" 
+					stroke-width="0.6" 
+					stroke-opacity="0.8" 
+					stroke-dasharray="10 90"
+				>
+					<animate 
+						attributeName="stroke-dashoffset" 
+						from="100" 
+						to="0" 
+						dur="3.33s" 
+						repeatCount="indefinite" 
+					/>
+				</path>
+			
+				<path 
+					d="M 91.41 78.38 L 90.18 75.65 L 88.04 77.75 L 85.56 79.44 L 83.12 81.19 L 80.41 82.46 L 77.57 83.45 L 74.59 83.75 L 71.63 83.28 L 68.89 82.05 L 66.38 80.40 L 64.02 78.55 L 61.77 76.57 L 59.58 74.51 L 57.48 72.38 L 55.43 70.18 L 53.48 67.91 L 51.62 65.55 L 49.92 63.08 L 48.45 60.47 L 47.36 57.67 L 46.90 54.71 L 47.38 51.74 L 48.81 49.11 L 50.70 46.78 L 52.68 44.52 L 54.73 42.33 L 56.80 40.16 L 58.92 38.04 L 61.03 35.91 L 63.20 33.83" 
+					fill="none" 
+					stroke="#00f5f4" 
+					stroke-width="0.6" 
+					stroke-opacity="0.8" 
+					stroke-dasharray="10 90"
+				>
+					<animate 
+						attributeName="stroke-dashoffset" 
+						from="100" 
+						to="0" 
+						dur="3.33s" 
+						repeatCount="indefinite" 
+					/>
+				</path>
+			
+				<path 
+					d="M 33.31 19.51 L 36.02 18.22 L 39.01 18.01 L 42.01 17.93 L 44.84 16.92 L 46.50 14.42 L 46.03 11.46 L 44.28 9.02 L 41.99 7.08 L 39.31 5.74 L 36.37 5.11 L 33.38 5.30 L 30.55 6.29 L 28.01 7.90 L 25.81 9.93 L 23.95 12.29 L 22.51 14.92 L 21.59 17.77 L 21.33 20.76 L 21.81 23.72 L 22.96 26.49 L 24.59 29.01 L 26.54 31.29 L 28.74 33.33 L 31.16 35.10 L 33.80 36.54 L 36.62 37.54 L 39.60 37.95 L 42.58 37.66 L 45.42 36.68 L 48.03 35.21" 
+					fill="none" 
+					stroke="#00f5f4" 
+					stroke-width="0.6" 
+					stroke-opacity="0.8" 
+					stroke-dasharray="10 90"
+				>
+					<animate 
+						attributeName="stroke-dashoffset" 
+						from="100" 
+						to="0" 
+						dur="3.33s" 
+						repeatCount="indefinite" 
+					/>
+				</path>
+			
+				<path 
+					d="M 26.72 79.27 L 27.59 76.40 L 25.41 74.34 L 24.13 77.05 L 21.30 78.04 L 20.13 80.80 L 17.35 81.92 L 16.39 84.76 L 13.72 86.12 L 12.71 88.95 L 10.49 90.97 L 9.33 93.74 L 8.11 96.48 L 7.64 99.44 L 8.06 102.41 L 9.45 105.06 L 11.34 107.40 L 13.31 109.66 L 15.36 111.85" 
+					fill="none" 
+					stroke="#00f5f4" 
+					stroke-width="0.6" 
+					stroke-opacity="0.8" 
+					stroke-dasharray="10 54"
+				>
+					<animate 
+						attributeName="stroke-dashoffset" 
+						from="64" 
+						to="0" 
+						dur="3.33s" 
+						repeatCount="indefinite" 
+					/>
+				</path>
+			
+				<path 
+					d="M 98.39 14.89 L 100.89 16.54 L 99.72 19.30 L 100.11 22.27 L 100.83 25.19 L 102.31 27.79 L 104.07 30.22 L 106.19 32.35 L 108.48 34.28 L 111.03 35.87" 
+					fill="none" 
+					stroke="#00f5f4" 
+					stroke-width="0.6" 
+					stroke-opacity="0.8" 
+					stroke-dasharray="10 27"
+				>
+					<animate 
+						attributeName="stroke-dashoffset" 
+						from="37" 
+						to="0" 
+						dur="3.33s" 
+						repeatCount="indefinite" 
+					/>
+				</path>
+			
+				<path 
+					d="M 33.91 3.41 L 32.55 6.08 L 29.59 6.58 L 27.36 8.58 L 25.14 10.60 L 23.48 13.10 L 22.14 15.78 L 21.43 18.70 L 21.39 21.70 L 22.11 24.61 L 23.43 27.31 L 25.17 29.75 L 27.20 31.96 L 29.48 33.91 L 31.97 35.59 L 34.66 36.90 L 37.54 37.74 L 40.54 37.94 L 43.49 37.42 L 46.26 36.26 L 48.81 34.68 L 51.16 32.82 L 53.34 30.76 L 55.34 28.52 L 57.15 26.13 L 58.70 23.56 L 59.90 20.81 L 60.62 17.90 L 60.68 14.90 L 60.00 11.98 L 58.71 9.27" 
+					fill="none" 
+					stroke="#00f5f4" 
+					stroke-width="0.6" 
+					stroke-opacity="0.8" 
+					stroke-dasharray="10 90"
+				>
+					<animate 
+						attributeName="stroke-dashoffset" 
+						from="100" 
+						to="0" 
+						dur="3.33s" 
+						repeatCount="indefinite" 
+					/>
+				</path>
+			
+				<path 
+					d="M 26.62 16.74 L 24.36 14.77 L 21.63 16.01 L 21.59 19.01 L 21.35 22.00 L 22.25 24.86 L 23.55 27.56 L 25.36 29.96 L 27.40 32.16 L 29.71 34.07 L 32.21 35.74 L 34.93 37.00 L 37.82 37.79 L 40.82 37.92 L 43.76 37.33 L 46.51 36.13 L 49.04 34.52 L 51.38 32.64 L 53.54 30.56 L 55.52 28.31 L 57.30 25.89 L 58.83 23.31 L 59.99 20.55 L 60.66 17.62 L 60.65 14.62 L 59.90 11.72 L 58.57 9.03 L 56.90 6.54 L 55.01 4.20 L 52.98 2.00 L 50.82 -0.09" 
+					fill="none" 
+					stroke="#00f5f4" 
+					stroke-width="0.6" 
+					stroke-opacity="0.8" 
+					stroke-dasharray="10 90"
+				>
+					<animate 
+						attributeName="stroke-dashoffset" 
+						from="100" 
+						to="0" 
+						dur="3.33s" 
+						repeatCount="indefinite" 
+					/>
+				</path>
+			
+				<path 
+					d="M 86.44 20.91 L 86.61 23.91 L 88.02 26.55 L 89.90 28.89 L 91.88 31.15 L 93.93 33.34 L 96.00 35.51 L 98.11 37.64 L 100.23 39.76 L 102.39 41.84 L 104.56 43.92 L 106.77 45.94 L 109.02 47.93 L 111.34 49.84" 
+					fill="none" 
+					stroke="#00f5f4" 
+					stroke-width="0.6" 
+					stroke-opacity="0.8" 
+					stroke-dasharray="10 39"
+				>
+					<animate 
+						attributeName="stroke-dashoffset" 
+						from="49" 
+						to="0" 
+						dur="3.33s" 
+						repeatCount="indefinite" 
+					/>
+				</path>
+			
+				<path 
+					d="M 91.67 23.85 L 88.67 23.79 L 87.77 26.66 L 89.93 28.73 L 91.74 31.13 L 93.91 33.20 L 95.86 35.48 L 98.09 37.49 L 100.07 39.74 L 102.37 41.67 L 104.37 43.90 L 106.72 45.77 L 108.86 47.87 L 111.22 49.72" 
+					fill="none" 
+					stroke="#00f5f4" 
+					stroke-width="0.6" 
+					stroke-opacity="0.8" 
+					stroke-dasharray="10 39"
+				>
+					<animate 
+						attributeName="stroke-dashoffset" 
+						from="49" 
+						to="0" 
+						dur="3.33s" 
+						repeatCount="indefinite" 
+					/>
+				</path>
+			
+				<path 
+					d="M 93.03 93.58 L 91.61 90.93 L 88.61 91.11 L 87.85 94.01 L 86.56 96.72 L 86.17 99.70 L 86.69 102.65 L 88.15 105.27 L 90.05 107.59 L 92.02 109.85 L 94.08 112.04" 
+					fill="none" 
+					stroke="#00f5f4" 
+					stroke-width="0.6" 
+					stroke-opacity="0.8" 
+					stroke-dasharray="10 30"
+				>
+					<animate 
+						attributeName="stroke-dashoffset" 
+						from="40" 
+						to="0" 
+						dur="3.33s" 
+						repeatCount="indefinite" 
+					/>
+				</path>
+			
+				<path 
+					d="M 30.66 62.96 L 33.38 61.71 L 36.38 61.56 L 39.26 62.39 L 41.98 63.65 L 44.74 64.84 L 47.71 65.22 L 50.03 63.32 L 48.57 60.69 L 47.43 57.92 L 46.91 54.97 L 47.30 51.99 L 48.66 49.32 L 50.53 46.98 L 52.50 44.71 L 54.55 42.52 L 56.62 40.35 L 58.73 38.22 L 60.85 36.09 L 63.01 34.01 L 65.17 31.93 L 67.39 29.91 L 69.63 27.92 L 71.95 26.01 L 74.35 24.22 L 76.91 22.65 L 79.69 21.52 L 82.68 21.27 L 85.42 22.50 L 87.12 24.96 L 88.72 27.50" 
+					fill="none" 
+					stroke="#00f5f4" 
+					stroke-width="0.6" 
+					stroke-opacity="0.8" 
+					stroke-dasharray="10 90"
+				>
+					<animate 
+						attributeName="stroke-dashoffset" 
+						from="100" 
+						to="0" 
+						dur="3.33s" 
+						repeatCount="indefinite" 
+					/>
+				</path>
+			
+				<path 
+					d="M 51.21 19.79 L 48.24 20.25 L 46.67 17.69 L 46.89 14.70 L 46.16 11.79 L 44.52 9.28 L 42.28 7.28 L 39.64 5.87 L 36.73 5.14 L 33.73 5.23 L 30.87 6.14 L 28.30 7.68 L 26.05 9.67 L 24.15 11.99 L 22.65 14.59 L 21.66 17.42 L 21.32 20.40 L 21.72 23.38 L 22.80 26.18 L 24.38 28.73 L 26.29 31.03 L 28.47 33.10 L 30.87 34.90 L 33.47 36.39 L 36.28 37.45 L 39.24 37.94 L 42.23 37.73 L 45.09 36.83 L 47.74 35.41 L 50.17 33.65 L 52.42 31.67" 
+					fill="none" 
+					stroke="#00f5f4" 
+					stroke-width="0.6" 
+					stroke-opacity="0.8" 
+					stroke-dasharray="10 90"
+				>
+					<animate 
+						attributeName="stroke-dashoffset" 
+						from="100" 
+						to="0" 
+						dur="3.33s" 
+						repeatCount="indefinite" 
+					/>
+				</path>
+			
+				<path 
+					d="M 91.07 33.48 L 93.52 31.76 L 94.23 34.68 L 97.08 35.61 L 97.93 38.49 L 100.82 39.29 L 101.66 42.17 L 104.55 42.98 L 105.74 45.74 L 108.47 47.00 L 110.41 49.28" 
+					fill="none" 
+					stroke="#00f5f4" 
+					stroke-width="0.6" 
+					stroke-opacity="0.8" 
+					stroke-dasharray="10 30"
+				>
+					<animate 
+						attributeName="stroke-dashoffset" 
+						from="40" 
+						to="0" 
+						dur="3.33s" 
+						repeatCount="indefinite" 
+					/>
+				</path>
+			
+				<path 
+					d="M 98.22 94.94 L 100.60 96.77 L 99.66 99.62 L 100.54 102.49 L 101.58 105.30 L 103.33 107.74 L 105.24 110.05" 
+					fill="none" 
+					stroke="#00f5f4" 
+					stroke-width="0.6" 
+					stroke-opacity="0.8" 
+					stroke-dasharray="10 18"
+				>
+					<animate 
+						attributeName="stroke-dashoffset" 
+						from="28" 
+						to="0" 
+						dur="3.33s" 
+						repeatCount="indefinite" 
+					/>
+				</path>
+			
+				<path 
+					d="M 93.09 5.15 L 93.85 8.05 L 90.97 8.91 L 90.29 11.83 L 88.16 13.95 L 87.13 16.77 L 86.28 19.64 L 86.30 22.64 L 87.31 25.46 L 89.07 27.90 L 91.02 30.18 L 93.03 32.40 L 95.10 34.57 L 97.19 36.72 L 99.31 38.85 L 101.45 40.95 L 103.62 43.02 L 105.81 45.08 L 108.04 47.08 L 110.33 49.03" 
+					fill="none" 
+					stroke="#00f5f4" 
+					stroke-width="0.6" 
+					stroke-opacity="0.8" 
+					stroke-dasharray="10 57"
+				>
+					<animate 
+						attributeName="stroke-dashoffset" 
+						from="67" 
+						to="0" 
+						dur="3.33s" 
+						repeatCount="indefinite" 
+					/>
+				</path>
+			
+				<path 
+					d="M 92.31 88.74 L 89.45 89.66 L 88.72 92.57 L 87.07 95.07 L 86.33 97.98 L 86.26 100.98 L 87.21 103.82 L 88.94 106.28 L 90.88 108.56 L 92.89 110.79" 
+					fill="none" 
+					stroke="#00f5f4" 
+					stroke-width="0.6" 
+					stroke-opacity="0.8" 
+					stroke-dasharray="10 27"
+				>
+					<animate 
+						attributeName="stroke-dashoffset" 
+						from="37" 
+						to="0" 
+						dur="3.33s" 
+						repeatCount="indefinite" 
+					/>
+				</path>
+			
+				<path 
+					d="M 35.65 10.59 L 36.63 7.75 L 35.07 5.19 L 32.10 5.61 L 29.42 6.94 L 27.01 8.73 L 24.96 10.92 L 23.26 13.40 L 22.04 16.13 L 21.38 19.06 L 21.45 22.06 L 22.24 24.95 L 23.62 27.62 L 25.40 30.03 L 27.47 32.21 L 29.77 34.13 L 32.28 35.77 L 35.00 37.03 L 37.90 37.80 L 40.90 37.91 L 43.84 37.31 L 46.58 36.09 L 49.11 34.47 L 51.44 32.58 L 53.59 30.50 L 55.57 28.24 L 57.35 25.82 L 58.86 23.23 L 60.02 20.47 L 60.67 17.54 L 60.64 14.54" 
+					fill="none" 
+					stroke="#00f5f4" 
+					stroke-width="0.6" 
+					stroke-opacity="0.8" 
+					stroke-dasharray="10 90"
+				>
+					<animate 
+						attributeName="stroke-dashoffset" 
+						from="100" 
+						to="0" 
+						dur="3.33s" 
+						repeatCount="indefinite" 
+					/>
+				</path>
+			
+				<path 
+					d="M 69.50 58.33 L 70.73 61.07 L 72.19 63.69 L 73.16 66.53 L 72.24 69.38 L 69.25 69.49 L 67.04 67.46 L 64.73 65.55 L 63.03 63.08 L 61.59 60.45 L 60.79 57.56 L 60.61 54.56 L 61.21 51.62 L 62.44 48.88 L 64.12 46.40 L 66.11 44.15 L 68.34 42.15 L 70.79 40.42 L 73.46 39.04 L 76.31 38.11 L 79.29 37.79 L 82.27 38.19 L 85.07 39.25 L 87.66 40.77 L 90.04 42.59 L 92.25 44.62 L 94.28 46.83 L 96.12 49.20 L 97.72 51.74 L 99.00 54.45 L 99.81 57.34" 
+					fill="none" 
+					stroke="#00f5f4" 
+					stroke-width="0.6" 
+					stroke-opacity="0.8" 
+					stroke-dasharray="10 90"
+				>
+					<animate 
+						attributeName="stroke-dashoffset" 
+						from="100" 
+						to="0" 
+						dur="3.33s" 
+						repeatCount="indefinite" 
+					/>
+				</path>
+			
+				<path 
+					d="M 24.26 17.78 L 21.35 18.47 L 21.42 21.47 L 22.01 24.41 L 23.33 27.11 L 25.02 29.59 L 27.05 31.79 L 29.30 33.78 L 31.77 35.47 L 34.45 36.82 L 37.32 37.69 L 40.31 37.95 L 43.28 37.48 L 46.06 36.37 L 48.63 34.81 L 51.00 32.97 L 53.18 30.92 L 55.20 28.70 L 57.02 26.31 L 58.59 23.76 L 59.83 21.02 L 60.59 18.12 L 60.70 15.12 L 60.07 12.19 L 58.82 9.46 L 57.19 6.94 L 55.34 4.59 L 53.33 2.36 L 51.20 0.25 L 48.95 -1.74 L 46.58 -3.58" 
+					fill="none" 
+					stroke="#00f5f4" 
+					stroke-width="0.6" 
+					stroke-opacity="0.8" 
+					stroke-dasharray="10 90"
+				>
+					<animate 
+						attributeName="stroke-dashoffset" 
+						from="100" 
+						to="0" 
+						dur="3.33s" 
+						repeatCount="indefinite" 
+					/>
+				</path>
+			
+				<path 
+					d="M 99.68 30.72 L 100.08 27.75 L 103.07 27.48 L 103.61 30.43 L 106.23 31.88 L 108.03 34.28 L 110.77 35.51" 
+					fill="none" 
+					stroke="#00f5f4" 
+					stroke-width="0.6" 
+					stroke-opacity="0.8" 
+					stroke-dasharray="10 18"
+				>
+					<animate 
+						attributeName="stroke-dashoffset" 
+						from="28" 
+						to="0" 
+						dur="3.33s" 
+						repeatCount="indefinite" 
+					/>
+				</path>
+			
+				<path 
+					d="M 53.06 70.95 L 55.15 68.80 L 52.43 67.55 L 51.52 64.69 L 49.35 62.62 L 48.24 59.83 L 47.18 57.03 L 46.92 54.04 L 47.62 51.12 L 49.21 48.58 L 51.14 46.27 L 53.13 44.03 L 55.19 41.85 L 57.27 39.69 L 59.39 37.57 L 61.51 35.44 L 63.68 33.37 L 65.85 31.30 L 68.08 29.29 L 70.33 27.32 L 72.67 25.44 L 75.12 23.71 L 77.74 22.24 L 80.60 21.32 L 83.59 21.47 L 86.05 23.18 L 87.56 25.78 L 89.31 28.22 L 91.29 30.47 L 93.30 32.70 L 95.38 34.85" 
+					fill="none" 
+					stroke="#00f5f4" 
+					stroke-width="0.6" 
+					stroke-opacity="0.8" 
+					stroke-dasharray="10 90"
+				>
+					<animate 
+						attributeName="stroke-dashoffset" 
+						from="100" 
+						to="0" 
+						dur="3.33s" 
+						repeatCount="indefinite" 
+					/>
+				</path>
+			
+				<path 
+					d="M 60.45 49.88 L 63.29 48.90 L 63.88 45.96 L 66.41 44.34 L 68.21 41.94 L 70.88 40.59 L 73.39 38.94 L 76.30 38.19 L 79.27 37.76 L 82.23 38.20 L 85.05 39.23 L 87.63 40.76 L 90.03 42.57 L 92.23 44.61 L 94.27 46.80 L 96.10 49.18 L 97.71 51.71 L 98.98 54.43 L 99.81 57.31 L 100.00 60.31 L 99.44 63.25 L 98.25 66.00 L 96.65 68.55 L 94.81 70.92 L 92.82 73.16 L 90.70 75.28 L 88.46 77.28 L 86.11 79.14 L 83.62 80.82 L 80.98 82.24 L 78.17 83.29" 
+					fill="none" 
+					stroke="#00f5f4" 
+					stroke-width="0.6" 
+					stroke-opacity="0.8" 
+					stroke-dasharray="10 90"
+				>
+					<animate 
+						attributeName="stroke-dashoffset" 
+						from="100" 
+						to="0" 
+						dur="3.33s" 
+						repeatCount="indefinite" 
+					/>
+				</path>
+			
+				<path 
+					d="M 37.80 59.86 L 40.78 60.20 L 43.78 60.12 L 46.34 58.55 L 46.95 55.61 L 47.13 52.62 L 48.30 49.86 L 50.12 47.47 L 52.07 45.19 L 54.11 42.99 L 56.17 40.81 L 58.28 38.67 L 60.39 36.55 L 62.54 34.45 L 64.71 32.38 L 66.91 30.34 L 69.14 28.34 L 71.44 26.41 L 73.82 24.59 L 76.35 22.96 L 79.07 21.71 L 82.03 21.21 L 84.90 22.09 L 86.82 24.39 L 88.33 26.99 L 90.25 29.29 L 92.23 31.54 L 94.30 33.72 L 96.37 35.89 L 98.49 38.01 L 100.61 40.14" 
+					fill="none" 
+					stroke="#00f5f4" 
+					stroke-width="0.6" 
+					stroke-opacity="0.8" 
+					stroke-dasharray="10 90"
+				>
+					<animate 
+						attributeName="stroke-dashoffset" 
+						from="100" 
+						to="0" 
+						dur="3.33s" 
+						repeatCount="indefinite" 
+					/>
+				</path>
+			
+				<path 
+					d="M 32.54 72.49 L 29.67 71.62 L 27.69 73.88 L 24.99 75.20 L 23.09 77.52 L 20.57 79.15 L 18.88 81.63 L 16.43 83.36 L 14.94 85.96 L 12.66 87.91 L 11.27 90.57 L 9.51 93.00 L 8.38 95.77 L 7.68 98.69 L 7.86 101.69 L 9.04 104.45 L 10.86 106.83 L 12.82 109.11 L 14.85 111.31" 
+					fill="none" 
+					stroke="#00f5f4" 
+					stroke-width="0.6" 
+					stroke-opacity="0.8" 
+					stroke-dasharray="10 54"
+				>
+					<animate 
+						attributeName="stroke-dashoffset" 
+						from="64" 
+						to="0" 
+						dur="3.33s" 
+						repeatCount="indefinite" 
+					/>
+				</path>
+			
+				<path 
+					d="M 12.62 53.14 L 10.51 51.01 L 7.67 50.04 L 5.00 51.41 L 5.10 54.41 L 6.66 56.96 L 7.56 59.83 L 7.32 62.82 L 6.00 65.52 L 3.97 67.72 L 1.48 69.39 L -1.34 70.41 L -4.33 70.66 L -7.28 70.07 L -9.97 68.75 L -12.35 66.92" 
+					fill="none" 
+					stroke="#00f5f4" 
+					stroke-width="0.6" 
+					stroke-opacity="0.8" 
+					stroke-dasharray="10 45"
+				>
+					<animate 
+						attributeName="stroke-dashoffset" 
+						from="55" 
+						to="0" 
+						dur="3.33s" 
+						repeatCount="indefinite" 
+					/>
+				</path>
+			
+				<path 
+					d="M 5.71 56.69 L 7.33 59.21 L 7.46 62.21 L 6.35 65.00 L 4.44 67.31 L 2.02 69.09 L -0.74 70.26 L -3.71 70.67 L -6.68 70.25 L -9.44 69.07 L -11.89 67.34" 
+					fill="none" 
+					stroke="#00f5f4" 
+					stroke-width="0.6" 
+					stroke-opacity="0.8" 
+					stroke-dasharray="10 30"
+				>
+					<animate 
+						attributeName="stroke-dashoffset" 
+						from="40" 
+						to="0" 
+						dur="3.33s" 
+						repeatCount="indefinite" 
+					/>
+				</path>
+			
+				<path 
+					d="M 17.40 66.66 L 18.52 69.45 L 15.70 70.47 L 14.97 73.38 L 12.15 74.40 L 10.97 77.16 L 8.11 78.05 L 6.38 80.50 L 3.51 81.38 L 0.99 83.01 L -1.96 83.56 L -4.95 83.71 L -7.85 82.93 L -10.50 81.54" 
+					fill="none" 
+					stroke="#00f5f4" 
+					stroke-width="0.6" 
+					stroke-opacity="0.8" 
+					stroke-dasharray="10 39"
+				>
+					<animate 
+						attributeName="stroke-dashoffset" 
+						from="49" 
+						to="0" 
+						dur="3.33s" 
+						repeatCount="indefinite" 
+					/>
+				</path>
+			
+				<path 
+					d="M 94.24 33.51 L 96.15 35.83 L 98.43 37.78 L 100.35 40.08 L 102.71 41.94 L 104.66 44.22 L 107.05 46.04 L 109.17 48.15 L 111.55 49.98" 
+					fill="none" 
+					stroke="#00f5f4" 
+					stroke-width="0.6" 
+					stroke-opacity="0.8" 
+					stroke-dasharray="10 24"
+				>
+					<animate 
+						attributeName="stroke-dashoffset" 
+						from="34" 
+						to="0" 
+						dur="3.33s" 
+						repeatCount="indefinite" 
+					/>
+				</path>
+			
+				<path 
+					d="M 62.43 46.17 L 65.43 46.18 L 66.20 43.28 L 68.99 42.18 L 71.01 39.96 L 73.87 39.07 L 76.65 37.94 L 79.65 37.85 L 82.63 38.26 L 85.39 39.43 L 87.96 40.97 L 90.31 42.83 L 92.51 44.87 L 94.51 47.11 L 96.34 49.49 L 97.89 52.06 L 99.13 54.79 L 99.87 57.70 L 99.97 60.70 L 99.32 63.63 L 98.06 66.35 L 96.42 68.86 L 94.56 71.22 L 92.55 73.44 L 90.41 75.55 L 88.16 77.53 L 85.79 79.37 L 83.29 81.02 L 80.63 82.41 L 77.79 83.38 L 74.81 83.76" 
+					fill="none" 
+					stroke="#00f5f4" 
+					stroke-width="0.6" 
+					stroke-opacity="0.8" 
+					stroke-dasharray="10 90"
+				>
+					<animate 
+						attributeName="stroke-dashoffset" 
+						from="100" 
+						to="0" 
+						dur="3.33s" 
+						repeatCount="indefinite" 
+					/>
+				</path>
+			
+				<path 
+					d="M 9.69 14.22 L 8.47 16.96 L 7.72 19.86 L 7.80 22.86 L 8.89 25.66 L 10.67 28.07 L 12.62 30.35 L 14.65 32.56 L 16.72 34.73 L 18.81 36.88 L 20.93 39.00 L 23.07 41.10 L 25.24 43.18 L 27.43 45.22 L 29.67 47.23 L 31.96 49.17 L 34.33 51.00 L 36.84 52.65 L 39.54 53.95 L 42.48 54.54 L 45.39 53.81 L 47.42 51.59 L 48.90 48.99 L 50.80 46.66 L 52.78 44.41 L 54.83 42.22 L 56.91 40.05 L 59.02 37.93 L 61.14 35.80 L 63.31 33.73 L 65.47 31.65" 
+					fill="none" 
+					stroke="#00f5f4" 
+					stroke-width="0.6" 
+					stroke-opacity="0.8" 
+					stroke-dasharray="10 90"
+				>
+					<animate 
+						attributeName="stroke-dashoffset" 
+						from="100" 
+						to="0" 
+						dur="3.33s" 
+						repeatCount="indefinite" 
+					/>
+				</path>
+			
+				<path 
+					d="M 55.39 9.76 L 58.23 8.78 L 56.77 6.15 L 54.68 4.01 L 52.82 1.65 L 50.48 -0.23 L 48.38 -2.37 L 45.84 -3.97 L 43.41 -5.72 L 40.65 -6.90 L 37.79 -7.81 L 34.79 -7.98 L 31.86 -7.36 L 29.17 -6.03 L 26.69 -4.34 L 24.35 -2.46 L 22.11 -0.47 L 19.94 1.60 L 17.84 3.75 L 15.81 5.96 L 13.87 8.24 L 12.04 10.62 L 10.37 13.11 L 8.95 15.76 L 7.96 18.58 L 7.64 21.57 L 8.30 24.50 L 9.85 27.06 L 11.77 29.37 L 13.76 31.61 L 15.82 33.79" 
+					fill="none" 
+					stroke="#00f5f4" 
+					stroke-width="0.6" 
+					stroke-opacity="0.8" 
+					stroke-dasharray="10 90"
+				>
+					<animate 
+						attributeName="stroke-dashoffset" 
+						from="100" 
+						to="0" 
+						dur="3.33s" 
+						repeatCount="indefinite" 
+					/>
+				</path>
+			
+				<path 
+					d="M 14.97 43.23 L 13.60 45.90 L 16.51 46.61 L 17.10 49.56 L 19.47 51.39 L 20.11 54.32 L 21.36 57.04 L 21.40 60.04 L 21.01 63.02 L 19.81 65.77 L 18.27 68.34 L 16.43 70.71 L 14.47 72.98 L 12.34 75.09 L 10.13 77.12 L 7.77 78.98 L 5.31 80.69 L 2.67 82.13 L -0.12 83.22 L -3.08 83.74 L -6.07 83.50 L -8.88 82.47 L -11.44 80.91" 
+					fill="none" 
+					stroke="#00f5f4" 
+					stroke-width="0.6" 
+					stroke-opacity="0.8" 
+					stroke-dasharray="10 66"
+				>
+					<animate 
+						attributeName="stroke-dashoffset" 
+						from="76" 
+						to="0" 
+						dur="3.33s" 
+						repeatCount="indefinite" 
+					/>
+				</path>
+			
+				<path 
+					d="M 22.91 23.48 L 22.38 26.43 L 24.59 28.46 L 26.03 31.09 L 28.46 32.85 L 30.64 34.91 L 33.34 36.22 L 36.08 37.44 L 39.04 37.90 L 42.04 37.78 L 44.91 36.90 L 47.57 35.52 L 50.01 33.77 L 52.28 31.81 L 54.37 29.65 L 56.28 27.34 L 57.96 24.86 L 59.36 22.20 L 60.34 19.37 L 60.74 16.39 L 60.43 13.41 L 59.41 10.59 L 57.92 7.99 L 56.15 5.57 L 54.20 3.29 L 52.11 1.13 L 49.91 -0.91 L 47.60 -2.82 L 45.16 -4.56 L 42.57 -6.08 L 39.81 -7.26" 
+					fill="none" 
+					stroke="#00f5f4" 
+					stroke-width="0.6" 
+					stroke-opacity="0.8" 
+					stroke-dasharray="10 90"
+				>
+					<animate 
+						attributeName="stroke-dashoffset" 
+						from="100" 
+						to="0" 
+						dur="3.33s" 
+						repeatCount="indefinite" 
+					/>
+				</path>
+			
+				<path 
+					d="M 57.48 7.63 L 55.93 5.07 L 53.75 3.01 L 51.85 0.68 L 49.45 -1.12 L 47.30 -3.21 L 44.71 -4.72 L 42.19 -6.35 L 39.37 -7.37 L 36.43 -7.99 L 33.44 -7.80 L 30.60 -6.83 L 28.02 -5.29 L 25.61 -3.51 L 23.32 -1.57 L 21.11 0.46 L 18.98 2.57 L 16.91 4.74 L 14.92 6.99 L 13.02 9.31 L 11.26 11.74 L 9.69 14.29 L 8.43 17.02 L 7.71 19.93 L 7.81 22.93 L 8.92 25.71 L 10.71 28.12 L 12.67 30.40 L 14.69 32.61 L 16.76 34.78 L 18.86 36.93" 
+					fill="none" 
+					stroke="#00f5f4" 
+					stroke-width="0.6" 
+					stroke-opacity="0.8" 
+					stroke-dasharray="10 90"
+				>
+					<animate 
+						attributeName="stroke-dashoffset" 
+						from="100" 
+						to="0" 
+						dur="3.33s" 
+						repeatCount="indefinite" 
+					/>
+				</path>
+			
+				<path 
+					d="M 73.16 58.37 L 75.99 59.35 L 78.98 59.63 L 81.94 60.10 L 84.43 61.78 L 84.94 64.73 L 83.17 67.15 L 80.77 68.96 L 78.03 70.19 L 75.07 70.67 L 72.09 70.32 L 69.31 69.19 L 66.84 67.49 L 64.70 65.39 L 62.91 62.98 L 61.56 60.31 L 60.75 57.42 L 60.63 54.42 L 61.25 51.48 L 62.51 48.76 L 64.21 46.29 L 66.21 44.05 L 68.45 42.06 L 70.92 40.35 L 73.59 38.98 L 76.45 38.08 L 79.44 37.80 L 82.40 38.23 L 85.20 39.31 L 87.78 40.85 L 90.15 42.68" 
+					fill="none" 
+					stroke="#00f5f4" 
+					stroke-width="0.6" 
+					stroke-opacity="0.8" 
+					stroke-dasharray="10 90"
+				>
+					<animate 
+						attributeName="stroke-dashoffset" 
+						from="100" 
+						to="0" 
+						dur="3.33s" 
+						repeatCount="indefinite" 
+					/>
+				</path>
+			
+				<path 
+					d="M 39.75 28.68 L 38.14 26.15 L 39.18 23.33 L 41.74 21.77 L 44.30 20.21 L 46.19 17.87 L 46.87 14.95 L 46.26 12.01 L 44.68 9.47 L 42.48 7.43 L 39.87 5.96 L 36.97 5.17 L 33.97 5.19 L 31.09 6.04 L 28.50 7.54 L 26.22 9.50 L 24.29 11.79 L 22.76 14.37 L 21.72 17.19 L 21.32 20.16 L 21.66 23.14 L 22.69 25.96 L 24.23 28.53 L 26.13 30.85 L 28.28 32.94 L 30.66 34.77 L 33.25 36.28 L 36.04 37.38 L 38.99 37.92 L 41.99 37.77 L 44.87 36.92" 
+					fill="none" 
+					stroke="#00f5f4" 
+					stroke-width="0.6" 
+					stroke-opacity="0.8" 
+					stroke-dasharray="10 90"
+				>
+					<animate 
+						attributeName="stroke-dashoffset" 
+						from="100" 
+						to="0" 
+						dur="3.33s" 
+						repeatCount="indefinite" 
+					/>
+				</path>
+			
+				<path 
+					d="M 89.36 17.51 L 86.58 18.64 L 86.18 21.61 L 86.85 24.54 L 88.42 27.10 L 90.34 29.40 L 92.33 31.65 L 94.39 33.83 L 96.47 35.99 L 98.59 38.11 L 100.71 40.23 L 102.88 42.31 L 105.05 44.38 L 107.27 46.39 L 109.53 48.37 L 111.87 50.25" 
+					fill="none" 
+					stroke="#00f5f4" 
+					stroke-width="0.6" 
+					stroke-opacity="0.8" 
+					stroke-dasharray="10 45"
+				>
+					<animate 
+						attributeName="stroke-dashoffset" 
+						from="55" 
+						to="0" 
+						dur="3.33s" 
+						repeatCount="indefinite" 
+					/>
+				</path>
+			
+				</g>
+			</svg>"
+`;
+
 exports[`Dynamic Engine Core Tests > Generator [anim-matrix-rain] > renders deterministic SVG with default params 1`] = `
 "<svg width="100%" height="100%" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
 				<title>Matrix Rain</title>
@@ -478,6 +1237,203 @@ exports[`Dynamic Engine Core Tests > Generator [anim-matrix-rain] > renders dete
 			</svg>"
 `;
 
+exports[`Dynamic Engine Core Tests > Generator [anim-morph] > renders deterministic SVG with default params 1`] = `
+"<svg width="100%" height="100%" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+				<title>Vector Morphing</title>
+				<path d="M 30,30 L 70,30 L 70,70 L 30,70 Z" fill="#3b82f6" opacity="0.8">
+					<animate attributeName="d" values="M 30,30 L 70,30 L 70,70 L 30,70 Z; M 50,20 L 80,80 L 20,80 L 50,20 Z; M 50,10 L 90,50 L 50,90 L 10,50 Z; M 30,30 L 70,30 L 70,70 L 30,70 Z" dur="2.50s" repeatCount="indefinite" />
+				</path>
+			</svg>"
+`;
+
+exports[`Dynamic Engine Core Tests > Generator [anim-neon-flicker] > renders deterministic SVG with default params 1`] = `
+"<svg width="100%" height="100%" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+				<title>Neon Flicker</title>
+				<rect width="100" height="100" fill="#050510" />
+				<defs>
+					<filter id="neonBlur-12345" x="-50%" y="-50%" width="200%" height="200%">
+						<feGaussianBlur in="SourceGraphic" stdDeviation="2" result="blur" />
+						<feMerge>
+							<feMergeNode in="blur" />
+							<feMergeNode in="SourceGraphic" />
+						</feMerge>
+					</filter>
+				</defs>
+				<g filter="url(#neonBlur-12345)">
+					<animate 
+						attributeName="opacity" 
+						values="1; 0.60; 1; 0.9; 0.60; 1" 
+						keyTimes="0; 0.1; 0.2; 0.6; 0.7; 1" 
+						dur="0.20s" 
+						repeatCount="indefinite" 
+						calcMode="discrete" 
+					/>
+					<rect x="25" y="45" width="50" height="10" rx="2" fill="none" stroke="#ff00ff" stroke-width="1.5" />
+					<text x="50" y="52" font-family="Arial" font-size="6" fill="#ff00ff" text-anchor="middle" font-weight="bold">NEON_LIVE</text>
+				</g>
+			</svg>"
+`;
+
+exports[`Dynamic Engine Core Tests > Generator [anim-neural] > renders deterministic SVG with default params 1`] = `
+"<svg width="100%" height="100%" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+				<title>Neural Synthesis</title>
+				<rect width="100" height="100" fill="#020617" />
+				
+						<line x1="9.661652808693844" y1="83.39946273099581" x2="26.719775681122925" y2="79.2704461415023" stroke="white" stroke-width="0.1" opacity="0.2">
+							<animate attributeName="opacity" values="0.2; 0.8; 0.2" dur="3s" begin="2.84310749298251s" repeatCount="indefinite" />
+						</line>
+					
+						<line x1="9.661652808693844" y1="83.39946273099581" x2="20.913408995525362" y2="91.66560675172657" stroke="white" stroke-width="0.1" opacity="0.2">
+							<animate attributeName="opacity" values="0.2; 0.8; 0.2" dur="3s" begin="2.84310749298251s" repeatCount="indefinite" />
+						</line>
+					
+						<line x1="9.661652808693844" y1="83.39946273099581" x2="10.589010743972855" y2="69.50427370099749" stroke="white" stroke-width="0.1" opacity="0.2">
+							<animate attributeName="opacity" values="0.2; 0.8; 0.2" dur="3s" begin="2.84310749298251s" repeatCount="indefinite" />
+						</line>
+					
+						<line x1="3.5878594532495915" y1="1.1545852768743274" x2="26.620856883582526" y2="16.742216625010798" stroke="white" stroke-width="0.1" opacity="0.2">
+							<animate attributeName="opacity" values="0.2; 0.8; 0.2" dur="3s" begin="0.1534656595005334s" repeatCount="indefinite" />
+						</line>
+					
+						<line x1="3.5878594532495915" y1="1.1545852768743274" x2="24.26475740435045" y2="17.778287611695273" stroke="white" stroke-width="0.1" opacity="0.2">
+							<animate attributeName="opacity" values="0.2; 0.8; 0.2" dur="3s" begin="0.1534656595005334s" repeatCount="indefinite" />
+						</line>
+					
+						<line x1="76.5787167722161" y1="58.49297392041699" x2="78.38003894163299" y2="33.314661200451354" stroke="white" stroke-width="0.1" opacity="0.2">
+							<animate attributeName="opacity" values="0.2; 0.8; 0.2" dur="3s" begin="2.7423901588119475s" repeatCount="indefinite" />
+						</line>
+					
+						<line x1="76.5787167722161" y1="58.49297392041699" x2="62.958957918881396" y2="51.2060325138327" stroke="white" stroke-width="0.1" opacity="0.2">
+							<animate attributeName="opacity" values="0.2; 0.8; 0.2" dur="3s" begin="2.7423901588119475s" repeatCount="indefinite" />
+						</line>
+					
+						<line x1="76.5787167722161" y1="58.49297392041699" x2="91.06523947889474" y2="33.47999167952686" stroke="white" stroke-width="0.1" opacity="0.2">
+							<animate attributeName="opacity" values="0.2; 0.8; 0.2" dur="3s" begin="2.7423901588119475s" repeatCount="indefinite" />
+						</line>
+					
+						<line x1="78.38003894163299" y1="33.314661200451354" x2="62.958957918881396" y2="51.2060325138327" stroke="white" stroke-width="0.1" opacity="0.2">
+							<animate attributeName="opacity" values="0.2; 0.8; 0.2" dur="3s" begin="0.5853395355728823s" repeatCount="indefinite" />
+						</line>
+					
+						<line x1="78.38003894163299" y1="33.314661200451354" x2="91.06523947889474" y2="33.47999167952686" stroke="white" stroke-width="0.1" opacity="0.2">
+							<animate attributeName="opacity" values="0.2; 0.8; 0.2" dur="3s" begin="0.5853395355728823s" repeatCount="indefinite" />
+						</line>
+					
+						<line x1="26.719775681122925" y1="79.2704461415023" x2="20.913408995525362" y2="91.66560675172657" stroke="white" stroke-width="0.1" opacity="0.2">
+							<animate attributeName="opacity" values="0.2; 0.8; 0.2" dur="3s" begin="2.9516538739685467s" repeatCount="indefinite" />
+						</line>
+					
+						<line x1="26.719775681122925" y1="79.2704461415023" x2="10.589010743972855" y2="69.50427370099749" stroke="white" stroke-width="0.1" opacity="0.2">
+							<animate attributeName="opacity" values="0.2; 0.8; 0.2" dur="3s" begin="2.9516538739685467s" repeatCount="indefinite" />
+						</line>
+					
+						<line x1="14.888672218554348" y1="33.9146433248321" x2="26.620856883582526" y2="16.742216625010798" stroke="white" stroke-width="0.1" opacity="0.2">
+							<animate attributeName="opacity" values="0.2; 0.8; 0.2" dur="3s" begin="0.10232632849582128s" repeatCount="indefinite" />
+						</line>
+					
+						<line x1="14.888672218554348" y1="33.9146433248321" x2="24.26475740435045" y2="17.778287611695273" stroke="white" stroke-width="0.1" opacity="0.2">
+							<animate attributeName="opacity" values="0.2; 0.8; 0.2" dur="3s" begin="0.10232632849582128s" repeatCount="indefinite" />
+						</line>
+					
+						<line x1="26.620856883582526" y1="16.742216625010798" x2="24.26475740435045" y2="17.778287611695273" stroke="white" stroke-width="0.1" opacity="0.2">
+							<animate attributeName="opacity" values="0.2; 0.8; 0.2" dur="3s" begin="2.593064044688888s" repeatCount="indefinite" />
+						</line>
+					
+						<line x1="20.913408995525362" y1="91.66560675172657" x2="10.589010743972855" y2="69.50427370099749" stroke="white" stroke-width="0.1" opacity="0.2">
+							<animate attributeName="opacity" values="0.2; 0.8; 0.2" dur="3s" begin="0.7155822438333018s" repeatCount="indefinite" />
+						</line>
+					
+						<line x1="93.02633283010341" y1="93.57593012375378" x2="94.94217209978231" y2="93.08652062256496" stroke="white" stroke-width="0.1" opacity="0.2">
+							<animate attributeName="opacity" values="0.2; 0.8; 0.2" dur="3s" begin="0.919729205239312s" repeatCount="indefinite" />
+						</line>
+					
+						<line x1="93.02633283010341" y1="93.57593012375378" x2="92.31205716944491" y2="88.74490702407891" stroke="white" stroke-width="0.1" opacity="0.2">
+							<animate attributeName="opacity" values="0.2; 0.8; 0.2" dur="3s" begin="0.919729205239312s" repeatCount="indefinite" />
+						</line>
+					
+						<line x1="94.94217209978231" y1="93.08652062256496" x2="92.31205716944491" y2="88.74490702407891" stroke="white" stroke-width="0.1" opacity="0.2">
+							<animate attributeName="opacity" values="0.2; 0.8; 0.2" dur="3s" begin="0.1545647253790542s" repeatCount="indefinite" />
+						</line>
+					
+				
+			<circle cx="9.661652808693844" cy="83.39946273099581" r="1" fill="#4ade80">
+				<animate attributeName="r" values="1; 1.5; 1" dur="2s" begin="2.84310749298251s" repeatCount="indefinite" />
+				<animate attributeName="opacity" values="0.5; 1; 0.5" dur="2s" begin="2.84310749298251s" repeatCount="indefinite" />
+			</circle>
+		
+			<circle cx="3.5878594532495915" cy="1.1545852768743274" r="1" fill="#4ade80">
+				<animate attributeName="r" values="1; 1.5; 1" dur="2s" begin="0.1534656595005334s" repeatCount="indefinite" />
+				<animate attributeName="opacity" values="0.5; 1; 0.5" dur="2s" begin="0.1534656595005334s" repeatCount="indefinite" />
+			</circle>
+		
+			<circle cx="76.5787167722161" cy="58.49297392041699" r="1" fill="#4ade80">
+				<animate attributeName="r" values="1; 1.5; 1" dur="2s" begin="2.7423901588119475s" repeatCount="indefinite" />
+				<animate attributeName="opacity" values="0.5; 1; 0.5" dur="2s" begin="2.7423901588119475s" repeatCount="indefinite" />
+			</circle>
+		
+			<circle cx="78.38003894163299" cy="33.314661200451354" r="1" fill="#4ade80">
+				<animate attributeName="r" values="1; 1.5; 1" dur="2s" begin="0.5853395355728823s" repeatCount="indefinite" />
+				<animate attributeName="opacity" values="0.5; 1; 0.5" dur="2s" begin="0.5853395355728823s" repeatCount="indefinite" />
+			</circle>
+		
+			<circle cx="26.719775681122925" cy="79.2704461415023" r="1" fill="#4ade80">
+				<animate attributeName="r" values="1; 1.5; 1" dur="2s" begin="2.9516538739685467s" repeatCount="indefinite" />
+				<animate attributeName="opacity" values="0.5; 1; 0.5" dur="2s" begin="2.9516538739685467s" repeatCount="indefinite" />
+			</circle>
+		
+			<circle cx="14.888672218554348" cy="33.9146433248321" r="1" fill="#4ade80">
+				<animate attributeName="r" values="1; 1.5; 1" dur="2s" begin="0.10232632849582128s" repeatCount="indefinite" />
+				<animate attributeName="opacity" values="0.5; 1; 0.5" dur="2s" begin="0.10232632849582128s" repeatCount="indefinite" />
+			</circle>
+		
+			<circle cx="26.620856883582526" cy="16.742216625010798" r="1" fill="#4ade80">
+				<animate attributeName="r" values="1; 1.5; 1" dur="2s" begin="2.593064044688888s" repeatCount="indefinite" />
+				<animate attributeName="opacity" values="0.5; 1; 0.5" dur="2s" begin="2.593064044688888s" repeatCount="indefinite" />
+			</circle>
+		
+			<circle cx="20.913408995525362" cy="91.66560675172657" r="1" fill="#4ade80">
+				<animate attributeName="r" values="1; 1.5; 1" dur="2s" begin="0.7155822438333018s" repeatCount="indefinite" />
+				<animate attributeName="opacity" values="0.5; 1; 0.5" dur="2s" begin="0.7155822438333018s" repeatCount="indefinite" />
+			</circle>
+		
+			<circle cx="93.02633283010341" cy="93.57593012375378" r="1" fill="#4ade80">
+				<animate attributeName="r" values="1; 1.5; 1" dur="2s" begin="0.919729205239312s" repeatCount="indefinite" />
+				<animate attributeName="opacity" values="0.5; 1; 0.5" dur="2s" begin="0.919729205239312s" repeatCount="indefinite" />
+			</circle>
+		
+			<circle cx="62.958957918881396" cy="51.2060325138327" r="1" fill="#4ade80">
+				<animate attributeName="r" values="1; 1.5; 1" dur="2s" begin="0.5936652548552167s" repeatCount="indefinite" />
+				<animate attributeName="opacity" values="0.5; 1; 0.5" dur="2s" begin="0.5936652548552167s" repeatCount="indefinite" />
+			</circle>
+		
+			<circle cx="91.06523947889474" cy="33.47999167952686" r="1" fill="#4ade80">
+				<animate attributeName="r" values="1; 1.5; 1" dur="2s" begin="2.9466203525165287s" repeatCount="indefinite" />
+				<animate attributeName="opacity" values="0.5; 1; 0.5" dur="2s" begin="2.9466203525165287s" repeatCount="indefinite" />
+			</circle>
+		
+			<circle cx="94.94217209978231" cy="93.08652062256496" r="1" fill="#4ade80">
+				<animate attributeName="r" values="1; 1.5; 1" dur="2s" begin="0.1545647253790542s" repeatCount="indefinite" />
+				<animate attributeName="opacity" values="0.5; 1; 0.5" dur="2s" begin="0.1545647253790542s" repeatCount="indefinite" />
+			</circle>
+		
+			<circle cx="92.31205716944491" cy="88.74490702407891" r="1" fill="#4ade80">
+				<animate attributeName="r" values="1; 1.5; 1" dur="2s" begin="1.0695732525266457s" repeatCount="indefinite" />
+				<animate attributeName="opacity" values="0.5; 1; 0.5" dur="2s" begin="1.0695732525266457s" repeatCount="indefinite" />
+			</circle>
+		
+			<circle cx="10.589010743972855" cy="69.50427370099749" r="1" fill="#4ade80">
+				<animate attributeName="r" values="1; 1.5; 1" dur="2s" begin="1.749849939485872s" repeatCount="indefinite" />
+				<animate attributeName="opacity" values="0.5; 1; 0.5" dur="2s" begin="1.749849939485872s" repeatCount="indefinite" />
+			</circle>
+		
+			<circle cx="24.26475740435045" cy="17.778287611695273" r="1" fill="#4ade80">
+				<animate attributeName="r" values="1; 1.5; 1" dur="2s" begin="2.9904159977942855s" repeatCount="indefinite" />
+				<animate attributeName="opacity" values="0.5; 1; 0.5" dur="2s" begin="2.9904159977942855s" repeatCount="indefinite" />
+			</circle>
+		
+			</svg>"
+`;
+
 exports[`Dynamic Engine Core Tests > Generator [anim-orbit] > renders deterministic SVG with default params 1`] = `
 "<svg width="100%" height="100%" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
         <title>Orbital Loop</title>
@@ -505,6 +1461,23 @@ exports[`Dynamic Engine Core Tests > Generator [anim-orbit] > renders determinis
       </svg>"
 `;
 
+exports[`Dynamic Engine Core Tests > Generator [anim-parallax] > renders deterministic SVG with default params 1`] = `
+"<svg width="100%" height="100%" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+				<title>Parallax Drift</title>
+				<g transform-origin="50 50">
+					<animateTransform 
+						attributeName="transform" 
+						type="translate" 
+						values="-10, 0; 0, -10; 10, 0; 0, 10; -10, 0" 
+						dur="10.00s" 
+						repeatCount="indefinite" 
+					/>
+					<circle cx="50" cy="50" r="10" fill="gray" opacity="0.5" />
+					<rect x="20" y="20" width="60" height="60" fill="none" stroke="gray" stroke-width="0.5" stroke-dasharray="2 2" />
+				</g>
+			</svg>"
+`;
+
 exports[`Dynamic Engine Core Tests > Generator [anim-quantum-pulse] > renders deterministic SVG with default params 1`] = `
 "<svg width="100%" height="100%" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
 				<title>Quantum Pulse</title>
@@ -529,6 +1502,2698 @@ exports[`Dynamic Engine Core Tests > Generator [anim-quantum-pulse] > renders de
 						repeatCount="indefinite" 
 					/>
 					<circle cx="50" cy="50" r="40" fill="url(#pulseGradient-12345)" />
+				</g>
+			</svg>"
+`;
+
+exports[`Dynamic Engine Core Tests > Generator [anim-scanline] > renders deterministic SVG with default params 1`] = `
+"<svg width="100%" height="100%" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+				<title>Scanline Sweep</title>
+				<rect width="100" height="100" fill="#111" />
+				<defs>
+					<linearGradient id="scanline-12345" x1="0" y1="0" x2="0" y2="1">
+						<stop offset="0%" stop-color="white" stop-opacity="0" />
+						<stop offset="50%" stop-color="white" stop-opacity="0.3" />
+						<stop offset="100%" stop-color="white" stop-opacity="0" />
+					</linearGradient>
+				</defs>
+				<rect width="100" height="100" fill="#111" />
+				<rect width="100" height="5" fill="url(#scanlineGrad-12345)">
+					<animate attributeName="y" from="-5" to="100" dur="0.50s" repeatCount="indefinite" />
+				</rect>
+				<line x1="0" y1="0" x2="100" y2="0" stroke="black" stroke-width="0.5" opacity="0.3" /><line x1="0" y1="5" x2="100" y2="5" stroke="black" stroke-width="0.5" opacity="0.3" /><line x1="0" y1="10" x2="100" y2="10" stroke="black" stroke-width="0.5" opacity="0.3" /><line x1="0" y1="15" x2="100" y2="15" stroke="black" stroke-width="0.5" opacity="0.3" /><line x1="0" y1="20" x2="100" y2="20" stroke="black" stroke-width="0.5" opacity="0.3" /><line x1="0" y1="25" x2="100" y2="25" stroke="black" stroke-width="0.5" opacity="0.3" /><line x1="0" y1="30" x2="100" y2="30" stroke="black" stroke-width="0.5" opacity="0.3" /><line x1="0" y1="35" x2="100" y2="35" stroke="black" stroke-width="0.5" opacity="0.3" /><line x1="0" y1="40" x2="100" y2="40" stroke="black" stroke-width="0.5" opacity="0.3" /><line x1="0" y1="45" x2="100" y2="45" stroke="black" stroke-width="0.5" opacity="0.3" /><line x1="0" y1="50" x2="100" y2="50" stroke="black" stroke-width="0.5" opacity="0.3" /><line x1="0" y1="55" x2="100" y2="55" stroke="black" stroke-width="0.5" opacity="0.3" /><line x1="0" y1="60" x2="100" y2="60" stroke="black" stroke-width="0.5" opacity="0.3" /><line x1="0" y1="65" x2="100" y2="65" stroke="black" stroke-width="0.5" opacity="0.3" /><line x1="0" y1="70" x2="100" y2="70" stroke="black" stroke-width="0.5" opacity="0.3" /><line x1="0" y1="75" x2="100" y2="75" stroke="black" stroke-width="0.5" opacity="0.3" /><line x1="0" y1="80" x2="100" y2="80" stroke="black" stroke-width="0.5" opacity="0.3" /><line x1="0" y1="85" x2="100" y2="85" stroke="black" stroke-width="0.5" opacity="0.3" /><line x1="0" y1="90" x2="100" y2="90" stroke="black" stroke-width="0.5" opacity="0.3" /><line x1="0" y1="95" x2="100" y2="95" stroke="black" stroke-width="0.5" opacity="0.3" />
+			</svg>"
+`;
+
+exports[`Dynamic Engine Core Tests > Generator [anim-starfield] > renders deterministic SVG with default params 1`] = `
+"<svg width="100%" height="100%" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" style="background: black;">
+				<title>Starfield Jump</title>
+				<g transform-origin="50 50">
+					
+				<circle cx="9.66" cy="83.40" r="0.2" fill="white">
+					<animate attributeName="r" values="0; 1; 0" dur="1.67s" begin="-4.74s" repeatCount="indefinite" />
+					<animateTransform 
+						attributeName="transform" 
+						type="scale" 
+						values="0; 5" 
+						dur="1.67s" 
+						begin="-4.74s" 
+						repeatCount="indefinite" 
+						additive="sum"
+					/>
+				</circle>
+			
+				<circle cx="3.59" cy="1.15" r="0.2" fill="white">
+					<animate attributeName="r" values="0; 1; 0" dur="1.67s" begin="-0.26s" repeatCount="indefinite" />
+					<animateTransform 
+						attributeName="transform" 
+						type="scale" 
+						values="0; 5" 
+						dur="1.67s" 
+						begin="-0.26s" 
+						repeatCount="indefinite" 
+						additive="sum"
+					/>
+				</circle>
+			
+				<circle cx="76.58" cy="58.49" r="0.2" fill="white">
+					<animate attributeName="r" values="0; 1; 0" dur="1.67s" begin="-4.57s" repeatCount="indefinite" />
+					<animateTransform 
+						attributeName="transform" 
+						type="scale" 
+						values="0; 5" 
+						dur="1.67s" 
+						begin="-4.57s" 
+						repeatCount="indefinite" 
+						additive="sum"
+					/>
+				</circle>
+			
+				<circle cx="78.38" cy="33.31" r="0.2" fill="white">
+					<animate attributeName="r" values="0; 1; 0" dur="1.67s" begin="-0.98s" repeatCount="indefinite" />
+					<animateTransform 
+						attributeName="transform" 
+						type="scale" 
+						values="0; 5" 
+						dur="1.67s" 
+						begin="-0.98s" 
+						repeatCount="indefinite" 
+						additive="sum"
+					/>
+				</circle>
+			
+				<circle cx="26.72" cy="79.27" r="0.2" fill="white">
+					<animate attributeName="r" values="0; 1; 0" dur="1.67s" begin="-4.92s" repeatCount="indefinite" />
+					<animateTransform 
+						attributeName="transform" 
+						type="scale" 
+						values="0; 5" 
+						dur="1.67s" 
+						begin="-4.92s" 
+						repeatCount="indefinite" 
+						additive="sum"
+					/>
+				</circle>
+			
+				<circle cx="14.89" cy="33.91" r="0.2" fill="white">
+					<animate attributeName="r" values="0; 1; 0" dur="1.67s" begin="-0.17s" repeatCount="indefinite" />
+					<animateTransform 
+						attributeName="transform" 
+						type="scale" 
+						values="0; 5" 
+						dur="1.67s" 
+						begin="-0.17s" 
+						repeatCount="indefinite" 
+						additive="sum"
+					/>
+				</circle>
+			
+				<circle cx="26.62" cy="16.74" r="0.2" fill="white">
+					<animate attributeName="r" values="0; 1; 0" dur="1.67s" begin="-4.32s" repeatCount="indefinite" />
+					<animateTransform 
+						attributeName="transform" 
+						type="scale" 
+						values="0; 5" 
+						dur="1.67s" 
+						begin="-4.32s" 
+						repeatCount="indefinite" 
+						additive="sum"
+					/>
+				</circle>
+			
+				<circle cx="20.91" cy="91.67" r="0.2" fill="white">
+					<animate attributeName="r" values="0; 1; 0" dur="1.67s" begin="-1.19s" repeatCount="indefinite" />
+					<animateTransform 
+						attributeName="transform" 
+						type="scale" 
+						values="0; 5" 
+						dur="1.67s" 
+						begin="-1.19s" 
+						repeatCount="indefinite" 
+						additive="sum"
+					/>
+				</circle>
+			
+				<circle cx="93.03" cy="93.58" r="0.2" fill="white">
+					<animate attributeName="r" values="0; 1; 0" dur="1.67s" begin="-1.53s" repeatCount="indefinite" />
+					<animateTransform 
+						attributeName="transform" 
+						type="scale" 
+						values="0; 5" 
+						dur="1.67s" 
+						begin="-1.53s" 
+						repeatCount="indefinite" 
+						additive="sum"
+					/>
+				</circle>
+			
+				<circle cx="62.96" cy="51.21" r="0.2" fill="white">
+					<animate attributeName="r" values="0; 1; 0" dur="1.67s" begin="-0.99s" repeatCount="indefinite" />
+					<animateTransform 
+						attributeName="transform" 
+						type="scale" 
+						values="0; 5" 
+						dur="1.67s" 
+						begin="-0.99s" 
+						repeatCount="indefinite" 
+						additive="sum"
+					/>
+				</circle>
+			
+				<circle cx="91.07" cy="33.48" r="0.2" fill="white">
+					<animate attributeName="r" values="0; 1; 0" dur="1.67s" begin="-4.91s" repeatCount="indefinite" />
+					<animateTransform 
+						attributeName="transform" 
+						type="scale" 
+						values="0; 5" 
+						dur="1.67s" 
+						begin="-4.91s" 
+						repeatCount="indefinite" 
+						additive="sum"
+					/>
+				</circle>
+			
+				<circle cx="94.94" cy="93.09" r="0.2" fill="white">
+					<animate attributeName="r" values="0; 1; 0" dur="1.67s" begin="-0.26s" repeatCount="indefinite" />
+					<animateTransform 
+						attributeName="transform" 
+						type="scale" 
+						values="0; 5" 
+						dur="1.67s" 
+						begin="-0.26s" 
+						repeatCount="indefinite" 
+						additive="sum"
+					/>
+				</circle>
+			
+				<circle cx="92.31" cy="88.74" r="0.2" fill="white">
+					<animate attributeName="r" values="0; 1; 0" dur="1.67s" begin="-1.78s" repeatCount="indefinite" />
+					<animateTransform 
+						attributeName="transform" 
+						type="scale" 
+						values="0; 5" 
+						dur="1.67s" 
+						begin="-1.78s" 
+						repeatCount="indefinite" 
+						additive="sum"
+					/>
+				</circle>
+			
+				<circle cx="10.59" cy="69.50" r="0.2" fill="white">
+					<animate attributeName="r" values="0; 1; 0" dur="1.67s" begin="-2.92s" repeatCount="indefinite" />
+					<animateTransform 
+						attributeName="transform" 
+						type="scale" 
+						values="0; 5" 
+						dur="1.67s" 
+						begin="-2.92s" 
+						repeatCount="indefinite" 
+						additive="sum"
+					/>
+				</circle>
+			
+				<circle cx="24.26" cy="17.78" r="0.2" fill="white">
+					<animate attributeName="r" values="0; 1; 0" dur="1.67s" begin="-4.98s" repeatCount="indefinite" />
+					<animateTransform 
+						attributeName="transform" 
+						type="scale" 
+						values="0; 5" 
+						dur="1.67s" 
+						begin="-4.98s" 
+						repeatCount="indefinite" 
+						additive="sum"
+					/>
+				</circle>
+			
+				<circle cx="30.72" cy="53.06" r="0.2" fill="white">
+					<animate attributeName="r" values="0; 1; 0" dur="1.67s" begin="-3.55s" repeatCount="indefinite" />
+					<animateTransform 
+						attributeName="transform" 
+						type="scale" 
+						values="0; 5" 
+						dur="1.67s" 
+						begin="-3.55s" 
+						repeatCount="indefinite" 
+						additive="sum"
+					/>
+				</circle>
+			
+				<circle cx="60.45" cy="49.88" r="0.2" fill="white">
+					<animate attributeName="r" values="0; 1; 0" dur="1.67s" begin="-1.89s" repeatCount="indefinite" />
+					<animateTransform 
+						attributeName="transform" 
+						type="scale" 
+						values="0; 5" 
+						dur="1.67s" 
+						begin="-1.89s" 
+						repeatCount="indefinite" 
+						additive="sum"
+					/>
+				</circle>
+			
+				<circle cx="59.86" cy="32.54" r="0.2" fill="white">
+					<animate attributeName="r" values="0; 1; 0" dur="1.67s" begin="-3.62s" repeatCount="indefinite" />
+					<animateTransform 
+						attributeName="transform" 
+						type="scale" 
+						values="0; 5" 
+						dur="1.67s" 
+						begin="-3.62s" 
+						repeatCount="indefinite" 
+						additive="sum"
+					/>
+				</circle>
+			
+				<circle cx="12.62" cy="53.14" r="0.2" fill="white">
+					<animate attributeName="r" values="0; 1; 0" dur="1.67s" begin="-0.29s" repeatCount="indefinite" />
+					<animateTransform 
+						attributeName="transform" 
+						type="scale" 
+						values="0; 5" 
+						dur="1.67s" 
+						begin="-0.29s" 
+						repeatCount="indefinite" 
+						additive="sum"
+					/>
+				</circle>
+			
+				<circle cx="56.69" cy="17.40" r="0.2" fill="white">
+					<animate attributeName="r" values="0; 1; 0" dur="1.67s" begin="-3.33s" repeatCount="indefinite" />
+					<animateTransform 
+						attributeName="transform" 
+						type="scale" 
+						values="0; 5" 
+						dur="1.67s" 
+						begin="-3.33s" 
+						repeatCount="indefinite" 
+						additive="sum"
+					/>
+				</circle>
+			
+				<circle cx="94.24" cy="33.51" r="0.2" fill="white">
+					<animate attributeName="r" values="0; 1; 0" dur="1.67s" begin="-3.12s" repeatCount="indefinite" />
+					<animateTransform 
+						attributeName="transform" 
+						type="scale" 
+						values="0; 5" 
+						dur="1.67s" 
+						begin="-3.12s" 
+						repeatCount="indefinite" 
+						additive="sum"
+					/>
+				</circle>
+			
+				<circle cx="46.17" cy="9.69" r="0.2" fill="white">
+					<animate attributeName="r" values="0; 1; 0" dur="1.67s" begin="-0.71s" repeatCount="indefinite" />
+					<animateTransform 
+						attributeName="transform" 
+						type="scale" 
+						values="0; 5" 
+						dur="1.67s" 
+						begin="-0.71s" 
+						repeatCount="indefinite" 
+						additive="sum"
+					/>
+				</circle>
+			
+				<circle cx="55.39" cy="9.76" r="0.2" fill="white">
+					<animate attributeName="r" values="0; 1; 0" dur="1.67s" begin="-0.75s" repeatCount="indefinite" />
+					<animateTransform 
+						attributeName="transform" 
+						type="scale" 
+						values="0; 5" 
+						dur="1.67s" 
+						begin="-0.75s" 
+						repeatCount="indefinite" 
+						additive="sum"
+					/>
+				</circle>
+			
+				<circle cx="43.23" cy="22.91" r="0.2" fill="white">
+					<animate attributeName="r" values="0; 1; 0" dur="1.67s" begin="-1.17s" repeatCount="indefinite" />
+					<animateTransform 
+						attributeName="transform" 
+						type="scale" 
+						values="0; 5" 
+						dur="1.67s" 
+						begin="-1.17s" 
+						repeatCount="indefinite" 
+						additive="sum"
+					/>
+				</circle>
+			
+				<circle cx="57.48" cy="7.63" r="0.2" fill="white">
+					<animate attributeName="r" values="0; 1; 0" dur="1.67s" begin="-3.66s" repeatCount="indefinite" />
+					<animateTransform 
+						attributeName="transform" 
+						type="scale" 
+						values="0; 5" 
+						dur="1.67s" 
+						begin="-3.66s" 
+						repeatCount="indefinite" 
+						additive="sum"
+					/>
+				</circle>
+			
+				<circle cx="58.37" cy="39.75" r="0.2" fill="white">
+					<animate attributeName="r" values="0; 1; 0" dur="1.67s" begin="-1.43s" repeatCount="indefinite" />
+					<animateTransform 
+						attributeName="transform" 
+						type="scale" 
+						values="0; 5" 
+						dur="1.67s" 
+						begin="-1.43s" 
+						repeatCount="indefinite" 
+						additive="sum"
+					/>
+				</circle>
+			
+				<circle cx="89.36" cy="17.51" r="0.2" fill="white">
+					<animate attributeName="r" values="0; 1; 0" dur="1.67s" begin="-2.02s" repeatCount="indefinite" />
+					<animateTransform 
+						attributeName="transform" 
+						type="scale" 
+						values="0; 5" 
+						dur="1.67s" 
+						begin="-2.02s" 
+						repeatCount="indefinite" 
+						additive="sum"
+					/>
+				</circle>
+			
+				<circle cx="63.56" cy="88.68" r="0.2" fill="white">
+					<animate attributeName="r" values="0; 1; 0" dur="1.67s" begin="-4.90s" repeatCount="indefinite" />
+					<animateTransform 
+						attributeName="transform" 
+						type="scale" 
+						values="0; 5" 
+						dur="1.67s" 
+						begin="-4.90s" 
+						repeatCount="indefinite" 
+						additive="sum"
+					/>
+				</circle>
+			
+				<circle cx="51.08" cy="71.35" r="0.2" fill="white">
+					<animate attributeName="r" values="0; 1; 0" dur="1.67s" begin="-3.46s" repeatCount="indefinite" />
+					<animateTransform 
+						attributeName="transform" 
+						type="scale" 
+						values="0; 5" 
+						dur="1.67s" 
+						begin="-3.46s" 
+						repeatCount="indefinite" 
+						additive="sum"
+					/>
+				</circle>
+			
+				<circle cx="21.11" cy="30.75" r="0.2" fill="white">
+					<animate attributeName="r" values="0; 1; 0" dur="1.67s" begin="-2.12s" repeatCount="indefinite" />
+					<animateTransform 
+						attributeName="transform" 
+						type="scale" 
+						values="0; 5" 
+						dur="1.67s" 
+						begin="-2.12s" 
+						repeatCount="indefinite" 
+						additive="sum"
+					/>
+				</circle>
+			
+				<circle cx="79.08" cy="54.30" r="0.2" fill="white">
+					<animate attributeName="r" values="0; 1; 0" dur="1.67s" begin="-1.42s" repeatCount="indefinite" />
+					<animateTransform 
+						attributeName="transform" 
+						type="scale" 
+						values="0; 5" 
+						dur="1.67s" 
+						begin="-1.42s" 
+						repeatCount="indefinite" 
+						additive="sum"
+					/>
+				</circle>
+			
+				<circle cx="36.39" cy="29.72" r="0.2" fill="white">
+					<animate attributeName="r" values="0; 1; 0" dur="1.67s" begin="-3.21s" repeatCount="indefinite" />
+					<animateTransform 
+						attributeName="transform" 
+						type="scale" 
+						values="0; 5" 
+						dur="1.67s" 
+						begin="-3.21s" 
+						repeatCount="indefinite" 
+						additive="sum"
+					/>
+				</circle>
+			
+				<circle cx="13.71" cy="44.88" r="0.2" fill="white">
+					<animate attributeName="r" values="0; 1; 0" dur="1.67s" begin="-3.61s" repeatCount="indefinite" />
+					<animateTransform 
+						attributeName="transform" 
+						type="scale" 
+						values="0; 5" 
+						dur="1.67s" 
+						begin="-3.61s" 
+						repeatCount="indefinite" 
+						additive="sum"
+					/>
+				</circle>
+			
+				<circle cx="4.65" cy="1.76" r="0.2" fill="white">
+					<animate attributeName="r" values="0; 1; 0" dur="1.67s" begin="-2.20s" repeatCount="indefinite" />
+					<animateTransform 
+						attributeName="transform" 
+						type="scale" 
+						values="0; 5" 
+						dur="1.67s" 
+						begin="-2.20s" 
+						repeatCount="indefinite" 
+						additive="sum"
+					/>
+				</circle>
+			
+				<circle cx="63.67" cy="45.55" r="0.2" fill="white">
+					<animate attributeName="r" values="0; 1; 0" dur="1.67s" begin="-3.37s" repeatCount="indefinite" />
+					<animateTransform 
+						attributeName="transform" 
+						type="scale" 
+						values="0; 5" 
+						dur="1.67s" 
+						begin="-3.37s" 
+						repeatCount="indefinite" 
+						additive="sum"
+					/>
+				</circle>
+			
+				<circle cx="7.86" cy="69.87" r="0.2" fill="white">
+					<animate attributeName="r" values="0; 1; 0" dur="1.67s" begin="-0.24s" repeatCount="indefinite" />
+					<animateTransform 
+						attributeName="transform" 
+						type="scale" 
+						values="0; 5" 
+						dur="1.67s" 
+						begin="-0.24s" 
+						repeatCount="indefinite" 
+						additive="sum"
+					/>
+				</circle>
+			
+				<circle cx="78.33" cy="73.71" r="0.2" fill="white">
+					<animate attributeName="r" values="0; 1; 0" dur="1.67s" begin="-4.64s" repeatCount="indefinite" />
+					<animateTransform 
+						attributeName="transform" 
+						type="scale" 
+						values="0; 5" 
+						dur="1.67s" 
+						begin="-4.64s" 
+						repeatCount="indefinite" 
+						additive="sum"
+					/>
+				</circle>
+			
+				<circle cx="67.28" cy="33.76" r="0.2" fill="white">
+					<animate attributeName="r" values="0; 1; 0" dur="1.67s" begin="-0.77s" repeatCount="indefinite" />
+					<animateTransform 
+						attributeName="transform" 
+						type="scale" 
+						values="0; 5" 
+						dur="1.67s" 
+						begin="-0.77s" 
+						repeatCount="indefinite" 
+						additive="sum"
+					/>
+				</circle>
+			
+				<circle cx="76.45" cy="97.90" r="0.2" fill="white">
+					<animate attributeName="r" values="0; 1; 0" dur="1.67s" begin="-1.65s" repeatCount="indefinite" />
+					<animateTransform 
+						attributeName="transform" 
+						type="scale" 
+						values="0; 5" 
+						dur="1.67s" 
+						begin="-1.65s" 
+						repeatCount="indefinite" 
+						additive="sum"
+					/>
+				</circle>
+			
+				<circle cx="41.75" cy="9.46" r="0.2" fill="white">
+					<animate attributeName="r" values="0; 1; 0" dur="1.67s" begin="-0.62s" repeatCount="indefinite" />
+					<animateTransform 
+						attributeName="transform" 
+						type="scale" 
+						values="0; 5" 
+						dur="1.67s" 
+						begin="-0.62s" 
+						repeatCount="indefinite" 
+						additive="sum"
+					/>
+				</circle>
+			
+				<circle cx="27.57" cy="79.07" r="0.2" fill="white">
+					<animate attributeName="r" values="0; 1; 0" dur="1.67s" begin="-0.15s" repeatCount="indefinite" />
+					<animateTransform 
+						attributeName="transform" 
+						type="scale" 
+						values="0; 5" 
+						dur="1.67s" 
+						begin="-0.15s" 
+						repeatCount="indefinite" 
+						additive="sum"
+					/>
+				</circle>
+			
+				<circle cx="45.03" cy="78.78" r="0.2" fill="white">
+					<animate attributeName="r" values="0; 1; 0" dur="1.67s" begin="-3.61s" repeatCount="indefinite" />
+					<animateTransform 
+						attributeName="transform" 
+						type="scale" 
+						values="0; 5" 
+						dur="1.67s" 
+						begin="-3.61s" 
+						repeatCount="indefinite" 
+						additive="sum"
+					/>
+				</circle>
+			
+				<circle cx="34.22" cy="69.89" r="0.2" fill="white">
+					<animate attributeName="r" values="0; 1; 0" dur="1.67s" begin="-0.80s" repeatCount="indefinite" />
+					<animateTransform 
+						attributeName="transform" 
+						type="scale" 
+						values="0; 5" 
+						dur="1.67s" 
+						begin="-0.80s" 
+						repeatCount="indefinite" 
+						additive="sum"
+					/>
+				</circle>
+			
+				<circle cx="2.56" cy="89.97" r="0.2" fill="white">
+					<animate attributeName="r" values="0; 1; 0" dur="1.67s" begin="-3.32s" repeatCount="indefinite" />
+					<animateTransform 
+						attributeName="transform" 
+						type="scale" 
+						values="0; 5" 
+						dur="1.67s" 
+						begin="-3.32s" 
+						repeatCount="indefinite" 
+						additive="sum"
+					/>
+				</circle>
+			
+				<circle cx="88.63" cy="21.90" r="0.2" fill="white">
+					<animate attributeName="r" values="0; 1; 0" dur="1.67s" begin="-4.41s" repeatCount="indefinite" />
+					<animateTransform 
+						attributeName="transform" 
+						type="scale" 
+						values="0; 5" 
+						dur="1.67s" 
+						begin="-4.41s" 
+						repeatCount="indefinite" 
+						additive="sum"
+					/>
+				</circle>
+			
+				<circle cx="46.93" cy="30.30" r="0.2" fill="white">
+					<animate attributeName="r" values="0; 1; 0" dur="1.67s" begin="-1.47s" repeatCount="indefinite" />
+					<animateTransform 
+						attributeName="transform" 
+						type="scale" 
+						values="0; 5" 
+						dur="1.67s" 
+						begin="-1.47s" 
+						repeatCount="indefinite" 
+						additive="sum"
+					/>
+				</circle>
+			
+				<circle cx="81.89" cy="63.15" r="0.2" fill="white">
+					<animate attributeName="r" values="0; 1; 0" dur="1.67s" begin="-4.45s" repeatCount="indefinite" />
+					<animateTransform 
+						attributeName="transform" 
+						type="scale" 
+						values="0; 5" 
+						dur="1.67s" 
+						begin="-4.45s" 
+						repeatCount="indefinite" 
+						additive="sum"
+					/>
+				</circle>
+			
+				<circle cx="52.20" cy="62.41" r="0.2" fill="white">
+					<animate attributeName="r" values="0; 1; 0" dur="1.67s" begin="-4.66s" repeatCount="indefinite" />
+					<animateTransform 
+						attributeName="transform" 
+						type="scale" 
+						values="0; 5" 
+						dur="1.67s" 
+						begin="-4.66s" 
+						repeatCount="indefinite" 
+						additive="sum"
+					/>
+				</circle>
+			
+				<circle cx="90.14" cy="22.48" r="0.2" fill="white">
+					<animate attributeName="r" values="0; 1; 0" dur="1.67s" begin="-3.83s" repeatCount="indefinite" />
+					<animateTransform 
+						attributeName="transform" 
+						type="scale" 
+						values="0; 5" 
+						dur="1.67s" 
+						begin="-3.83s" 
+						repeatCount="indefinite" 
+						additive="sum"
+					/>
+				</circle>
+			
+				<circle cx="67.42" cy="50.05" r="0.2" fill="white">
+					<animate attributeName="r" values="0; 1; 0" dur="1.67s" begin="-3.56s" repeatCount="indefinite" />
+					<animateTransform 
+						attributeName="transform" 
+						type="scale" 
+						values="0; 5" 
+						dur="1.67s" 
+						begin="-3.56s" 
+						repeatCount="indefinite" 
+						additive="sum"
+					/>
+				</circle>
+			
+				<circle cx="45.69" cy="71.95" r="0.2" fill="white">
+					<animate attributeName="r" values="0; 1; 0" dur="1.67s" begin="-4.25s" repeatCount="indefinite" />
+					<animateTransform 
+						attributeName="transform" 
+						type="scale" 
+						values="0; 5" 
+						dur="1.67s" 
+						begin="-4.25s" 
+						repeatCount="indefinite" 
+						additive="sum"
+					/>
+				</circle>
+			
+				<circle cx="0.26" cy="13.72" r="0.2" fill="white">
+					<animate attributeName="r" values="0; 1; 0" dur="1.67s" begin="-1.64s" repeatCount="indefinite" />
+					<animateTransform 
+						attributeName="transform" 
+						type="scale" 
+						values="0; 5" 
+						dur="1.67s" 
+						begin="-1.64s" 
+						repeatCount="indefinite" 
+						additive="sum"
+					/>
+				</circle>
+			
+				<circle cx="26.16" cy="72.74" r="0.2" fill="white">
+					<animate attributeName="r" values="0; 1; 0" dur="1.67s" begin="-0.36s" repeatCount="indefinite" />
+					<animateTransform 
+						attributeName="transform" 
+						type="scale" 
+						values="0; 5" 
+						dur="1.67s" 
+						begin="-0.36s" 
+						repeatCount="indefinite" 
+						additive="sum"
+					/>
+				</circle>
+			
+				<circle cx="93.61" cy="60.65" r="0.2" fill="white">
+					<animate attributeName="r" values="0; 1; 0" dur="1.67s" begin="-2.75s" repeatCount="indefinite" />
+					<animateTransform 
+						attributeName="transform" 
+						type="scale" 
+						values="0; 5" 
+						dur="1.67s" 
+						begin="-2.75s" 
+						repeatCount="indefinite" 
+						additive="sum"
+					/>
+				</circle>
+			
+				<circle cx="8.34" cy="12.54" r="0.2" fill="white">
+					<animate attributeName="r" values="0; 1; 0" dur="1.67s" begin="-1.46s" repeatCount="indefinite" />
+					<animateTransform 
+						attributeName="transform" 
+						type="scale" 
+						values="0; 5" 
+						dur="1.67s" 
+						begin="-1.46s" 
+						repeatCount="indefinite" 
+						additive="sum"
+					/>
+				</circle>
+			
+				<circle cx="15.93" cy="11.06" r="0.2" fill="white">
+					<animate attributeName="r" values="0; 1; 0" dur="1.67s" begin="-1.25s" repeatCount="indefinite" />
+					<animateTransform 
+						attributeName="transform" 
+						type="scale" 
+						values="0; 5" 
+						dur="1.67s" 
+						begin="-1.25s" 
+						repeatCount="indefinite" 
+						additive="sum"
+					/>
+				</circle>
+			
+				<circle cx="72.43" cy="31.44" r="0.2" fill="white">
+					<animate attributeName="r" values="0; 1; 0" dur="1.67s" begin="-2.61s" repeatCount="indefinite" />
+					<animateTransform 
+						attributeName="transform" 
+						type="scale" 
+						values="0; 5" 
+						dur="1.67s" 
+						begin="-2.61s" 
+						repeatCount="indefinite" 
+						additive="sum"
+					/>
+				</circle>
+			
+				<circle cx="32.91" cy="88.35" r="0.2" fill="white">
+					<animate attributeName="r" values="0; 1; 0" dur="1.67s" begin="-1.71s" repeatCount="indefinite" />
+					<animateTransform 
+						attributeName="transform" 
+						type="scale" 
+						values="0; 5" 
+						dur="1.67s" 
+						begin="-1.71s" 
+						repeatCount="indefinite" 
+						additive="sum"
+					/>
+				</circle>
+			
+				<circle cx="27.97" cy="11.03" r="0.2" fill="white">
+					<animate attributeName="r" values="0; 1; 0" dur="1.67s" begin="-4.97s" repeatCount="indefinite" />
+					<animateTransform 
+						attributeName="transform" 
+						type="scale" 
+						values="0; 5" 
+						dur="1.67s" 
+						begin="-4.97s" 
+						repeatCount="indefinite" 
+						additive="sum"
+					/>
+				</circle>
+			
+				<circle cx="92.52" cy="2.59" r="0.2" fill="white">
+					<animate attributeName="r" values="0; 1; 0" dur="1.67s" begin="-3.84s" repeatCount="indefinite" />
+					<animateTransform 
+						attributeName="transform" 
+						type="scale" 
+						values="0; 5" 
+						dur="1.67s" 
+						begin="-3.84s" 
+						repeatCount="indefinite" 
+						additive="sum"
+					/>
+				</circle>
+			
+				<circle cx="87.56" cy="64.56" r="0.2" fill="white">
+					<animate attributeName="r" values="0; 1; 0" dur="1.67s" begin="-2.10s" repeatCount="indefinite" />
+					<animateTransform 
+						attributeName="transform" 
+						type="scale" 
+						values="0; 5" 
+						dur="1.67s" 
+						begin="-2.10s" 
+						repeatCount="indefinite" 
+						additive="sum"
+					/>
+				</circle>
+			
+				<circle cx="52.05" cy="57.06" r="0.2" fill="white">
+					<animate attributeName="r" values="0; 1; 0" dur="1.67s" begin="-1.21s" repeatCount="indefinite" />
+					<animateTransform 
+						attributeName="transform" 
+						type="scale" 
+						values="0; 5" 
+						dur="1.67s" 
+						begin="-1.21s" 
+						repeatCount="indefinite" 
+						additive="sum"
+					/>
+				</circle>
+			
+				<circle cx="56.78" cy="64.07" r="0.2" fill="white">
+					<animate attributeName="r" values="0; 1; 0" dur="1.67s" begin="-4.00s" repeatCount="indefinite" />
+					<animateTransform 
+						attributeName="transform" 
+						type="scale" 
+						values="0; 5" 
+						dur="1.67s" 
+						begin="-4.00s" 
+						repeatCount="indefinite" 
+						additive="sum"
+					/>
+				</circle>
+			
+				<circle cx="31.47" cy="73.34" r="0.2" fill="white">
+					<animate attributeName="r" values="0; 1; 0" dur="1.67s" begin="-0.13s" repeatCount="indefinite" />
+					<animateTransform 
+						attributeName="transform" 
+						type="scale" 
+						values="0; 5" 
+						dur="1.67s" 
+						begin="-0.13s" 
+						repeatCount="indefinite" 
+						additive="sum"
+					/>
+				</circle>
+			
+				<circle cx="86.07" cy="79.65" r="0.2" fill="white">
+					<animate attributeName="r" values="0; 1; 0" dur="1.67s" begin="-4.44s" repeatCount="indefinite" />
+					<animateTransform 
+						attributeName="transform" 
+						type="scale" 
+						values="0; 5" 
+						dur="1.67s" 
+						begin="-4.44s" 
+						repeatCount="indefinite" 
+						additive="sum"
+					/>
+				</circle>
+			
+				<circle cx="41.43" cy="63.12" r="0.2" fill="white">
+					<animate attributeName="r" values="0; 1; 0" dur="1.67s" begin="-0.80s" repeatCount="indefinite" />
+					<animateTransform 
+						attributeName="transform" 
+						type="scale" 
+						values="0; 5" 
+						dur="1.67s" 
+						begin="-0.80s" 
+						repeatCount="indefinite" 
+						additive="sum"
+					/>
+				</circle>
+			
+				<circle cx="53.28" cy="88.92" r="0.2" fill="white">
+					<animate attributeName="r" values="0; 1; 0" dur="1.67s" begin="-2.35s" repeatCount="indefinite" />
+					<animateTransform 
+						attributeName="transform" 
+						type="scale" 
+						values="0; 5" 
+						dur="1.67s" 
+						begin="-2.35s" 
+						repeatCount="indefinite" 
+						additive="sum"
+					/>
+				</circle>
+			
+				<circle cx="74.11" cy="31.12" r="0.2" fill="white">
+					<animate attributeName="r" values="0; 1; 0" dur="1.67s" begin="-1.26s" repeatCount="indefinite" />
+					<animateTransform 
+						attributeName="transform" 
+						type="scale" 
+						values="0; 5" 
+						dur="1.67s" 
+						begin="-1.26s" 
+						repeatCount="indefinite" 
+						additive="sum"
+					/>
+				</circle>
+			
+				<circle cx="92.41" cy="60.85" r="0.2" fill="white">
+					<animate attributeName="r" values="0; 1; 0" dur="1.67s" begin="-2.60s" repeatCount="indefinite" />
+					<animateTransform 
+						attributeName="transform" 
+						type="scale" 
+						values="0; 5" 
+						dur="1.67s" 
+						begin="-2.60s" 
+						repeatCount="indefinite" 
+						additive="sum"
+					/>
+				</circle>
+			
+				<circle cx="69.60" cy="89.18" r="0.2" fill="white">
+					<animate attributeName="r" values="0; 1; 0" dur="1.67s" begin="-0.91s" repeatCount="indefinite" />
+					<animateTransform 
+						attributeName="transform" 
+						type="scale" 
+						values="0; 5" 
+						dur="1.67s" 
+						begin="-0.91s" 
+						repeatCount="indefinite" 
+						additive="sum"
+					/>
+				</circle>
+			
+				<circle cx="56.69" cy="20.38" r="0.2" fill="white">
+					<animate attributeName="r" values="0; 1; 0" dur="1.67s" begin="-1.39s" repeatCount="indefinite" />
+					<animateTransform 
+						attributeName="transform" 
+						type="scale" 
+						values="0; 5" 
+						dur="1.67s" 
+						begin="-1.39s" 
+						repeatCount="indefinite" 
+						additive="sum"
+					/>
+				</circle>
+			
+				<circle cx="73.51" cy="6.08" r="0.2" fill="white">
+					<animate attributeName="r" values="0; 1; 0" dur="1.67s" begin="-3.02s" repeatCount="indefinite" />
+					<animateTransform 
+						attributeName="transform" 
+						type="scale" 
+						values="0; 5" 
+						dur="1.67s" 
+						begin="-3.02s" 
+						repeatCount="indefinite" 
+						additive="sum"
+					/>
+				</circle>
+			
+				<circle cx="89.24" cy="18.04" r="0.2" fill="white">
+					<animate attributeName="r" values="0; 1; 0" dur="1.67s" begin="-2.41s" repeatCount="indefinite" />
+					<animateTransform 
+						attributeName="transform" 
+						type="scale" 
+						values="0; 5" 
+						dur="1.67s" 
+						begin="-2.41s" 
+						repeatCount="indefinite" 
+						additive="sum"
+					/>
+				</circle>
+			
+				<circle cx="69.57" cy="5.41" r="0.2" fill="white">
+					<animate attributeName="r" values="0; 1; 0" dur="1.67s" begin="-4.85s" repeatCount="indefinite" />
+					<animateTransform 
+						attributeName="transform" 
+						type="scale" 
+						values="0; 5" 
+						dur="1.67s" 
+						begin="-4.85s" 
+						repeatCount="indefinite" 
+						additive="sum"
+					/>
+				</circle>
+			
+				<circle cx="71.92" cy="81.84" r="0.2" fill="white">
+					<animate attributeName="r" values="0; 1; 0" dur="1.67s" begin="-0.99s" repeatCount="indefinite" />
+					<animateTransform 
+						attributeName="transform" 
+						type="scale" 
+						values="0; 5" 
+						dur="1.67s" 
+						begin="-0.99s" 
+						repeatCount="indefinite" 
+						additive="sum"
+					/>
+				</circle>
+			
+				<circle cx="0.33" cy="49.81" r="0.2" fill="white">
+					<animate attributeName="r" values="0; 1; 0" dur="1.67s" begin="-4.48s" repeatCount="indefinite" />
+					<animateTransform 
+						attributeName="transform" 
+						type="scale" 
+						values="0; 5" 
+						dur="1.67s" 
+						begin="-4.48s" 
+						repeatCount="indefinite" 
+						additive="sum"
+					/>
+				</circle>
+			
+				<circle cx="50.34" cy="84.54" r="0.2" fill="white">
+					<animate attributeName="r" values="0; 1; 0" dur="1.67s" begin="-1.61s" repeatCount="indefinite" />
+					<animateTransform 
+						attributeName="transform" 
+						type="scale" 
+						values="0; 5" 
+						dur="1.67s" 
+						begin="-1.61s" 
+						repeatCount="indefinite" 
+						additive="sum"
+					/>
+				</circle>
+			
+				<circle cx="28.06" cy="4.18" r="0.2" fill="white">
+					<animate attributeName="r" values="0; 1; 0" dur="1.67s" begin="-1.81s" repeatCount="indefinite" />
+					<animateTransform 
+						attributeName="transform" 
+						type="scale" 
+						values="0; 5" 
+						dur="1.67s" 
+						begin="-1.81s" 
+						repeatCount="indefinite" 
+						additive="sum"
+					/>
+				</circle>
+			
+				<circle cx="53.91" cy="68.01" r="0.2" fill="white">
+					<animate attributeName="r" values="0; 1; 0" dur="1.67s" begin="-3.71s" repeatCount="indefinite" />
+					<animateTransform 
+						attributeName="transform" 
+						type="scale" 
+						values="0; 5" 
+						dur="1.67s" 
+						begin="-3.71s" 
+						repeatCount="indefinite" 
+						additive="sum"
+					/>
+				</circle>
+			
+				<circle cx="15.92" cy="71.66" r="0.2" fill="white">
+					<animate attributeName="r" values="0; 1; 0" dur="1.67s" begin="-2.36s" repeatCount="indefinite" />
+					<animateTransform 
+						attributeName="transform" 
+						type="scale" 
+						values="0; 5" 
+						dur="1.67s" 
+						begin="-2.36s" 
+						repeatCount="indefinite" 
+						additive="sum"
+					/>
+				</circle>
+			
+				<circle cx="16.83" cy="41.21" r="0.2" fill="white">
+					<animate attributeName="r" values="0; 1; 0" dur="1.67s" begin="-3.40s" repeatCount="indefinite" />
+					<animateTransform 
+						attributeName="transform" 
+						type="scale" 
+						values="0; 5" 
+						dur="1.67s" 
+						begin="-3.40s" 
+						repeatCount="indefinite" 
+						additive="sum"
+					/>
+				</circle>
+			
+				<circle cx="9.32" cy="87.63" r="0.2" fill="white">
+					<animate attributeName="r" values="0; 1; 0" dur="1.67s" begin="-1.01s" repeatCount="indefinite" />
+					<animateTransform 
+						attributeName="transform" 
+						type="scale" 
+						values="0; 5" 
+						dur="1.67s" 
+						begin="-1.01s" 
+						repeatCount="indefinite" 
+						additive="sum"
+					/>
+				</circle>
+			
+				<circle cx="9.51" cy="24.73" r="0.2" fill="white">
+					<animate attributeName="r" values="0; 1; 0" dur="1.67s" begin="-1.89s" repeatCount="indefinite" />
+					<animateTransform 
+						attributeName="transform" 
+						type="scale" 
+						values="0; 5" 
+						dur="1.67s" 
+						begin="-1.89s" 
+						repeatCount="indefinite" 
+						additive="sum"
+					/>
+				</circle>
+			
+				<circle cx="84.53" cy="34.58" r="0.2" fill="white">
+					<animate attributeName="r" values="0; 1; 0" dur="1.67s" begin="-4.26s" repeatCount="indefinite" />
+					<animateTransform 
+						attributeName="transform" 
+						type="scale" 
+						values="0; 5" 
+						dur="1.67s" 
+						begin="-4.26s" 
+						repeatCount="indefinite" 
+						additive="sum"
+					/>
+				</circle>
+			
+				<circle cx="3.06" cy="95.05" r="0.2" fill="white">
+					<animate attributeName="r" values="0; 1; 0" dur="1.67s" begin="-1.24s" repeatCount="indefinite" />
+					<animateTransform 
+						attributeName="transform" 
+						type="scale" 
+						values="0; 5" 
+						dur="1.67s" 
+						begin="-1.24s" 
+						repeatCount="indefinite" 
+						additive="sum"
+					/>
+				</circle>
+			
+				<circle cx="79.93" cy="39.13" r="0.2" fill="white">
+					<animate attributeName="r" values="0; 1; 0" dur="1.67s" begin="-2.69s" repeatCount="indefinite" />
+					<animateTransform 
+						attributeName="transform" 
+						type="scale" 
+						values="0; 5" 
+						dur="1.67s" 
+						begin="-2.69s" 
+						repeatCount="indefinite" 
+						additive="sum"
+					/>
+				</circle>
+			
+				<circle cx="95.79" cy="60.34" r="0.2" fill="white">
+					<animate attributeName="r" values="0; 1; 0" dur="1.67s" begin="-3.12s" repeatCount="indefinite" />
+					<animateTransform 
+						attributeName="transform" 
+						type="scale" 
+						values="0; 5" 
+						dur="1.67s" 
+						begin="-3.12s" 
+						repeatCount="indefinite" 
+						additive="sum"
+					/>
+				</circle>
+			
+				<circle cx="39.97" cy="20.50" r="0.2" fill="white">
+					<animate attributeName="r" values="0; 1; 0" dur="1.67s" begin="-0.25s" repeatCount="indefinite" />
+					<animateTransform 
+						attributeName="transform" 
+						type="scale" 
+						values="0; 5" 
+						dur="1.67s" 
+						begin="-0.25s" 
+						repeatCount="indefinite" 
+						additive="sum"
+					/>
+				</circle>
+			
+				<circle cx="63.99" cy="6.43" r="0.2" fill="white">
+					<animate attributeName="r" values="0; 1; 0" dur="1.67s" begin="-0.03s" repeatCount="indefinite" />
+					<animateTransform 
+						attributeName="transform" 
+						type="scale" 
+						values="0; 5" 
+						dur="1.67s" 
+						begin="-0.03s" 
+						repeatCount="indefinite" 
+						additive="sum"
+					/>
+				</circle>
+			
+				<circle cx="23.52" cy="69.55" r="0.2" fill="white">
+					<animate attributeName="r" values="0; 1; 0" dur="1.67s" begin="-0.11s" repeatCount="indefinite" />
+					<animateTransform 
+						attributeName="transform" 
+						type="scale" 
+						values="0; 5" 
+						dur="1.67s" 
+						begin="-0.11s" 
+						repeatCount="indefinite" 
+						additive="sum"
+					/>
+				</circle>
+			
+				<circle cx="41.11" cy="44.38" r="0.2" fill="white">
+					<animate attributeName="r" values="0; 1; 0" dur="1.67s" begin="-3.71s" repeatCount="indefinite" />
+					<animateTransform 
+						attributeName="transform" 
+						type="scale" 
+						values="0; 5" 
+						dur="1.67s" 
+						begin="-3.71s" 
+						repeatCount="indefinite" 
+						additive="sum"
+					/>
+				</circle>
+			
+				<circle cx="45.60" cy="82.60" r="0.2" fill="white">
+					<animate attributeName="r" values="0; 1; 0" dur="1.67s" begin="-2.06s" repeatCount="indefinite" />
+					<animateTransform 
+						attributeName="transform" 
+						type="scale" 
+						values="0; 5" 
+						dur="1.67s" 
+						begin="-2.06s" 
+						repeatCount="indefinite" 
+						additive="sum"
+					/>
+				</circle>
+			
+				<circle cx="40.86" cy="81.59" r="0.2" fill="white">
+					<animate attributeName="r" values="0; 1; 0" dur="1.67s" begin="-1.33s" repeatCount="indefinite" />
+					<animateTransform 
+						attributeName="transform" 
+						type="scale" 
+						values="0; 5" 
+						dur="1.67s" 
+						begin="-1.33s" 
+						repeatCount="indefinite" 
+						additive="sum"
+					/>
+				</circle>
+			
+				<circle cx="21.44" cy="52.85" r="0.2" fill="white">
+					<animate attributeName="r" values="0; 1; 0" dur="1.67s" begin="-3.49s" repeatCount="indefinite" />
+					<animateTransform 
+						attributeName="transform" 
+						type="scale" 
+						values="0; 5" 
+						dur="1.67s" 
+						begin="-3.49s" 
+						repeatCount="indefinite" 
+						additive="sum"
+					/>
+				</circle>
+			
+				<circle cx="6.53" cy="4.59" r="0.2" fill="white">
+					<animate attributeName="r" values="0; 1; 0" dur="1.67s" begin="-4.25s" repeatCount="indefinite" />
+					<animateTransform 
+						attributeName="transform" 
+						type="scale" 
+						values="0; 5" 
+						dur="1.67s" 
+						begin="-4.25s" 
+						repeatCount="indefinite" 
+						additive="sum"
+					/>
+				</circle>
+			
+				<circle cx="51.86" cy="53.62" r="0.2" fill="white">
+					<animate attributeName="r" values="0; 1; 0" dur="1.67s" begin="-0.42s" repeatCount="indefinite" />
+					<animateTransform 
+						attributeName="transform" 
+						type="scale" 
+						values="0; 5" 
+						dur="1.67s" 
+						begin="-0.42s" 
+						repeatCount="indefinite" 
+						additive="sum"
+					/>
+				</circle>
+			
+				<circle cx="46.98" cy="58.82" r="0.2" fill="white">
+					<animate attributeName="r" values="0; 1; 0" dur="1.67s" begin="-0.19s" repeatCount="indefinite" />
+					<animateTransform 
+						attributeName="transform" 
+						type="scale" 
+						values="0; 5" 
+						dur="1.67s" 
+						begin="-0.19s" 
+						repeatCount="indefinite" 
+						additive="sum"
+					/>
+				</circle>
+			
+				<circle cx="19.14" cy="8.23" r="0.2" fill="white">
+					<animate attributeName="r" values="0; 1; 0" dur="1.67s" begin="-3.74s" repeatCount="indefinite" />
+					<animateTransform 
+						attributeName="transform" 
+						type="scale" 
+						values="0; 5" 
+						dur="1.67s" 
+						begin="-3.74s" 
+						repeatCount="indefinite" 
+						additive="sum"
+					/>
+				</circle>
+			
+				<circle cx="78.20" cy="71.34" r="0.2" fill="white">
+					<animate attributeName="r" values="0; 1; 0" dur="1.67s" begin="-3.12s" repeatCount="indefinite" />
+					<animateTransform 
+						attributeName="transform" 
+						type="scale" 
+						values="0; 5" 
+						dur="1.67s" 
+						begin="-3.12s" 
+						repeatCount="indefinite" 
+						additive="sum"
+					/>
+				</circle>
+			
+				<circle cx="58.68" cy="21.02" r="0.2" fill="white">
+					<animate attributeName="r" values="0; 1; 0" dur="1.67s" begin="-2.17s" repeatCount="indefinite" />
+					<animateTransform 
+						attributeName="transform" 
+						type="scale" 
+						values="0; 5" 
+						dur="1.67s" 
+						begin="-2.17s" 
+						repeatCount="indefinite" 
+						additive="sum"
+					/>
+				</circle>
+			
+				<circle cx="11.75" cy="4.94" r="0.2" fill="white">
+					<animate attributeName="r" values="0; 1; 0" dur="1.67s" begin="-1.16s" repeatCount="indefinite" />
+					<animateTransform 
+						attributeName="transform" 
+						type="scale" 
+						values="0; 5" 
+						dur="1.67s" 
+						begin="-1.16s" 
+						repeatCount="indefinite" 
+						additive="sum"
+					/>
+				</circle>
+			
+				<circle cx="69.22" cy="76.00" r="0.2" fill="white">
+					<animate attributeName="r" values="0; 1; 0" dur="1.67s" begin="-4.92s" repeatCount="indefinite" />
+					<animateTransform 
+						attributeName="transform" 
+						type="scale" 
+						values="0; 5" 
+						dur="1.67s" 
+						begin="-4.92s" 
+						repeatCount="indefinite" 
+						additive="sum"
+					/>
+				</circle>
+			
+				<circle cx="41.03" cy="31.29" r="0.2" fill="white">
+					<animate attributeName="r" values="0; 1; 0" dur="1.67s" begin="-2.28s" repeatCount="indefinite" />
+					<animateTransform 
+						attributeName="transform" 
+						type="scale" 
+						values="0; 5" 
+						dur="1.67s" 
+						begin="-2.28s" 
+						repeatCount="indefinite" 
+						additive="sum"
+					/>
+				</circle>
+			
+				<circle cx="75.90" cy="93.56" r="0.2" fill="white">
+					<animate attributeName="r" values="0; 1; 0" dur="1.67s" begin="-4.96s" repeatCount="indefinite" />
+					<animateTransform 
+						attributeName="transform" 
+						type="scale" 
+						values="0; 5" 
+						dur="1.67s" 
+						begin="-4.96s" 
+						repeatCount="indefinite" 
+						additive="sum"
+					/>
+				</circle>
+			
+				<circle cx="3.56" cy="72.31" r="0.2" fill="white">
+					<animate attributeName="r" values="0; 1; 0" dur="1.67s" begin="-3.66s" repeatCount="indefinite" />
+					<animateTransform 
+						attributeName="transform" 
+						type="scale" 
+						values="0; 5" 
+						dur="1.67s" 
+						begin="-3.66s" 
+						repeatCount="indefinite" 
+						additive="sum"
+					/>
+				</circle>
+			
+				<circle cx="40.43" cy="89.37" r="0.2" fill="white">
+					<animate attributeName="r" values="0; 1; 0" dur="1.67s" begin="-0.17s" repeatCount="indefinite" />
+					<animateTransform 
+						attributeName="transform" 
+						type="scale" 
+						values="0; 5" 
+						dur="1.67s" 
+						begin="-0.17s" 
+						repeatCount="indefinite" 
+						additive="sum"
+					/>
+				</circle>
+			
+				<circle cx="33.93" cy="48.62" r="0.2" fill="white">
+					<animate attributeName="r" values="0; 1; 0" dur="1.67s" begin="-3.83s" repeatCount="indefinite" />
+					<animateTransform 
+						attributeName="transform" 
+						type="scale" 
+						values="0; 5" 
+						dur="1.67s" 
+						begin="-3.83s" 
+						repeatCount="indefinite" 
+						additive="sum"
+					/>
+				</circle>
+			
+				<circle cx="13.77" cy="91.31" r="0.2" fill="white">
+					<animate attributeName="r" values="0; 1; 0" dur="1.67s" begin="-0.55s" repeatCount="indefinite" />
+					<animateTransform 
+						attributeName="transform" 
+						type="scale" 
+						values="0; 5" 
+						dur="1.67s" 
+						begin="-0.55s" 
+						repeatCount="indefinite" 
+						additive="sum"
+					/>
+				</circle>
+			
+				<circle cx="67.62" cy="92.84" r="0.2" fill="white">
+					<animate attributeName="r" values="0; 1; 0" dur="1.67s" begin="-0.36s" repeatCount="indefinite" />
+					<animateTransform 
+						attributeName="transform" 
+						type="scale" 
+						values="0; 5" 
+						dur="1.67s" 
+						begin="-0.36s" 
+						repeatCount="indefinite" 
+						additive="sum"
+					/>
+				</circle>
+			
+				<circle cx="33.06" cy="74.19" r="0.2" fill="white">
+					<animate attributeName="r" values="0; 1; 0" dur="1.67s" begin="-4.08s" repeatCount="indefinite" />
+					<animateTransform 
+						attributeName="transform" 
+						type="scale" 
+						values="0; 5" 
+						dur="1.67s" 
+						begin="-4.08s" 
+						repeatCount="indefinite" 
+						additive="sum"
+					/>
+				</circle>
+			
+				<circle cx="41.38" cy="44.34" r="0.2" fill="white">
+					<animate attributeName="r" values="0; 1; 0" dur="1.67s" begin="-4.01s" repeatCount="indefinite" />
+					<animateTransform 
+						attributeName="transform" 
+						type="scale" 
+						values="0; 5" 
+						dur="1.67s" 
+						begin="-4.01s" 
+						repeatCount="indefinite" 
+						additive="sum"
+					/>
+				</circle>
+			
+				<circle cx="56.01" cy="93.89" r="0.2" fill="white">
+					<animate attributeName="r" values="0; 1; 0" dur="1.67s" begin="-3.88s" repeatCount="indefinite" />
+					<animateTransform 
+						attributeName="transform" 
+						type="scale" 
+						values="0; 5" 
+						dur="1.67s" 
+						begin="-3.88s" 
+						repeatCount="indefinite" 
+						additive="sum"
+					/>
+				</circle>
+			
+				<circle cx="87.27" cy="15.93" r="0.2" fill="white">
+					<animate attributeName="r" values="0; 1; 0" dur="1.67s" begin="-2.33s" repeatCount="indefinite" />
+					<animateTransform 
+						attributeName="transform" 
+						type="scale" 
+						values="0; 5" 
+						dur="1.67s" 
+						begin="-2.33s" 
+						repeatCount="indefinite" 
+						additive="sum"
+					/>
+				</circle>
+			
+				<circle cx="67.06" cy="17.54" r="0.2" fill="white">
+					<animate attributeName="r" values="0; 1; 0" dur="1.67s" begin="-0.72s" repeatCount="indefinite" />
+					<animateTransform 
+						attributeName="transform" 
+						type="scale" 
+						values="0; 5" 
+						dur="1.67s" 
+						begin="-0.72s" 
+						repeatCount="indefinite" 
+						additive="sum"
+					/>
+				</circle>
+			
+				<circle cx="54.45" cy="67.02" r="0.2" fill="white">
+					<animate attributeName="r" values="0; 1; 0" dur="1.67s" begin="-4.39s" repeatCount="indefinite" />
+					<animateTransform 
+						attributeName="transform" 
+						type="scale" 
+						values="0; 5" 
+						dur="1.67s" 
+						begin="-4.39s" 
+						repeatCount="indefinite" 
+						additive="sum"
+					/>
+				</circle>
+			
+				<circle cx="97.36" cy="30.86" r="0.2" fill="white">
+					<animate attributeName="r" values="0; 1; 0" dur="1.67s" begin="-1.57s" repeatCount="indefinite" />
+					<animateTransform 
+						attributeName="transform" 
+						type="scale" 
+						values="0; 5" 
+						dur="1.67s" 
+						begin="-1.57s" 
+						repeatCount="indefinite" 
+						additive="sum"
+					/>
+				</circle>
+			
+				<circle cx="65.93" cy="5.99" r="0.2" fill="white">
+					<animate attributeName="r" values="0; 1; 0" dur="1.67s" begin="-0.79s" repeatCount="indefinite" />
+					<animateTransform 
+						attributeName="transform" 
+						type="scale" 
+						values="0; 5" 
+						dur="1.67s" 
+						begin="-0.79s" 
+						repeatCount="indefinite" 
+						additive="sum"
+					/>
+				</circle>
+			
+				<circle cx="43.36" cy="62.72" r="0.2" fill="white">
+					<animate attributeName="r" values="0; 1; 0" dur="1.67s" begin="-3.11s" repeatCount="indefinite" />
+					<animateTransform 
+						attributeName="transform" 
+						type="scale" 
+						values="0; 5" 
+						dur="1.67s" 
+						begin="-3.11s" 
+						repeatCount="indefinite" 
+						additive="sum"
+					/>
+				</circle>
+			
+				<circle cx="37.55" cy="61.26" r="0.2" fill="white">
+					<animate attributeName="r" values="0; 1; 0" dur="1.67s" begin="-1.82s" repeatCount="indefinite" />
+					<animateTransform 
+						attributeName="transform" 
+						type="scale" 
+						values="0; 5" 
+						dur="1.67s" 
+						begin="-1.82s" 
+						repeatCount="indefinite" 
+						additive="sum"
+					/>
+				</circle>
+			
+				<circle cx="42.78" cy="41.20" r="0.2" fill="white">
+					<animate attributeName="r" values="0; 1; 0" dur="1.67s" begin="-0.31s" repeatCount="indefinite" />
+					<animateTransform 
+						attributeName="transform" 
+						type="scale" 
+						values="0; 5" 
+						dur="1.67s" 
+						begin="-0.31s" 
+						repeatCount="indefinite" 
+						additive="sum"
+					/>
+				</circle>
+			
+				<circle cx="95.18" cy="56.48" r="0.2" fill="white">
+					<animate attributeName="r" values="0; 1; 0" dur="1.67s" begin="-0.60s" repeatCount="indefinite" />
+					<animateTransform 
+						attributeName="transform" 
+						type="scale" 
+						values="0; 5" 
+						dur="1.67s" 
+						begin="-0.60s" 
+						repeatCount="indefinite" 
+						additive="sum"
+					/>
+				</circle>
+			
+				<circle cx="57.43" cy="5.63" r="0.2" fill="white">
+					<animate attributeName="r" values="0; 1; 0" dur="1.67s" begin="-4.15s" repeatCount="indefinite" />
+					<animateTransform 
+						attributeName="transform" 
+						type="scale" 
+						values="0; 5" 
+						dur="1.67s" 
+						begin="-4.15s" 
+						repeatCount="indefinite" 
+						additive="sum"
+					/>
+				</circle>
+			
+				<circle cx="34.14" cy="72.00" r="0.2" fill="white">
+					<animate attributeName="r" values="0; 1; 0" dur="1.67s" begin="-4.60s" repeatCount="indefinite" />
+					<animateTransform 
+						attributeName="transform" 
+						type="scale" 
+						values="0; 5" 
+						dur="1.67s" 
+						begin="-4.60s" 
+						repeatCount="indefinite" 
+						additive="sum"
+					/>
+				</circle>
+			
+				<circle cx="87.59" cy="72.22" r="0.2" fill="white">
+					<animate attributeName="r" values="0; 1; 0" dur="1.67s" begin="-1.27s" repeatCount="indefinite" />
+					<animateTransform 
+						attributeName="transform" 
+						type="scale" 
+						values="0; 5" 
+						dur="1.67s" 
+						begin="-1.27s" 
+						repeatCount="indefinite" 
+						additive="sum"
+					/>
+				</circle>
+			
+				<circle cx="11.59" cy="62.33" r="0.2" fill="white">
+					<animate attributeName="r" values="0; 1; 0" dur="1.67s" begin="-2.23s" repeatCount="indefinite" />
+					<animateTransform 
+						attributeName="transform" 
+						type="scale" 
+						values="0; 5" 
+						dur="1.67s" 
+						begin="-2.23s" 
+						repeatCount="indefinite" 
+						additive="sum"
+					/>
+				</circle>
+			
+				<circle cx="29.71" cy="11.57" r="0.2" fill="white">
+					<animate attributeName="r" values="0; 1; 0" dur="1.67s" begin="-1.51s" repeatCount="indefinite" />
+					<animateTransform 
+						attributeName="transform" 
+						type="scale" 
+						values="0; 5" 
+						dur="1.67s" 
+						begin="-1.51s" 
+						repeatCount="indefinite" 
+						additive="sum"
+					/>
+				</circle>
+			
+				<circle cx="98.87" cy="86.11" r="0.2" fill="white">
+					<animate attributeName="r" values="0; 1; 0" dur="1.67s" begin="-2.38s" repeatCount="indefinite" />
+					<animateTransform 
+						attributeName="transform" 
+						type="scale" 
+						values="0; 5" 
+						dur="1.67s" 
+						begin="-2.38s" 
+						repeatCount="indefinite" 
+						additive="sum"
+					/>
+				</circle>
+			
+				<circle cx="15.91" cy="57.25" r="0.2" fill="white">
+					<animate attributeName="r" values="0; 1; 0" dur="1.67s" begin="-2.18s" repeatCount="indefinite" />
+					<animateTransform 
+						attributeName="transform" 
+						type="scale" 
+						values="0; 5" 
+						dur="1.67s" 
+						begin="-2.18s" 
+						repeatCount="indefinite" 
+						additive="sum"
+					/>
+				</circle>
+			
+				<circle cx="20.39" cy="51.47" r="0.2" fill="white">
+					<animate attributeName="r" values="0; 1; 0" dur="1.67s" begin="-1.53s" repeatCount="indefinite" />
+					<animateTransform 
+						attributeName="transform" 
+						type="scale" 
+						values="0; 5" 
+						dur="1.67s" 
+						begin="-1.53s" 
+						repeatCount="indefinite" 
+						additive="sum"
+					/>
+				</circle>
+			
+				<circle cx="57.39" cy="23.56" r="0.2" fill="white">
+					<animate attributeName="r" values="0; 1; 0" dur="1.67s" begin="-1.27s" repeatCount="indefinite" />
+					<animateTransform 
+						attributeName="transform" 
+						type="scale" 
+						values="0; 5" 
+						dur="1.67s" 
+						begin="-1.27s" 
+						repeatCount="indefinite" 
+						additive="sum"
+					/>
+				</circle>
+			
+				<circle cx="3.63" cy="75.41" r="0.2" fill="white">
+					<animate attributeName="r" values="0; 1; 0" dur="1.67s" begin="-3.37s" repeatCount="indefinite" />
+					<animateTransform 
+						attributeName="transform" 
+						type="scale" 
+						values="0; 5" 
+						dur="1.67s" 
+						begin="-3.37s" 
+						repeatCount="indefinite" 
+						additive="sum"
+					/>
+				</circle>
+			
+				<circle cx="28.82" cy="19.80" r="0.2" fill="white">
+					<animate attributeName="r" values="0; 1; 0" dur="1.67s" begin="-3.08s" repeatCount="indefinite" />
+					<animateTransform 
+						attributeName="transform" 
+						type="scale" 
+						values="0; 5" 
+						dur="1.67s" 
+						begin="-3.08s" 
+						repeatCount="indefinite" 
+						additive="sum"
+					/>
+				</circle>
+			
+				<circle cx="26.04" cy="96.04" r="0.2" fill="white">
+					<animate attributeName="r" values="0; 1; 0" dur="1.67s" begin="-1.17s" repeatCount="indefinite" />
+					<animateTransform 
+						attributeName="transform" 
+						type="scale" 
+						values="0; 5" 
+						dur="1.67s" 
+						begin="-1.17s" 
+						repeatCount="indefinite" 
+						additive="sum"
+					/>
+				</circle>
+			
+				<circle cx="37.06" cy="32.37" r="0.2" fill="white">
+					<animate attributeName="r" values="0; 1; 0" dur="1.67s" begin="-3.02s" repeatCount="indefinite" />
+					<animateTransform 
+						attributeName="transform" 
+						type="scale" 
+						values="0; 5" 
+						dur="1.67s" 
+						begin="-3.02s" 
+						repeatCount="indefinite" 
+						additive="sum"
+					/>
+				</circle>
+			
+				<circle cx="1.34" cy="55.35" r="0.2" fill="white">
+					<animate attributeName="r" values="0; 1; 0" dur="1.67s" begin="-3.87s" repeatCount="indefinite" />
+					<animateTransform 
+						attributeName="transform" 
+						type="scale" 
+						values="0; 5" 
+						dur="1.67s" 
+						begin="-3.87s" 
+						repeatCount="indefinite" 
+						additive="sum"
+					/>
+				</circle>
+			
+				<circle cx="16.68" cy="68.26" r="0.2" fill="white">
+					<animate attributeName="r" values="0; 1; 0" dur="1.67s" begin="-1.13s" repeatCount="indefinite" />
+					<animateTransform 
+						attributeName="transform" 
+						type="scale" 
+						values="0; 5" 
+						dur="1.67s" 
+						begin="-1.13s" 
+						repeatCount="indefinite" 
+						additive="sum"
+					/>
+				</circle>
+			
+				<circle cx="92.47" cy="3.55" r="0.2" fill="white">
+					<animate attributeName="r" values="0; 1; 0" dur="1.67s" begin="-1.98s" repeatCount="indefinite" />
+					<animateTransform 
+						attributeName="transform" 
+						type="scale" 
+						values="0; 5" 
+						dur="1.67s" 
+						begin="-1.98s" 
+						repeatCount="indefinite" 
+						additive="sum"
+					/>
+				</circle>
+			
+				<circle cx="37.75" cy="25.21" r="0.2" fill="white">
+					<animate attributeName="r" values="0; 1; 0" dur="1.67s" begin="-1.21s" repeatCount="indefinite" />
+					<animateTransform 
+						attributeName="transform" 
+						type="scale" 
+						values="0; 5" 
+						dur="1.67s" 
+						begin="-1.21s" 
+						repeatCount="indefinite" 
+						additive="sum"
+					/>
+				</circle>
+			
+				<circle cx="35.81" cy="41.67" r="0.2" fill="white">
+					<animate attributeName="r" values="0; 1; 0" dur="1.67s" begin="-4.94s" repeatCount="indefinite" />
+					<animateTransform 
+						attributeName="transform" 
+						type="scale" 
+						values="0; 5" 
+						dur="1.67s" 
+						begin="-4.94s" 
+						repeatCount="indefinite" 
+						additive="sum"
+					/>
+				</circle>
+			
+				<circle cx="58.15" cy="86.33" r="0.2" fill="white">
+					<animate attributeName="r" values="0; 1; 0" dur="1.67s" begin="-3.69s" repeatCount="indefinite" />
+					<animateTransform 
+						attributeName="transform" 
+						type="scale" 
+						values="0; 5" 
+						dur="1.67s" 
+						begin="-3.69s" 
+						repeatCount="indefinite" 
+						additive="sum"
+					/>
+				</circle>
+			
+				<circle cx="68.90" cy="49.43" r="0.2" fill="white">
+					<animate attributeName="r" values="0; 1; 0" dur="1.67s" begin="-3.32s" repeatCount="indefinite" />
+					<animateTransform 
+						attributeName="transform" 
+						type="scale" 
+						values="0; 5" 
+						dur="1.67s" 
+						begin="-3.32s" 
+						repeatCount="indefinite" 
+						additive="sum"
+					/>
+				</circle>
+			
+				<circle cx="25.79" cy="91.38" r="0.2" fill="white">
+					<animate attributeName="r" values="0; 1; 0" dur="1.67s" begin="-2.98s" repeatCount="indefinite" />
+					<animateTransform 
+						attributeName="transform" 
+						type="scale" 
+						values="0; 5" 
+						dur="1.67s" 
+						begin="-2.98s" 
+						repeatCount="indefinite" 
+						additive="sum"
+					/>
+				</circle>
+			
+				<circle cx="95.88" cy="80.60" r="0.2" fill="white">
+					<animate attributeName="r" values="0; 1; 0" dur="1.67s" begin="-3.22s" repeatCount="indefinite" />
+					<animateTransform 
+						attributeName="transform" 
+						type="scale" 
+						values="0; 5" 
+						dur="1.67s" 
+						begin="-3.22s" 
+						repeatCount="indefinite" 
+						additive="sum"
+					/>
+				</circle>
+			
+				<circle cx="64.47" cy="97.53" r="0.2" fill="white">
+					<animate attributeName="r" values="0; 1; 0" dur="1.67s" begin="-1.77s" repeatCount="indefinite" />
+					<animateTransform 
+						attributeName="transform" 
+						type="scale" 
+						values="0; 5" 
+						dur="1.67s" 
+						begin="-1.77s" 
+						repeatCount="indefinite" 
+						additive="sum"
+					/>
+				</circle>
+			
+				<circle cx="53.22" cy="7.05" r="0.2" fill="white">
+					<animate attributeName="r" values="0; 1; 0" dur="1.67s" begin="-4.22s" repeatCount="indefinite" />
+					<animateTransform 
+						attributeName="transform" 
+						type="scale" 
+						values="0; 5" 
+						dur="1.67s" 
+						begin="-4.22s" 
+						repeatCount="indefinite" 
+						additive="sum"
+					/>
+				</circle>
+			
+				<circle cx="46.08" cy="69.79" r="0.2" fill="white">
+					<animate attributeName="r" values="0; 1; 0" dur="1.67s" begin="-1.97s" repeatCount="indefinite" />
+					<animateTransform 
+						attributeName="transform" 
+						type="scale" 
+						values="0; 5" 
+						dur="1.67s" 
+						begin="-1.97s" 
+						repeatCount="indefinite" 
+						additive="sum"
+					/>
+				</circle>
+			
+				<circle cx="85.97" cy="75.03" r="0.2" fill="white">
+					<animate attributeName="r" values="0; 1; 0" dur="1.67s" begin="-4.28s" repeatCount="indefinite" />
+					<animateTransform 
+						attributeName="transform" 
+						type="scale" 
+						values="0; 5" 
+						dur="1.67s" 
+						begin="-4.28s" 
+						repeatCount="indefinite" 
+						additive="sum"
+					/>
+				</circle>
+			
+				<circle cx="44.55" cy="35.60" r="0.2" fill="white">
+					<animate attributeName="r" values="0; 1; 0" dur="1.67s" begin="-1.07s" repeatCount="indefinite" />
+					<animateTransform 
+						attributeName="transform" 
+						type="scale" 
+						values="0; 5" 
+						dur="1.67s" 
+						begin="-1.07s" 
+						repeatCount="indefinite" 
+						additive="sum"
+					/>
+				</circle>
+			
+				<circle cx="33.02" cy="34.76" r="0.2" fill="white">
+					<animate attributeName="r" values="0; 1; 0" dur="1.67s" begin="-0.38s" repeatCount="indefinite" />
+					<animateTransform 
+						attributeName="transform" 
+						type="scale" 
+						values="0; 5" 
+						dur="1.67s" 
+						begin="-0.38s" 
+						repeatCount="indefinite" 
+						additive="sum"
+					/>
+				</circle>
+			
+				<circle cx="26.47" cy="2.99" r="0.2" fill="white">
+					<animate attributeName="r" values="0; 1; 0" dur="1.67s" begin="-1.90s" repeatCount="indefinite" />
+					<animateTransform 
+						attributeName="transform" 
+						type="scale" 
+						values="0; 5" 
+						dur="1.67s" 
+						begin="-1.90s" 
+						repeatCount="indefinite" 
+						additive="sum"
+					/>
+				</circle>
+			
+				<circle cx="96.36" cy="64.06" r="0.2" fill="white">
+					<animate attributeName="r" values="0; 1; 0" dur="1.67s" begin="-0.42s" repeatCount="indefinite" />
+					<animateTransform 
+						attributeName="transform" 
+						type="scale" 
+						values="0; 5" 
+						dur="1.67s" 
+						begin="-0.42s" 
+						repeatCount="indefinite" 
+						additive="sum"
+					/>
+				</circle>
+			
+				<circle cx="48.18" cy="23.89" r="0.2" fill="white">
+					<animate attributeName="r" values="0; 1; 0" dur="1.67s" begin="-1.82s" repeatCount="indefinite" />
+					<animateTransform 
+						attributeName="transform" 
+						type="scale" 
+						values="0; 5" 
+						dur="1.67s" 
+						begin="-1.82s" 
+						repeatCount="indefinite" 
+						additive="sum"
+					/>
+				</circle>
+			
+				<circle cx="14.51" cy="53.02" r="0.2" fill="white">
+					<animate attributeName="r" values="0; 1; 0" dur="1.67s" begin="-0.54s" repeatCount="indefinite" />
+					<animateTransform 
+						attributeName="transform" 
+						type="scale" 
+						values="0; 5" 
+						dur="1.67s" 
+						begin="-0.54s" 
+						repeatCount="indefinite" 
+						additive="sum"
+					/>
+				</circle>
+			
+				<circle cx="42.64" cy="7.77" r="0.2" fill="white">
+					<animate attributeName="r" values="0; 1; 0" dur="1.67s" begin="-3.76s" repeatCount="indefinite" />
+					<animateTransform 
+						attributeName="transform" 
+						type="scale" 
+						values="0; 5" 
+						dur="1.67s" 
+						begin="-3.76s" 
+						repeatCount="indefinite" 
+						additive="sum"
+					/>
+				</circle>
+			
+				<circle cx="41.69" cy="82.05" r="0.2" fill="white">
+					<animate attributeName="r" values="0; 1; 0" dur="1.67s" begin="-0.01s" repeatCount="indefinite" />
+					<animateTransform 
+						attributeName="transform" 
+						type="scale" 
+						values="0; 5" 
+						dur="1.67s" 
+						begin="-0.01s" 
+						repeatCount="indefinite" 
+						additive="sum"
+					/>
+				</circle>
+			
+				<circle cx="10.34" cy="39.20" r="0.2" fill="white">
+					<animate attributeName="r" values="0; 1; 0" dur="1.67s" begin="-3.20s" repeatCount="indefinite" />
+					<animateTransform 
+						attributeName="transform" 
+						type="scale" 
+						values="0; 5" 
+						dur="1.67s" 
+						begin="-3.20s" 
+						repeatCount="indefinite" 
+						additive="sum"
+					/>
+				</circle>
+			
+				<circle cx="6.96" cy="4.67" r="0.2" fill="white">
+					<animate attributeName="r" values="0; 1; 0" dur="1.67s" begin="-1.63s" repeatCount="indefinite" />
+					<animateTransform 
+						attributeName="transform" 
+						type="scale" 
+						values="0; 5" 
+						dur="1.67s" 
+						begin="-1.63s" 
+						repeatCount="indefinite" 
+						additive="sum"
+					/>
+				</circle>
+			
+				<circle cx="40.44" cy="4.98" r="0.2" fill="white">
+					<animate attributeName="r" values="0; 1; 0" dur="1.67s" begin="-2.01s" repeatCount="indefinite" />
+					<animateTransform 
+						attributeName="transform" 
+						type="scale" 
+						values="0; 5" 
+						dur="1.67s" 
+						begin="-2.01s" 
+						repeatCount="indefinite" 
+						additive="sum"
+					/>
+				</circle>
+			
+				<circle cx="9.07" cy="90.77" r="0.2" fill="white">
+					<animate attributeName="r" values="0; 1; 0" dur="1.67s" begin="-2.72s" repeatCount="indefinite" />
+					<animateTransform 
+						attributeName="transform" 
+						type="scale" 
+						values="0; 5" 
+						dur="1.67s" 
+						begin="-2.72s" 
+						repeatCount="indefinite" 
+						additive="sum"
+					/>
+				</circle>
+			
+				<circle cx="13.19" cy="20.27" r="0.2" fill="white">
+					<animate attributeName="r" values="0; 1; 0" dur="1.67s" begin="-4.85s" repeatCount="indefinite" />
+					<animateTransform 
+						attributeName="transform" 
+						type="scale" 
+						values="0; 5" 
+						dur="1.67s" 
+						begin="-4.85s" 
+						repeatCount="indefinite" 
+						additive="sum"
+					/>
+				</circle>
+			
+				<circle cx="30.34" cy="95.89" r="0.2" fill="white">
+					<animate attributeName="r" values="0; 1; 0" dur="1.67s" begin="-4.24s" repeatCount="indefinite" />
+					<animateTransform 
+						attributeName="transform" 
+						type="scale" 
+						values="0; 5" 
+						dur="1.67s" 
+						begin="-4.24s" 
+						repeatCount="indefinite" 
+						additive="sum"
+					/>
+				</circle>
+			
+				<circle cx="95.88" cy="44.99" r="0.2" fill="white">
+					<animate attributeName="r" values="0; 1; 0" dur="1.67s" begin="-3.52s" repeatCount="indefinite" />
+					<animateTransform 
+						attributeName="transform" 
+						type="scale" 
+						values="0; 5" 
+						dur="1.67s" 
+						begin="-3.52s" 
+						repeatCount="indefinite" 
+						additive="sum"
+					/>
+				</circle>
+			
+				<circle cx="60.62" cy="16.68" r="0.2" fill="white">
+					<animate attributeName="r" values="0; 1; 0" dur="1.67s" begin="-4.88s" repeatCount="indefinite" />
+					<animateTransform 
+						attributeName="transform" 
+						type="scale" 
+						values="0; 5" 
+						dur="1.67s" 
+						begin="-4.88s" 
+						repeatCount="indefinite" 
+						additive="sum"
+					/>
+				</circle>
+			
+				<circle cx="71.30" cy="94.86" r="0.2" fill="white">
+					<animate attributeName="r" values="0; 1; 0" dur="1.67s" begin="-2.56s" repeatCount="indefinite" />
+					<animateTransform 
+						attributeName="transform" 
+						type="scale" 
+						values="0; 5" 
+						dur="1.67s" 
+						begin="-2.56s" 
+						repeatCount="indefinite" 
+						additive="sum"
+					/>
+				</circle>
+			
+				<circle cx="64.84" cy="16.41" r="0.2" fill="white">
+					<animate attributeName="r" values="0; 1; 0" dur="1.67s" begin="-1.64s" repeatCount="indefinite" />
+					<animateTransform 
+						attributeName="transform" 
+						type="scale" 
+						values="0; 5" 
+						dur="1.67s" 
+						begin="-1.64s" 
+						repeatCount="indefinite" 
+						additive="sum"
+					/>
+				</circle>
+			
+				<circle cx="95.83" cy="40.99" r="0.2" fill="white">
+					<animate attributeName="r" values="0; 1; 0" dur="1.67s" begin="-2.42s" repeatCount="indefinite" />
+					<animateTransform 
+						attributeName="transform" 
+						type="scale" 
+						values="0; 5" 
+						dur="1.67s" 
+						begin="-2.42s" 
+						repeatCount="indefinite" 
+						additive="sum"
+					/>
+				</circle>
+			
+				<circle cx="32.23" cy="61.76" r="0.2" fill="white">
+					<animate attributeName="r" values="0; 1; 0" dur="1.67s" begin="-0.28s" repeatCount="indefinite" />
+					<animateTransform 
+						attributeName="transform" 
+						type="scale" 
+						values="0; 5" 
+						dur="1.67s" 
+						begin="-0.28s" 
+						repeatCount="indefinite" 
+						additive="sum"
+					/>
+				</circle>
+			
+				<circle cx="74.46" cy="17.08" r="0.2" fill="white">
+					<animate attributeName="r" values="0; 1; 0" dur="1.67s" begin="-4.61s" repeatCount="indefinite" />
+					<animateTransform 
+						attributeName="transform" 
+						type="scale" 
+						values="0; 5" 
+						dur="1.67s" 
+						begin="-4.61s" 
+						repeatCount="indefinite" 
+						additive="sum"
+					/>
+				</circle>
+			
+				<circle cx="42.82" cy="37.54" r="0.2" fill="white">
+					<animate attributeName="r" values="0; 1; 0" dur="1.67s" begin="-4.83s" repeatCount="indefinite" />
+					<animateTransform 
+						attributeName="transform" 
+						type="scale" 
+						values="0; 5" 
+						dur="1.67s" 
+						begin="-4.83s" 
+						repeatCount="indefinite" 
+						additive="sum"
+					/>
+				</circle>
+			
+				<circle cx="20.88" cy="9.85" r="0.2" fill="white">
+					<animate attributeName="r" values="0; 1; 0" dur="1.67s" begin="-1.55s" repeatCount="indefinite" />
+					<animateTransform 
+						attributeName="transform" 
+						type="scale" 
+						values="0; 5" 
+						dur="1.67s" 
+						begin="-1.55s" 
+						repeatCount="indefinite" 
+						additive="sum"
+					/>
+				</circle>
+			
+				<circle cx="44.50" cy="34.50" r="0.2" fill="white">
+					<animate attributeName="r" values="0; 1; 0" dur="1.67s" begin="-1.04s" repeatCount="indefinite" />
+					<animateTransform 
+						attributeName="transform" 
+						type="scale" 
+						values="0; 5" 
+						dur="1.67s" 
+						begin="-1.04s" 
+						repeatCount="indefinite" 
+						additive="sum"
+					/>
+				</circle>
+			
+				<circle cx="80.84" cy="63.85" r="0.2" fill="white">
+					<animate attributeName="r" values="0; 1; 0" dur="1.67s" begin="-2.63s" repeatCount="indefinite" />
+					<animateTransform 
+						attributeName="transform" 
+						type="scale" 
+						values="0; 5" 
+						dur="1.67s" 
+						begin="-2.63s" 
+						repeatCount="indefinite" 
+						additive="sum"
+					/>
+				</circle>
+			
+				<circle cx="32.11" cy="50.53" r="0.2" fill="white">
+					<animate attributeName="r" values="0; 1; 0" dur="1.67s" begin="-1.52s" repeatCount="indefinite" />
+					<animateTransform 
+						attributeName="transform" 
+						type="scale" 
+						values="0; 5" 
+						dur="1.67s" 
+						begin="-1.52s" 
+						repeatCount="indefinite" 
+						additive="sum"
+					/>
+				</circle>
+			
+				<circle cx="85.73" cy="95.45" r="0.2" fill="white">
+					<animate attributeName="r" values="0; 1; 0" dur="1.67s" begin="-1.07s" repeatCount="indefinite" />
+					<animateTransform 
+						attributeName="transform" 
+						type="scale" 
+						values="0; 5" 
+						dur="1.67s" 
+						begin="-1.07s" 
+						repeatCount="indefinite" 
+						additive="sum"
+					/>
+				</circle>
+			
+				<circle cx="65.06" cy="82.31" r="0.2" fill="white">
+					<animate attributeName="r" values="0; 1; 0" dur="1.67s" begin="-1.23s" repeatCount="indefinite" />
+					<animateTransform 
+						attributeName="transform" 
+						type="scale" 
+						values="0; 5" 
+						dur="1.67s" 
+						begin="-1.23s" 
+						repeatCount="indefinite" 
+						additive="sum"
+					/>
+				</circle>
+			
+				<circle cx="28.97" cy="26.71" r="0.2" fill="white">
+					<animate attributeName="r" values="0; 1; 0" dur="1.67s" begin="-0.99s" repeatCount="indefinite" />
+					<animateTransform 
+						attributeName="transform" 
+						type="scale" 
+						values="0; 5" 
+						dur="1.67s" 
+						begin="-0.99s" 
+						repeatCount="indefinite" 
+						additive="sum"
+					/>
+				</circle>
+			
+				<circle cx="0.42" cy="71.70" r="0.2" fill="white">
+					<animate attributeName="r" values="0; 1; 0" dur="1.67s" begin="-4.69s" repeatCount="indefinite" />
+					<animateTransform 
+						attributeName="transform" 
+						type="scale" 
+						values="0; 5" 
+						dur="1.67s" 
+						begin="-4.69s" 
+						repeatCount="indefinite" 
+						additive="sum"
+					/>
+				</circle>
+			
+				<circle cx="67.79" cy="75.65" r="0.2" fill="white">
+					<animate attributeName="r" values="0; 1; 0" dur="1.67s" begin="-4.55s" repeatCount="indefinite" />
+					<animateTransform 
+						attributeName="transform" 
+						type="scale" 
+						values="0; 5" 
+						dur="1.67s" 
+						begin="-4.55s" 
+						repeatCount="indefinite" 
+						additive="sum"
+					/>
+				</circle>
+			
+				<circle cx="8.87" cy="45.01" r="0.2" fill="white">
+					<animate attributeName="r" values="0; 1; 0" dur="1.67s" begin="-1.44s" repeatCount="indefinite" />
+					<animateTransform 
+						attributeName="transform" 
+						type="scale" 
+						values="0; 5" 
+						dur="1.67s" 
+						begin="-1.44s" 
+						repeatCount="indefinite" 
+						additive="sum"
+					/>
+				</circle>
+			
+				<circle cx="91.31" cy="64.06" r="0.2" fill="white">
+					<animate attributeName="r" values="0; 1; 0" dur="1.67s" begin="-1.13s" repeatCount="indefinite" />
+					<animateTransform 
+						attributeName="transform" 
+						type="scale" 
+						values="0; 5" 
+						dur="1.67s" 
+						begin="-1.13s" 
+						repeatCount="indefinite" 
+						additive="sum"
+					/>
+				</circle>
+			
+				<circle cx="9.56" cy="50.68" r="0.2" fill="white">
+					<animate attributeName="r" values="0; 1; 0" dur="1.67s" begin="-1.28s" repeatCount="indefinite" />
+					<animateTransform 
+						attributeName="transform" 
+						type="scale" 
+						values="0; 5" 
+						dur="1.67s" 
+						begin="-1.28s" 
+						repeatCount="indefinite" 
+						additive="sum"
+					/>
+				</circle>
+			
+				<circle cx="89.96" cy="92.79" r="0.2" fill="white">
+					<animate attributeName="r" values="0; 1; 0" dur="1.67s" begin="-3.12s" repeatCount="indefinite" />
+					<animateTransform 
+						attributeName="transform" 
+						type="scale" 
+						values="0; 5" 
+						dur="1.67s" 
+						begin="-3.12s" 
+						repeatCount="indefinite" 
+						additive="sum"
+					/>
+				</circle>
+			
+				<circle cx="73.21" cy="29.80" r="0.2" fill="white">
+					<animate attributeName="r" values="0; 1; 0" dur="1.67s" begin="-2.05s" repeatCount="indefinite" />
+					<animateTransform 
+						attributeName="transform" 
+						type="scale" 
+						values="0; 5" 
+						dur="1.67s" 
+						begin="-2.05s" 
+						repeatCount="indefinite" 
+						additive="sum"
+					/>
+				</circle>
+			
+				<circle cx="54.40" cy="80.03" r="0.2" fill="white">
+					<animate attributeName="r" values="0; 1; 0" dur="1.67s" begin="-4.61s" repeatCount="indefinite" />
+					<animateTransform 
+						attributeName="transform" 
+						type="scale" 
+						values="0; 5" 
+						dur="1.67s" 
+						begin="-4.61s" 
+						repeatCount="indefinite" 
+						additive="sum"
+					/>
+				</circle>
+			
+				<circle cx="94.85" cy="55.76" r="0.2" fill="white">
+					<animate attributeName="r" values="0; 1; 0" dur="1.67s" begin="-0.82s" repeatCount="indefinite" />
+					<animateTransform 
+						attributeName="transform" 
+						type="scale" 
+						values="0; 5" 
+						dur="1.67s" 
+						begin="-0.82s" 
+						repeatCount="indefinite" 
+						additive="sum"
+					/>
+				</circle>
+			
+				<circle cx="92.24" cy="18.52" r="0.2" fill="white">
+					<animate attributeName="r" values="0; 1; 0" dur="1.67s" begin="-4.34s" repeatCount="indefinite" />
+					<animateTransform 
+						attributeName="transform" 
+						type="scale" 
+						values="0; 5" 
+						dur="1.67s" 
+						begin="-4.34s" 
+						repeatCount="indefinite" 
+						additive="sum"
+					/>
+				</circle>
+			
+				<circle cx="88.99" cy="23.77" r="0.2" fill="white">
+					<animate attributeName="r" values="0; 1; 0" dur="1.67s" begin="-3.47s" repeatCount="indefinite" />
+					<animateTransform 
+						attributeName="transform" 
+						type="scale" 
+						values="0; 5" 
+						dur="1.67s" 
+						begin="-3.47s" 
+						repeatCount="indefinite" 
+						additive="sum"
+					/>
+				</circle>
+			
+				<circle cx="38.84" cy="53.04" r="0.2" fill="white">
+					<animate attributeName="r" values="0; 1; 0" dur="1.67s" begin="-0.84s" repeatCount="indefinite" />
+					<animateTransform 
+						attributeName="transform" 
+						type="scale" 
+						values="0; 5" 
+						dur="1.67s" 
+						begin="-0.84s" 
+						repeatCount="indefinite" 
+						additive="sum"
+					/>
+				</circle>
+			
+				<circle cx="84.41" cy="28.70" r="0.2" fill="white">
+					<animate attributeName="r" values="0; 1; 0" dur="1.67s" begin="-4.60s" repeatCount="indefinite" />
+					<animateTransform 
+						attributeName="transform" 
+						type="scale" 
+						values="0; 5" 
+						dur="1.67s" 
+						begin="-4.60s" 
+						repeatCount="indefinite" 
+						additive="sum"
+					/>
+				</circle>
+			
+				<circle cx="23.56" cy="58.72" r="0.2" fill="white">
+					<animate attributeName="r" values="0; 1; 0" dur="1.67s" begin="-3.35s" repeatCount="indefinite" />
+					<animateTransform 
+						attributeName="transform" 
+						type="scale" 
+						values="0; 5" 
+						dur="1.67s" 
+						begin="-3.35s" 
+						repeatCount="indefinite" 
+						additive="sum"
+					/>
+				</circle>
+			
+				<circle cx="9.77" cy="26.31" r="0.2" fill="white">
+					<animate attributeName="r" values="0; 1; 0" dur="1.67s" begin="-4.59s" repeatCount="indefinite" />
+					<animateTransform 
+						attributeName="transform" 
+						type="scale" 
+						values="0; 5" 
+						dur="1.67s" 
+						begin="-4.59s" 
+						repeatCount="indefinite" 
+						additive="sum"
+					/>
+				</circle>
+			
+				<circle cx="93.15" cy="1.31" r="0.2" fill="white">
+					<animate attributeName="r" values="0; 1; 0" dur="1.67s" begin="-3.86s" repeatCount="indefinite" />
+					<animateTransform 
+						attributeName="transform" 
+						type="scale" 
+						values="0; 5" 
+						dur="1.67s" 
+						begin="-3.86s" 
+						repeatCount="indefinite" 
+						additive="sum"
+					/>
+				</circle>
+			
+				<circle cx="74.29" cy="62.80" r="0.2" fill="white">
+					<animate attributeName="r" values="0; 1; 0" dur="1.67s" begin="-3.15s" repeatCount="indefinite" />
+					<animateTransform 
+						attributeName="transform" 
+						type="scale" 
+						values="0; 5" 
+						dur="1.67s" 
+						begin="-3.15s" 
+						repeatCount="indefinite" 
+						additive="sum"
+					/>
+				</circle>
+			
+				<circle cx="85.93" cy="24.10" r="0.2" fill="white">
+					<animate attributeName="r" values="0; 1; 0" dur="1.67s" begin="-2.92s" repeatCount="indefinite" />
+					<animateTransform 
+						attributeName="transform" 
+						type="scale" 
+						values="0; 5" 
+						dur="1.67s" 
+						begin="-2.92s" 
+						repeatCount="indefinite" 
+						additive="sum"
+					/>
+				</circle>
+			
+				<circle cx="98.41" cy="35.15" r="0.2" fill="white">
+					<animate attributeName="r" values="0; 1; 0" dur="1.67s" begin="-0.53s" repeatCount="indefinite" />
+					<animateTransform 
+						attributeName="transform" 
+						type="scale" 
+						values="0; 5" 
+						dur="1.67s" 
+						begin="-0.53s" 
+						repeatCount="indefinite" 
+						additive="sum"
+					/>
+				</circle>
+			
+				<circle cx="71.32" cy="83.81" r="0.2" fill="white">
+					<animate attributeName="r" values="0; 1; 0" dur="1.67s" begin="-4.60s" repeatCount="indefinite" />
+					<animateTransform 
+						attributeName="transform" 
+						type="scale" 
+						values="0; 5" 
+						dur="1.67s" 
+						begin="-4.60s" 
+						repeatCount="indefinite" 
+						additive="sum"
+					/>
+				</circle>
+			
+				<circle cx="91.14" cy="8.60" r="0.2" fill="white">
+					<animate attributeName="r" values="0; 1; 0" dur="1.67s" begin="-3.28s" repeatCount="indefinite" />
+					<animateTransform 
+						attributeName="transform" 
+						type="scale" 
+						values="0; 5" 
+						dur="1.67s" 
+						begin="-3.28s" 
+						repeatCount="indefinite" 
+						additive="sum"
+					/>
+				</circle>
+			
+				<circle cx="78.46" cy="51.74" r="0.2" fill="white">
+					<animate attributeName="r" values="0; 1; 0" dur="1.67s" begin="-3.65s" repeatCount="indefinite" />
+					<animateTransform 
+						attributeName="transform" 
+						type="scale" 
+						values="0; 5" 
+						dur="1.67s" 
+						begin="-3.65s" 
+						repeatCount="indefinite" 
+						additive="sum"
+					/>
+				</circle>
+			
+				<circle cx="95.18" cy="90.82" r="0.2" fill="white">
+					<animate attributeName="r" values="0; 1; 0" dur="1.67s" begin="-4.70s" repeatCount="indefinite" />
+					<animateTransform 
+						attributeName="transform" 
+						type="scale" 
+						values="0; 5" 
+						dur="1.67s" 
+						begin="-4.70s" 
+						repeatCount="indefinite" 
+						additive="sum"
+					/>
+				</circle>
+			
+				<circle cx="86.63" cy="73.14" r="0.2" fill="white">
+					<animate attributeName="r" values="0; 1; 0" dur="1.67s" begin="-0.59s" repeatCount="indefinite" />
+					<animateTransform 
+						attributeName="transform" 
+						type="scale" 
+						values="0; 5" 
+						dur="1.67s" 
+						begin="-0.59s" 
+						repeatCount="indefinite" 
+						additive="sum"
+					/>
+				</circle>
+			
+				</g>
+			</svg>"
+`;
+
+exports[`Dynamic Engine Core Tests > Generator [anim-vortex] > renders deterministic SVG with default params 1`] = `
+"<svg width="100%" height="100%" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" style="background: black;">
+				<title>Event Horizon</title>
+				<g transform-origin="50 50">
+					<animateTransform 
+						attributeName="transform" 
+						type="rotate" 
+						from="0" to="360" 
+						dur="2.50s" 
+						repeatCount="indefinite" 
+					/>
+					
+							<circle cx="80" cy="50" r="2" fill="white" opacity="0.1">
+								<animate attributeName="r" values="2; 8; 2" dur="2.50s" repeatCount="indefinite" />
+							</circle>
+						
+							<circle cx="75.98076211353316" cy="65" r="2" fill="white" opacity="0.175">
+								<animate attributeName="r" values="2; 8; 2" dur="2.50s" repeatCount="indefinite" />
+							</circle>
+						
+							<circle cx="65" cy="75.98076211353316" r="2" fill="white" opacity="0.25">
+								<animate attributeName="r" values="2; 8; 2" dur="2.50s" repeatCount="indefinite" />
+							</circle>
+						
+							<circle cx="50" cy="80" r="2" fill="white" opacity="0.325">
+								<animate attributeName="r" values="2; 8; 2" dur="2.50s" repeatCount="indefinite" />
+							</circle>
+						
+							<circle cx="35.00000000000001" cy="75.98076211353316" r="2" fill="white" opacity="0.4">
+								<animate attributeName="r" values="2; 8; 2" dur="2.50s" repeatCount="indefinite" />
+							</circle>
+						
+							<circle cx="24.01923788646684" cy="65" r="2" fill="white" opacity="0.475">
+								<animate attributeName="r" values="2; 8; 2" dur="2.50s" repeatCount="indefinite" />
+							</circle>
+						
+							<circle cx="20" cy="50.00000000000001" r="2" fill="white" opacity="0.55">
+								<animate attributeName="r" values="2; 8; 2" dur="2.50s" repeatCount="indefinite" />
+							</circle>
+						
+							<circle cx="24.019237886466836" cy="35.00000000000001" r="2" fill="white" opacity="0.625">
+								<animate attributeName="r" values="2; 8; 2" dur="2.50s" repeatCount="indefinite" />
+							</circle>
+						
+							<circle cx="34.999999999999986" cy="24.019237886466847" r="2" fill="white" opacity="0.7">
+								<animate attributeName="r" values="2; 8; 2" dur="2.50s" repeatCount="indefinite" />
+							</circle>
+						
+							<circle cx="49.99999999999999" cy="20" r="2" fill="white" opacity="0.775">
+								<animate attributeName="r" values="2; 8; 2" dur="2.50s" repeatCount="indefinite" />
+							</circle>
+						
+							<circle cx="65" cy="24.019237886466843" r="2" fill="white" opacity="0.85">
+								<animate attributeName="r" values="2; 8; 2" dur="2.50s" repeatCount="indefinite" />
+							</circle>
+						
+							<circle cx="75.98076211353316" cy="34.999999999999986" r="2" fill="white" opacity="0.9249999999999999">
+								<animate attributeName="r" values="2; 8; 2" dur="2.50s" repeatCount="indefinite" />
+							</circle>
+						
 				</g>
 			</svg>"
 `;

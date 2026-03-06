@@ -53,15 +53,13 @@ SumoSized SVG Generator is a static web application built with SvelteKit that ge
 
 ## Key Features
 
-- **Expanded Generative Library**: Choose from mathematical patterns, chaotic flow fields, structural layouts, sacred geometry, and **UI Asset primitives** (buttons, badges).
-- **Free-Hand Path Drawing**: Natively sketch and manipulate vector paths directly within the layer stack.
-- **SVG Smart Import**: Inject and composite external vector assets with full layer attribute control.
+- **Elite 12 Animation Suite**: Professional, Zod-validated SVG animation generators (Matrix Rain, Neural Synthesis, Quantum Pulse, Event Horizon, and more).
+- **Media Injection (Alpha)**: Integration with FFmpeg.wasm for high-performance GIF/WebP/APNG exports from procedural canvas frames.
+- **Strict Zod-Validated Generators**: Every math engine conforms to strict schemas for deterministic, agent-friendly SVG creation.
+- **Cross-Origin Isolation**: Enabled via `coi-serviceworker` to allow multi-threaded WASM processing on any host.
 - **Layer Composition**: Stack unlimited generators, apply standard CSS blend modes (`screen`, `multiply`, `overlay`, etc.), and reorder layers effortlessly.
-- **Global Variant Engine**: Jitter and mutate the entire layer stack simultaneously with a single click.
-- **2026 Accessibility (ADA Title II)**: All outputs feature baked-in WCAG 2.1 AA structural roles (`graphics-document`, `graphics-object`) for semantic machine readability.
-- **High-Performance Renders**: GPU-promoted compositing and string precision caching guarantees stutter-free UI interactions even with 10k+ nodes.
-- **Copy SVG Code**: Instant optimization and one-click copy to clipboard for native vector art portability.
-- **Headless AI Pipeline**: While the core engine is pure-math deterministic code, it exposes `window.SumoSvgApp`—a surface designed explicitly for LLMs and browser-agents to mutate the canvas, effectively transforming the platform into a limitless AI generator.
+- **High-Performance Renders**: GPU-promoted compositing guarantees stutter-free UI interactions even with 10k+ nodes.
+- **Headless AI Pipeline**: Exposes `window.SumoSvgApp`—a surface designed explicitly for LLMs and browser-agents to programmatically direct artwork.
 
 ## Performance Profiles
 
