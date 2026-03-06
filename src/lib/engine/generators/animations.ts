@@ -1,3 +1,4 @@
+import { z } from "zod";
 import type { SVGGenerator } from "../core/types";
 import { getPalette, getPaletteRole } from "../core/palettes";
 
@@ -70,6 +71,14 @@ export const orbit: SVGGenerator = {
 		usePalette: true,
 		thickness: 1,
 	},
+	schema: z.object({
+		orbits: z.number().int().min(1).max(5),
+		duration: z.number().min(0.5).max(10),
+		paletteId: z.string(),
+		color: z.string().regex(/^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/),
+		usePalette: z.boolean(),
+		thickness: z.number().min(0.1).max(5),
+	}),
 	render: (params, seed) => {
 		const { orbits, duration, paletteId, color, usePalette, thickness } =
 			params;
@@ -179,6 +188,13 @@ export const matrixRain: SVGGenerator = {
 		color: "#00FF41",
 		trailLength: 60,
 	},
+	schema: z.object({
+		density: z.number().min(5).max(100),
+		speed: z.number().min(0.5).max(5),
+		fontSize: z.number().min(2).max(10),
+		color: z.string().regex(/^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/),
+		trailLength: z.number().min(10).max(100),
+	}),
 	render: (params, seed) => {
 		const density = Math.floor(Number(params.density || 20));
 		const speed = Number(params.speed || 2);

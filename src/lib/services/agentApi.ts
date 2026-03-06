@@ -15,6 +15,7 @@ export interface SumoSvgAppAPI {
 		name: string;
 		description: string;
 		params: ParamDefinition[];
+		schema?: any; // The Zod schema description
 	} | null;
 	getCurrentState(): {
 		generatorId: string;
@@ -50,6 +51,7 @@ class AgentAPI implements SumoSvgAppAPI {
 			name: gen.name,
 			description: gen.description,
 			params: gen.params,
+			schema: gen.schema?.description || null,
 		};
 	}
 
@@ -92,11 +94,26 @@ class AgentAPI implements SumoSvgAppAPI {
 	setParams(params: Record<string, any>) {
 		try {
 			if (appState.activeLayer && appState.activeGenerator) {
-				appState.activeLayer.params = {
+				const mergedParams = {
 					...appState.activeGenerator.defaultParams,
 					...appState.activeLayer.params,
 					...params,
 				};
+
+				// Validate with Zod if schema exists
+				if (appState.activeGenerator.schema) {
+					const result =
+						appState.activeGenerator.schema.safeParse(mergedParams);
+					if (!result.success) {
+						console.error(
+							"AgentAPI Validation Error:",
+							result.error.format(),
+						);
+						return false;
+					}
+				}
+
+				appState.activeLayer.params = mergedParams;
 				appState.saveState();
 				return true;
 			}
@@ -193,11 +210,25 @@ class AgentAPI implements SumoSvgAppAPI {
 			const gen = getGenerator(generatorId);
 			if (!gen) return false;
 
+			const mergedParams = { ...gen.defaultParams, ...params };
+
+			// Validate with Zod if schema exists
+			if (gen.schema) {
+				const result = gen.schema.safeParse(mergedParams);
+				if (!result.success) {
+					console.error(
+						"AgentAPI Validation Error:",
+						result.error.format(),
+					);
+					return false;
+				}
+			}
+
 			const newLayer = {
 				id: Math.random().toString(36).substr(2, 9),
 				name: gen.name,
 				generatorId: gen.id,
-				params: { ...gen.defaultParams, ...params },
+				params: mergedParams,
 				seed: Math.floor(Math.random() * 10000),
 				visible: true,
 				blendMode: "normal" as const,

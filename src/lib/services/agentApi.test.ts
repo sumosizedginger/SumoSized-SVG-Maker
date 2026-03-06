@@ -163,4 +163,42 @@ describe("Agent API (window.SumoSvgApp)", () => {
 		spy2.mockRestore();
 		consoleSpy.mockRestore();
 	});
+
+	describe("Zod Validation Enforcement", () => {
+		it("addLayer rejects invalid parameters for anim-matrix-rain", () => {
+			const consoleSpy = vi.spyOn(console, "error").mockImplementation(() => { });
+			const success = agentApi.addLayer("anim-matrix-rain", {
+				density: 500, // Max is 100
+			});
+			expect(success).toBe(false);
+			expect(consoleSpy).toHaveBeenCalledWith(
+				expect.stringContaining("AgentAPI Validation Error"),
+				expect.anything(),
+			);
+			consoleSpy.mockRestore();
+		});
+
+		it("setParams rejects out-of-range values", () => {
+			const consoleSpy = vi.spyOn(console, "error").mockImplementation(() => { });
+			agentApi.setGenerator("anim-matrix-rain");
+			const success = agentApi.setParams({ density: 1 }); // Min is 5
+			expect(success).toBe(false);
+			consoleSpy.mockRestore();
+		});
+
+		it("setParams rejects incorrect types", () => {
+			const consoleSpy = vi.spyOn(console, "error").mockImplementation(() => { });
+			agentApi.setGenerator("anim-matrix-rain");
+			const success = agentApi.setParams({ density: "lots" as any });
+			expect(success).toBe(false);
+			consoleSpy.mockRestore();
+		});
+
+		it("setParams accepts valid parameters for orbit", () => {
+			agentApi.setGenerator("anim-orbit");
+			const success = agentApi.setParams({ orbits: 5, duration: 8 });
+			expect(success).toBe(true);
+			expect(appState.activeLayer?.params.orbits).toBe(5);
+		});
+	});
 });

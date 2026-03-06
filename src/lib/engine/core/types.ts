@@ -1,3 +1,5 @@
+import { z } from "zod";
+
 export type ParamType =
 	| "number"
 	| "integer"
@@ -34,6 +36,7 @@ export interface GeneratorMetadata {
 export interface SVGGenerator extends GeneratorMetadata {
 	params: ParamDefinition[];
 	defaultParams: Record<string, any>;
+	schema?: z.ZodObject<any>; // Optional Zod schema for strict agent validation
 	render: (params: Record<string, any>, seed: number) => string; // full <svg>...</svg>
 }
 
