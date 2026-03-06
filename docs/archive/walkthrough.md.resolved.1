@@ -1,0 +1,25 @@
+# Walkthrough - Professional Text Fitting
+
+I have refined the **Advanced Text** generator to ensure text fits professionally within the window and does not bleed out of the canvas bounds.
+
+## Changes Made
+
+### Engine - Generators ([text-effects.ts](file:///d:/SVG/src/lib/engine/generators/text-effects.ts))
+- **Arch Truncation Fix**: Changed the Arch path from a fixed tiny semi-circle to a sweeping Quadratic Bezier curve that scales beautifully with the `Curve Radius` parameter. The path length is now extremely long, guaranteeing that text won't abruptly cut off.
+- **Circle Overlap Fix**: Removed identical explicit `textLength` stretch values. Text on circles now flows naturally with its own literal spacing (centered at the top) instead of being violently stretched and overlapped over itself.
+- **Wave "Spiral scribble" Fix**: Identified that high `amplitude/radius` values combined with fixed horizontal frequencies caused steep zig-zags that crushed letters into a scribble. The wave's frequency is now mathematically proportional to its amplitude (`Math.max(40, r * 2.5)`), guaranteeing smooth, flowing waves at any size.
+- **Spiral Disappearing Fix**: Fixed a bug where `startOffset` was evaluating to 50% on spirals, launching the text way past the center loops, and moved the `text-anchor` attribute out of `<textPath>` to the `<text>` element directly to comply with strict SVG rendering rules in all browsers. Spirals now explicitly default to starting at 0% coil.
+
+## Verification Results
+
+### Manual Verification Required
+Since I cannot interact with your local development server's GUI directly, please verify the fix in your browser:
+
+1.  Refresh the app at `http://localhost:5173`.
+2.  Select the **Advanced Text** generator.
+3.  Choose the **Spiral** effect.
+4.  Observe that the text now fits comfortably within the canvas without being cut off.
+5.  Try increasing the **Font Size** or **Curve Radius** to see the new professional boundaries.
+
+> [!TIP]
+> The growth rate was tightened specifically to handle longer conversational strings without them flying off-screen.

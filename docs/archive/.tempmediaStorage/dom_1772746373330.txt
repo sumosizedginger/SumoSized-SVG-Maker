@@ -1,0 +1,128 @@
+<current_dom_explanation>
+This is a temporary snapshot of the current page's DOM structure. The DOM will change if you navigate to or interact with another page. Use a tool like browser_get_dom to capture and preserve the DOM in your trajectory if needed for later reference.
+</current_dom_explanation>
+<current_dom>
+SumoSized SVG Generator
+[0] (882,40)<button class='header-btn gallery-btn s-y_bCXRrkrYfP'>Open Gallery />
+[1] (954,40)<button class='header-btn share s-y_bCXRrkrYfP'>Copy Share Link />
+[2] (12,108)<button aria-label='Pointer (V)' class='tool-btn active s-YJSrXwL9Oajv' title='Pointer (V)' />
+[3] (12,158)<button aria-label='Move (G)' class='tool-btn  s-YJSrXwL9Oajv' title='Move (G)' />
+[4] (12,207)<button aria-label='Crop (C)' class='tool-btn  s-YJSrXwL9Oajv' title='Crop (C)' />
+[5] (12,256)<button aria-label='Transform (S)' class='tool-btn  s-YJSrXwL9Oajv' title='Transform (S)' />
+[6] (12,306)<button aria-label='Pencil (P)' class='tool-btn  s-YJSrXwL9Oajv' title='Pencil (P)' />
+[7] (12,355)<button aria-label='Brush (B)' class='tool-btn  s-YJSrXwL9Oajv' title='Brush (B)' />
+[8] (12,405)<button aria-label='Eraser (E)' class='tool-btn  s-YJSrXwL9Oajv' title='Eraser (E)' />
+[9] (12,454)<button aria-label='Line (L)' class='tool-btn  s-YJSrXwL9Oajv' title='Line (L)' />
+[10] (12,503)<button aria-label='Rectangle (R)' class='tool-btn  s-YJSrXwL9Oajv' title='Rectangle (R)' />
+[11] (12,553)<button aria-label='Ellipse (O)' class='tool-btn  s-YJSrXwL9Oajv' title='Ellipse (O)' />
+[12] (12,592)<button aria-label='Text (T)' class='tool-btn  s-YJSrXwL9Oajv' title='Text (T)' />
+[13] (82,541)<div class='sidebar-inner s-y_bCXRrkrYfP' scrollable='true' />
+	Generators
+	[14] (78,144)<input class='search-input s-y_bCXRrkrYfP' placeholder='Search...' />
+	[15] (78,186)<select class='category-select s-y_bCXRrkrYfP' />
+	[16] (78,239)<button class='s-y_bCXRrkrYfP' />
+		[17] (78,232)<span >Quantum Core />
+		[18] (78,248)<span >Abstract />
+	[19] (78,291)<button class='s-y_bCXRrkrYfP' />
+		[20] (78,284)<span >Sacred Geometry />
+		[21] (78,300)<span >Abstract />
+	[22] (78,343)<button class='s-y_bCXRrkrYfP' />
+		[23] (78,336)<span >Simple Gradient />
+		[24] (78,352)<span >Backgrounds />
+	[25] (78,395)<button class='s-y_bCXRrkrYfP' />
+		[26] (78,388)<span >Polka Dots />
+		[27] (78,404)<span >Patterns />
+	[28] (78,447)<button class='s-y_bCXRrkrYfP' />
+		[29] (78,440)<span >Tech Grid />
+		[30] (78,456)<span >Patterns />
+	[31] (78,499)<button class='s-y_bCXRrkrYfP' />
+		[32] (78,492)<span >Flow Field />
+		[33] (78,508)<span >Abstract />
+	[34] (78,551)<button class='s-y_bCXRrkrYfP' />
+		[35] (78,544)<span >Swiss Poster />
+		[36] (78,560)<span >Layouts />
+	[37] (78,603)<button class='s-y_bCXRrkrYfP' />
+		[38] (78,596)<span >Tech Badge />
+		[39] (78,612)<span >UI Assets />
+	[40] (78,655)<button class='s-y_bCXRrkrYfP' />
+		[41] (78,648)<span >Orbital Loop />
+		[42] (78,664)<span >Animations />
+	[43] (78,707)<button class='s-y_bCXRrkrYfP' />
+		[44] (78,700)<span >Matrix Rain />
+		[45] (78,716)<span >Animations />
+	[46] (78,759)<button class='s-y_bCXRrkrYfP' />
+		[47] (78,752)<span >Symbol Grid />
+		[48] (78,768)<span >Icons />
+	[49] (78,811)<button class='s-y_bCXRrkrYfP' />
+		[50] (78,804)<span >Manual Drawing />
+		[51] (78,820)<span >Drawing />
+	[52] (78,863)<button class='s-y_bCXRrkrYfP' />
+		[53] (78,856)<span >Advanced Text />
+		[54] (78,872)<span >Typography />
+	[55] (78,915)<button class='s-y_bCXRrkrYfP' />
+		[56] (78,908)<span >SVG Import />
+		[57] (78,924)<span >Custom />
+	Presets
+[58] (194,933)<button class='action-btn primary s-y_bCXRrkrYfP'>Copy SVG Code />
+(Paste into a text editor and save as .svg)
+[59] (804,933)<button class='action-btn secondary s-y_bCXRrkrYfP'>Generate Variants />
+Layers
+[60] (927,147)<button class='import-btn s-eTJJTmtT3c5M'>Import SVG />
+[61] (927,201)<div class='layer-item s-eTJJTmtT3c5M' role='presentation' />
+	[62] (927,201)<div aria-label='Toggle Matrix Rain Layer controls' class='layer-header s-eTJJTmtT3c5M' role='button'>⋮⋮ />
+		⋮⋮
+		[63] (882,201)<span >▸ />
+		[64] (895,201)<input class='s-eTJJTmtT3c5M' title='Toggle Visibility' />
+		[65] (939,201)<span >Matrix Rain Layer />
+		[66] (983,201)<button class='delete-btn s-eTJJTmtT3c5M' title='Delete Layer'>× />
+[67] (927,250)<div class='layer-item s-eTJJTmtT3c5M' role='presentation' />
+	[68] (927,250)<div aria-label='Toggle Symbol Grid Layer controls' class='layer-header s-eTJJTmtT3c5M' role='button'>⋮⋮ />
+		⋮⋮
+		[69] (880,250)<span >▸ />
+		[70] (893,250)<input class='s-eTJJTmtT3c5M' title='Toggle Visibility' />
+		[71] (938,250)<span >Symbol Grid Layer />
+		[72] (983,250)<button class='delete-btn s-eTJJTmtT3c5M' title='Delete Layer'>× />
+[73] (927,300)<div class='layer-item s-eTJJTmtT3c5M' role='presentation' />
+	[74] (927,300)<div aria-label='Toggle Advanced Text controls' class='layer-header s-eTJJTmtT3c5M' role='button'>⋮⋮ />
+		⋮⋮
+		[75] (880,300)<span >▸ />
+		[76] (893,300)<input class='s-eTJJTmtT3c5M' title='Toggle Visibility' />
+		[77] (938,300)<span >Advanced Text />
+		[78] (983,300)<button class='delete-btn s-eTJJTmtT3c5M' title='Delete Layer'>× />
+[79] (927,350)<div class='layer-item s-eTJJTmtT3c5M' role='presentation' />
+	[80] (927,350)<div aria-label='Toggle Manual Drawing controls' class='layer-header s-eTJJTmtT3c5M' role='button'>⋮⋮ />
+		⋮⋮
+		[81] (880,350)<span >▸ />
+		[82] (893,350)<input class='s-eTJJTmtT3c5M' title='Toggle Visibility' />
+		[83] (938,350)<span >Manual Drawing />
+		[84] (983,350)<button class='delete-btn s-eTJJTmtT3c5M' title='Delete Layer'>× />
+[85] (927,399)<div class='layer-item s-eTJJTmtT3c5M' role='presentation' />
+	[86] (927,399)<div aria-label='Toggle SVG Import controls' class='layer-header s-eTJJTmtT3c5M' role='button'>⋮⋮ />
+		⋮⋮
+		[87] (880,399)<span >▸ />
+		[88] (893,399)<input class='s-eTJJTmtT3c5M' title='Toggle Visibility' />
+		[89] (938,399)<span >SVG Import />
+		[90] (983,399)<button class='delete-btn s-eTJJTmtT3c5M' title='Delete Layer'>× />
+[91] (927,449)<div class='layer-item s-eTJJTmtT3c5M' role='presentation' />
+	[92] (927,449)<div aria-label='Toggle Sacred Geometry Layer controls' class='layer-header s-eTJJTmtT3c5M' role='button'>⋮⋮ />
+		⋮⋮
+		[93] (880,449)<span >▸ />
+		[94] (893,449)<input class='s-eTJJTmtT3c5M' title='Toggle Visibility' />
+		[95] (938,449)<span >Sacred Geometry Layer />
+		[96] (983,449)<button class='delete-btn s-eTJJTmtT3c5M' title='Delete Layer'>× />
+[97] (927,499)<div class='layer-item s-eTJJTmtT3c5M' role='presentation' />
+	[98] (927,499)<div aria-label='Toggle Orbital Loop Layer controls' class='layer-header s-eTJJTmtT3c5M' role='button'>⋮⋮ />
+		⋮⋮
+		[99] (880,499)<span >▸ />
+		[100] (893,499)<input class='s-eTJJTmtT3c5M' title='Toggle Visibility' />
+		[101] (938,499)<span >Orbital Loop Layer />
+		[102] (983,499)<button class='delete-btn s-eTJJTmtT3c5M' title='Delete Layer'>× />
+[103] (927,548)<div class='layer-item s-eTJJTmtT3c5M' role='presentation' />
+	[104] (927,548)<div aria-label='Toggle Tech Grid Layer controls' class='layer-header s-eTJJTmtT3c5M' role='button'>⋮⋮ />
+		⋮⋮
+		[105] (880,548)<span >▸ />
+		[106] (893,548)<input class='s-eTJJTmtT3c5M' title='Toggle Visibility' />
+		[107] (938,548)<span >Tech Grid Layer />
+		[108] (983,548)<button class='delete-btn s-eTJJTmtT3c5M' title='Delete Layer'>× />
+
+</current_dom>

@@ -1,0 +1,144 @@
+<current_dom_explanation>
+This is a temporary snapshot of the current page's DOM structure. The DOM will change if you navigate to or interact with another page. Use a tool like browser_get_dom to capture and preserve the DOM in your trajectory if needed for later reference.
+</current_dom_explanation>
+<current_dom>
+SumoSized SVG Generator
+[0] (882,40)<button class='header-btn gallery-btn s-y_bCXRrkrYfP'>Open Gallery />
+[1] (954,40)<button class='header-btn share s-y_bCXRrkrYfP'>Copy Share Link />
+[2] (12,108)<button aria-label='Pointer (V)' class='tool-btn active s-YJSrXwL9Oajv' title='Pointer (V)' />
+[3] (12,158)<button aria-label='Move (G)' class='tool-btn  s-YJSrXwL9Oajv' title='Move (G)' />
+[4] (12,207)<button aria-label='Crop (C)' class='tool-btn  s-YJSrXwL9Oajv' title='Crop (C)' />
+[5] (12,256)<button aria-label='Transform (S)' class='tool-btn  s-YJSrXwL9Oajv' title='Transform (S)' />
+[6] (12,306)<button aria-label='Pencil (P)' class='tool-btn  s-YJSrXwL9Oajv' title='Pencil (P)' />
+[7] (12,355)<button aria-label='Brush (B)' class='tool-btn  s-YJSrXwL9Oajv' title='Brush (B)' />
+[8] (12,405)<button aria-label='Eraser (E)' class='tool-btn  s-YJSrXwL9Oajv' title='Eraser (E)' />
+[9] (12,454)<button aria-label='Line (L)' class='tool-btn  s-YJSrXwL9Oajv' title='Line (L)' />
+[10] (12,503)<button aria-label='Rectangle (R)' class='tool-btn  s-YJSrXwL9Oajv' title='Rectangle (R)' />
+[11] (12,553)<button aria-label='Ellipse (O)' class='tool-btn  s-YJSrXwL9Oajv' title='Ellipse (O)' />
+[12] (12,592)<button aria-label='Text (T)' class='tool-btn  s-YJSrXwL9Oajv' title='Text (T)' />
+[13] (12,642)<button aria-label='Undo (Ctrl+Z)' class='tool-btn history-btn s-YJSrXwL9Oajv' title='Undo (Ctrl+Z)' />
+[14] (82,541)<div class='sidebar-inner s-y_bCXRrkrYfP' scrollable='true' />
+	Generators
+	[15] (78,144)<input class='search-input s-y_bCXRrkrYfP' placeholder='Search...' />
+	[16] (78,186)<select class='category-select s-y_bCXRrkrYfP' />
+	[17] (78,239)<button class='s-y_bCXRrkrYfP' />
+		[18] (78,232)<span >Quantum Core />
+		[19] (78,248)<span >Abstract />
+	[20] (78,291)<button class='s-y_bCXRrkrYfP' />
+		[21] (78,284)<span >Sacred Geometry />
+		[22] (78,300)<span >Abstract />
+	[23] (78,343)<button class='s-y_bCXRrkrYfP' />
+		[24] (78,336)<span >Simple Gradient />
+		[25] (78,352)<span >Backgrounds />
+	[26] (78,395)<button class='s-y_bCXRrkrYfP' />
+		[27] (78,388)<span >Polka Dots />
+		[28] (78,404)<span >Patterns />
+	[29] (78,447)<button class='s-y_bCXRrkrYfP' />
+		[30] (78,440)<span >Tech Grid />
+		[31] (78,456)<span >Patterns />
+	[32] (78,499)<button class='s-y_bCXRrkrYfP' />
+		[33] (78,492)<span >Flow Field />
+		[34] (78,508)<span >Abstract />
+	[35] (78,551)<button class='s-y_bCXRrkrYfP' />
+		[36] (78,544)<span >Swiss Poster />
+		[37] (78,560)<span >Layouts />
+	[38] (78,603)<button class='s-y_bCXRrkrYfP' />
+		[39] (78,596)<span >Tech Badge />
+		[40] (78,612)<span >UI Assets />
+	[41] (78,655)<button class='s-y_bCXRrkrYfP' />
+		[42] (78,648)<span >Orbital Loop />
+		[43] (78,664)<span >Animations />
+	[44] (78,707)<button class='s-y_bCXRrkrYfP active' />
+		[45] (78,700)<span >Matrix Rain />
+		[46] (78,716)<span >Animations />
+	[47] (78,759)<button class='s-y_bCXRrkrYfP' />
+		[48] (78,752)<span >Symbol Grid />
+		[49] (78,768)<span >Icons />
+	[50] (78,811)<button class='s-y_bCXRrkrYfP' />
+		[51] (78,804)<span >Manual Drawing />
+		[52] (78,820)<span >Drawing />
+	[53] (78,863)<button class='s-y_bCXRrkrYfP' />
+		[54] (78,856)<span >Advanced Text />
+		[55] (78,872)<span >Typography />
+	[56] (78,915)<button class='s-y_bCXRrkrYfP' />
+		[57] (78,908)<span >SVG Import />
+		[58] (78,924)<span >Custom />
+	Presets
+[59] (179,851)<button aria-label='Pause' class='play-btn s-kj8HIgTf3Fm7'>Pause />
+[60] (194,933)<button class='action-btn primary s-y_bCXRrkrYfP'>Copy SVG Code />
+(Paste into a text editor and save as .svg)
+[61] (804,933)<button class='action-btn secondary s-y_bCXRrkrYfP'>Generate Variants />
+Layers
+[62] (927,256)<div class='layers-scroll s-y_bCXRrkrYfP' scrollable='true' />
+	[63] (923,147)<button class='import-btn s-eTJJTmtT3c5M'>Import SVG />
+	[64] (923,373)<div class='layer-item s-eTJJTmtT3c5M active' role='presentation' />
+		[65] (923,201)<div aria-label='Toggle Matrix Rain Layer controls' class='layer-header s-eTJJTmtT3c5M' role='button'>⋮⋮ />
+			⋮⋮
+			[66] (882,201)<span >▾ />
+			[67] (895,201)<input class='s-eTJJTmtT3c5M' title='Toggle Visibility' />
+			[68] (935,201)<span >Matrix Rain Layer />
+			[69] (975,201)<button class='delete-btn s-eTJJTmtT3c5M' title='Delete Layer'>× />
+		[70] (923,255)<div  />
+			[71] (923,239)<label class='s-eTJJTmtT3c5M'>Blend />
+			[72] (923,265)<select class='s-eTJJTmtT3c5M' id='blend-j7fxcbj' />
+		[73] (923,313)<div  />
+			[74] (923,297)<label class='s-eTJJTmtT3c5M'>Opacity (100%) />
+			[75] (924,323)<input class='s-eTJJTmtT3c5M' id='opacity-j7fxcbj' />
+		[76] (923,372)<div  />
+			[77] (923,355)<label class='s-eTJJTmtT3c5M'>Scale X (1.00) />
+			[78] (924,382)<input class='s-eTJJTmtT3c5M' id='scaleX-j7fxcbj' />
+		Scale Y (1.00)
+		Rotation (0°)
+		Fit to Canvas
+		Center
+	⋮⋮
+	▸
+	Symbol Grid Layer
+	×
+	⋮⋮
+	▸
+	Advanced Text
+	×
+	⋮⋮
+	▸
+	Manual Drawing
+	×
+	⋮⋮
+	▸
+	SVG Import
+	×
+	⋮⋮
+	▸
+	Sacred Geometry Layer
+	×
+	⋮⋮
+	▸
+	Orbital Loop Layer
+	×
+	⋮⋮
+	▸
+	Tech Grid Layer
+	×
+Parameters
+(Matrix Rain Layer)
+[79] (927,689)<div class='params-scroll s-y_bCXRrkrYfP' scrollable='true' />
+	Geometry
+	Density
+	[80] (923,461)<label class='s-f5KpS43MjCD3'>Font Size />
+	[81] (906,489)<input class='s-f5KpS43MjCD3' id='anim-matrix-rain-fontSize' />
+	[82] (964,489)<input aria-label='Font Size numeric value' class='s-f5KpS43MjCD3' />
+	Animation
+	[83] (923,596)<label class='s-f5KpS43MjCD3'>Speed />
+	[84] (906,625)<input class='s-f5KpS43MjCD3' id='anim-matrix-rain-speed' />
+	[85] (964,625)<input aria-label='Speed numeric value' class='s-f5KpS43MjCD3' />
+	Colors
+	[86] (923,732)<label class='s-f5KpS43MjCD3'>Rain Color />
+	[87] (923,769)<input aria-label='Select Rain Color' class='s-f5KpS43MjCD3' id='anim-matrix-rain-color' />
+	Aesthetics
+	[88] (923,885)<label class='s-f5KpS43MjCD3'>Trail Length />
+	[89] (906,913)<input class='s-f5KpS43MjCD3' id='anim-matrix-rain-trailLength' />
+	[90] (964,913)<input aria-label='Trail Length numeric value' class='s-f5KpS43MjCD3' />
+Seed: 88720
+[91] (970,963)<button class='seed-btn s-y_bCXRrkrYfP'>Randomize />
+
+</current_dom>

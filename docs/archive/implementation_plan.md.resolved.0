@@ -1,0 +1,25 @@
+# Implementation Plan - Professional Text Fitting
+
+Refine the `text-effects` generator to ensure text fits professionally within the 100x100 SVG canvas.
+
+## Proposed Changes
+
+### [Component Name] Engine - Generators
+
+#### [MODIFY] [text-effects.ts](file:///d:/SVG/src/lib/engine/generators/text-effects.ts)
+- Reduce default `fontSize` from 12 to 8 to better accommodate typical text content.
+- Refactor `spiral` effect:
+    - Adjust the growth rate of the spiral so that at the default `radius` (40), the spiral stays within the 100x100 canvas (max radius ~48 from center).
+    - Limit the number of loops or scale them based on the `radius` parameter to ensure predictability.
+- Improve `textPath` attributes:
+    - Add `method="align"` and `spacing="exact"` for better professional typography control if supported, or just ensure better spacing defaults.
+
+## Verification Plan
+
+### Manual Verification
+- Open the SVG Maker in the browser.
+- Select the **Advanced Text** generator.
+- Toggle the **Spiral** effect.
+- Verify that the default text "We're just two lost souls living in a fish bowl" fits within the canvas at default settings.
+- Test with longer text (e.g., the user's "What in the fuck is going on here?") and verify it doesn't bleed out excessively or looks professional.
+- Check **Arch**, **Circle**, and **Wave** effects to ensure no regressions.

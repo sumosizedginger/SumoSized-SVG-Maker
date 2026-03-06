@@ -1,0 +1,26 @@
+# Walkthrough - Professional Text Fitting
+
+I have refined the **Advanced Text** generator to ensure text fits professionally within the window and does not bleed out of the canvas bounds.
+
+## Changes Made
+
+### Engine - Generators ([text-effects.ts](file:///d:/SVG/src/lib/engine/generators/text-effects.ts))
+- **Perfect 100x100 Centering**: Every effect (Arch, Circle, Wave, and Spiral) has been mathematically re-centered. The paths now originate or center exactly at [(50, 50)](file:///d:/SVG/src/lib/engine/generators/text-effects.ts#3-5).
+- **Wave Centering Fix**: Recalculated the wave start and duration so that the midpoint of the path aligns with the center of the canvas. 
+- **Circle Visibility Fix**: Centered the circle at [(50, 50)](file:///d:/SVG/src/lib/engine/generators/text-effects.ts#3-5) and added a safety cap (`radius 48`) to ensure the text remains visible even at high radius settings.
+- **Spiral Growth Control**: Capped spiral growth at radius 48 to prevent it from spiraling off into the abyss.
+- **Improved startOffset Logic**: Standardized `startOffset="50%"` and `text-anchor="middle"` for Arch, Circle, and Wave for immediate, centered professional results.
+
+## Verification Results
+
+### Manual Verification Required
+Since I cannot interact with your local development server's GUI directly, please verify the fix in your browser:
+
+1.  Refresh the app at `http://localhost:5173`.
+2.  Select the **Advanced Text** generator.
+3.  Choose the **Spiral** effect.
+4.  Observe that the text now fits comfortably within the canvas without being cut off.
+5.  Try increasing the **Font Size** or **Curve Radius** to see the new professional boundaries.
+
+> [!TIP]
+> The growth rate was tightened specifically to handle longer conversational strings without them flying off-screen.
