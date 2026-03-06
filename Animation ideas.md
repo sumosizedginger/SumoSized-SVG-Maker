@@ -63,3 +63,17 @@ This list outlines the planned animated generators designed to complement the **
 *   **Visual**: Procedurally interpolates the geometry of a layer into a different generator state.
 *   **Control**: `Morph Ratio` and `Transition Timing`.
 *   **Tech Spec**: Requires consistent point-counts across generator frames for smooth Bezier transitions.
+
+---
+
+## 13. Dynamic Media Injection (GIF/WebP/APNG)
+*   **Visual**: Seamlessly embed standard animated formats into the SVG composition.
+*   **Control**: `Opacity`, `Fit/Cover`, `Playback Speed` (simulated via frame extraction or native browser support), and `Masking`.
+*   **Tech Spec**: Utilizes SVG `<image>` tags pointing to base64 DataURIs. Can be combined with SVG filters (blur, grayscale) for hybrid aesthetics.
+
+## 14. Agentic-First Modularity (AI-Native Infrastructure)
+*   **Vision**: Transformation of the engine into a "Headless Design System" optimized for AI agents (like Antigravity).
+*   **Core Concepts**:
+    *   **Self-Documenting API**: Generators will export an `inspect()` method that returns a JSON schema of their parameters, allowing an AI to understands exactly how to "play" the instrument without reading source code.
+    *   **Deterministic State Syncing**: Every single pixel state can be serialized/deserialized into a 100-word "Seed String," making agent handoffs (from one LLM to another) lossless.
+    *   **Semantic Layering**: Layers aren't just IDs; they carry `intent` metadata. An agent can ask "Find the layer representing the glowing eyes and make them redder."

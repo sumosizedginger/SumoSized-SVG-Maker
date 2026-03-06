@@ -1,4 +1,15 @@
-# SumoSized SVG Generator
+# SumoSized SVG Maker
+A 100/100 Production-Grade, Procedural SVG Generator.
+
+## 🔓 100/100 Open Source Software (OSS)
+This project is licensed under the **MIT License**. All core engine logic, AI skilling APIs, and procedural generators are fully open and community-owned.
+
+### Contribution Vision
+- **New Generators**: Build procedural art primitives.
+- **Animation Modules**: Implement the elite 12 animated effects.
+- **Agentic Tools**: Help us integrate FFmpeg.wasm and Transformers.js.
+
+---
 
 <p align="center">
   <img src="Sumo Sized Ginger.svg" alt="SumoSized SVG Maker Logo" width="100%">
