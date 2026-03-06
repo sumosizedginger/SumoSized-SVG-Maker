@@ -11,6 +11,7 @@ import type {
 import { logRender, logError } from "$lib/services/telemetry.svelte";
 import LZString from "lz-string";
 import { STARTER_TEMPLATES, type StarterTemplate } from "$lib/engine/core/starters";
+import { filterDefinitions } from "$lib/engine/generators/filters";
 
 class AppState {
 	layers = $state<Layer[]>([]);
@@ -77,10 +78,42 @@ class AppState {
 						: (tr as any).scale || 1;
 				const transformAttr = `transform="translate(${tr.x}, ${tr.y}) scale(${sx}, ${sy}) rotate(${tr.rotation}, 50, 50)"`;
 
-				innerSvgs += `\n<!-- Layer: ${layer.name} -->\n<g class="layer-${layer.id}" role="graphics-object" aria-label="${layer.name}" style="${blendStyle}" ${transformAttr}>\n${svgString}\n</g>\n`;
+				let filterAttr = "";
+				if (layer.filter && filterDefinitions[layer.filter.type]) {
+					filterAttr = `filter="url(#filter-${layer.id})"`;
+				}
+
+				let maskAttr = "";
+				if (layer.maskLayerId) {
+					maskAttr = `mask="url(#mask-${layer.id})"`;
+				}
+
+				innerSvgs += `\n<!-- Layer: ${layer.name} -->\n<g class="layer-${layer.id}" role="graphics-object" aria-label="${layer.name}" style="${blendStyle}" ${transformAttr} ${filterAttr} ${maskAttr}>\n${svgString}\n</g>\n`;
 			}
 
-			const composedSvg = `<svg viewBox="${this.documentViewBox.x} ${this.documentViewBox.y} ${this.documentViewBox.w} ${this.documentViewBox.h}" \n     xmlns="http://www.w3.org/2000/svg" \n     width="100%" height="100%" \n     role="graphics-document" \n     aria-label="SumoSized SVG Composition">\n${innerSvgs}</svg>`;
+			// Generate Global Defs (Filters & Masks)
+			let defContent = "";
+			for (const layer of this.layers) {
+				if (layer.filter && filterDefinitions[layer.filter.type]) {
+					const filterDef = filterDefinitions[layer.filter.type];
+					defContent += filterDef.render(layer.filter.params, `filter-${layer.id}`);
+				}
+				if (layer.maskLayerId) {
+					const maskSourceLayer = this.layers.find(l => l.id === layer.maskLayerId);
+					if (maskSourceLayer) {
+						const gen = getGenerator(maskSourceLayer.generatorId);
+						if (gen) {
+							let maskSvg = gen.render(maskSourceLayer.params, maskSourceLayer.seed);
+							maskSvg = maskSvg.replace(/^<svg[^>]*>/, "").replace(/<\/svg>\s*$/, "");
+							defContent += `\n<mask id="mask-${layer.id}" maskUnits="userSpaceOnUse" x="0" y="0" width="100" height="100">\n${maskSvg}\n</mask>\n`;
+						}
+					}
+				}
+			}
+
+			const defs = defContent ? `<defs>\n${defContent}\n</defs>\n` : "";
+
+			const composedSvg = `<svg viewBox="${this.documentViewBox.x} ${this.documentViewBox.y} ${this.documentViewBox.w} ${this.documentViewBox.h}" \n     xmlns="http://www.w3.org/2000/svg" \n     width="100%" height="100%" \n     role="graphics-document" \n     aria-label="SumoSized SVG Composition">\n${defs}${innerSvgs}</svg>`;
 
 			const duration = performance.now() - start;
 			setTimeout(() => {
@@ -169,6 +202,8 @@ class AppState {
 				b: l.blendMode,
 				o: l.opacity,
 				t: l.transforms,
+				f: l.filter,
+				m: l.maskLayerId,
 			})),
 			v: {
 				x: this.documentViewBox.x,
@@ -221,6 +256,8 @@ class AppState {
 							cropH: l.t.cropH,
 						}
 						: { x: 0, y: 0, scaleX: 1, scaleY: 1, rotation: 0 },
+					filter: l.f,
+					maskLayerId: l.m,
 				}));
 				if (this.layers.length > 0) {
 					this.activeLayerId = this.layers[this.layers.length - 1].id;
@@ -273,6 +310,8 @@ class AppState {
 			blendMode: "normal",
 			opacity: 1.0,
 			transforms: { x: 0, y: 0, scaleX: 1, scaleY: 1, rotation: 0 },
+			filter: undefined,
+			maskLayerId: undefined,
 		};
 
 		this.layers = [...this.layers, newLayer];

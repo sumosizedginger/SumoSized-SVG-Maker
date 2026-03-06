@@ -11,6 +11,7 @@ import { symbolGrid } from "../generators/icons";
 import { freeDraw } from "../generators/free-draw";
 import { textEffects } from "../generators/text-effects";
 import { svgImport } from "../generators/svg-import";
+import { imageLayer } from "../generators/image-layer";
 
 export const generators: SVGGenerator[] = [
 	quantumCoreGenerator,
@@ -38,6 +39,7 @@ export const generators: SVGGenerator[] = [
 	freeDraw,
 	textEffects,
 	svgImport,
+	imageLayer,
 ];
 
 export function getGenerator(id: string): SVGGenerator | undefined {

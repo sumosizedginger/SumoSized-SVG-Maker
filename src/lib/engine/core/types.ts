@@ -58,6 +58,12 @@ export type BlendMode =
 	| "color"
 	| "luminosity";
 
+export interface FilterConfig {
+	id: string;
+	type: string;
+	params: Record<string, any>;
+}
+
 export interface LayerTransforms {
 	x: number;
 	y: number;
@@ -80,6 +86,8 @@ export interface Layer {
 	blendMode: BlendMode;
 	opacity: number; // 0.0 to 1.0
 	transforms: LayerTransforms;
+	filter?: FilterConfig;
+	maskLayerId?: string; // Reference to another layer ID for alpha masking
 }
 
 export type PaintTool =

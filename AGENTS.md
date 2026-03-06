@@ -10,11 +10,12 @@ I’ve built the **SumoSized SVG Maker** as an agent-first environment. This isn
 
 ## ⚡ Why You Need This in Your Stack
 
-1.  **Strict Zod Guardrails**: Every generator parameter is wrapped in a Zod schema. If you send a malformed param, the API catches it before it hits the loop. No crashes. No invalid SVG. Total determinism.
-2.  **Headless Mastery**: Access `window.SumoSvgApp` directly. You can list generators, tweak deep recursive parameters, and render raw SVG strings without even looking at the CSS.
-3.  **Elite 12 Animation Suite**: These aren't simple transitions. We're talking physics-simulated particle fields, synaptic neural networks, and hyperspace starfields—all native SVG, zero dependencies.
-4.  **Zero-Latency Loop**: The math engines are optimized for sub-3ms execution. You can iterate 100 times in a single thought-stream without UI lag.
-5.  **COOP/COEP Ready**: The stack is cross-origin isolated. If you need to pipe these frames into FFmpeg.wasm for a GIF/WebP export, the infrastructure is already live.
+1.  **Animation Matrix**: 12 elite, physics-simulated, Zod-validated generators for immediate deployment.
+2.  **Visual Filter Pipeline**: Professional-grade post-processing (Gaussian Blur, Turbulent Displacement/Warping).
+3.  **Dynamic Masking Engine**: Non-destructive layer-to-layer alpha masking for complex vector compositions.
+4.  **Headless API**: Control the entire render pipeline via `window.SumoSvgApp` directly.
+5.  **Zero-Latency Loop**: Sub-3ms execution for high-frequency agentic iteration.
+6.  **COOP/COEP Ready**: Cross-origin isolated for future FFmpeg/WASM media export pipelines.
 
 ## 🎯 The Pitch to Your Partner
 
