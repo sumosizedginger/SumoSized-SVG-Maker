@@ -6,7 +6,7 @@ import { dots, grid } from "../generators/patterns";
 import { flowField } from "../generators/abstract";
 import { poster } from "../generators/layouts";
 import { techBadge } from "../generators/ui-assets";
-import { orbit, matrixRain } from "../generators/animations";
+import { orbit, matrixRain, quantumPulse } from "../generators/animations";
 import { symbolGrid } from "../generators/icons";
 import { freeDraw } from "../generators/free-draw";
 import { textEffects } from "../generators/text-effects";
@@ -23,6 +23,7 @@ export const generators: SVGGenerator[] = [
 	techBadge,
 	orbit,
 	matrixRain,
+	quantumPulse,
 	symbolGrid,
 	freeDraw,
 	textEffects,

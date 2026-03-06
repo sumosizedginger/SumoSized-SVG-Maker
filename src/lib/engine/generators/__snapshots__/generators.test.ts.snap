@@ -505,6 +505,34 @@ exports[`Dynamic Engine Core Tests > Generator [anim-orbit] > renders determinis
       </svg>"
 `;
 
+exports[`Dynamic Engine Core Tests > Generator [anim-quantum-pulse] > renders deterministic SVG with default params 1`] = `
+"<svg width="100%" height="100%" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+				<title>Quantum Pulse</title>
+				<defs>
+					<radialGradient id="pulseGradient-12345" cx="50%" cy="50%" r="50%">
+						<stop offset="0%" stop-color="#9b5de5" stop-opacity="1" />
+						<stop offset="100%" stop-color="#9b5de5" stop-opacity="0" />
+					</radialGradient>
+				</defs>
+				<g transform-origin="50 50">
+					<animateTransform 
+						attributeName="transform" 
+						type="scale" 
+						values="0.8; 1.2; 0.8" 
+						dur="0.50s" 
+						repeatCount="indefinite" 
+					/>
+					<animate 
+						attributeName="opacity" 
+						values="0.4; 1; 0.4" 
+						dur="0.50s" 
+						repeatCount="indefinite" 
+					/>
+					<circle cx="50" cy="50" r="40" fill="url(#pulseGradient-12345)" />
+				</g>
+			</svg>"
+`;
+
 exports[`Dynamic Engine Core Tests > Generator [free-draw] > renders deterministic SVG with default params 1`] = `"<!-- Empty Drawing Layer -->"`;
 
 exports[`Dynamic Engine Core Tests > Generator [icon-symbol-grid] > renders deterministic SVG with default params 1`] = `

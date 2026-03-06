@@ -265,3 +265,89 @@ export const matrixRain: SVGGenerator = {
 		`.trim();
 	},
 };
+
+export const quantumPulse: SVGGenerator = {
+	id: "anim-quantum-pulse",
+	name: "Quantum Pulse",
+	description: "A rhythmic, global scaling and opacity oscillation.",
+	category: "Animations",
+	tags: ["animation", "pulse", "breathing", "quantum"],
+	version: "1.0.0",
+	params: [
+		{
+			name: "frequency",
+			label: "Breathing Rate",
+			type: "number",
+			min: 0.1,
+			max: 10,
+			step: 0.1,
+			default: 2,
+			group: "Animation",
+		},
+		{
+			name: "intensity",
+			label: "Intensity",
+			type: "number",
+			min: 0,
+			max: 1,
+			step: 0.05,
+			default: 0.2,
+			group: "Aesthetics",
+		},
+		{
+			name: "color",
+			label: "Core Color",
+			type: "color",
+			default: "#9b5de5",
+			group: "Colors",
+		},
+	],
+	defaultParams: {
+		frequency: 2,
+		intensity: 0.2,
+		color: "#9b5de5",
+	},
+	schema: z.object({
+		frequency: z.number().min(0.1).max(10),
+		intensity: z.number().min(0).max(1),
+		color: z.string().regex(/^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/),
+	}),
+	render: (params, seed) => {
+		const frequency = Number(params.frequency || 2);
+		const intensity = Number(params.intensity || 0.2);
+		const color = String(params.color || "#9b5de5");
+
+		const minScale = 1 - intensity;
+		const maxScale = 1 + intensity;
+		const minOpacity = 0.5 - intensity / 2;
+		const maxOpacity = 1;
+
+		return `
+			<svg width="100%" height="100%" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+				<title>Quantum Pulse</title>
+				<defs>
+					<radialGradient id="pulseGradient-${seed}" cx="50%" cy="50%" r="50%">
+						<stop offset="0%" stop-color="${color}" stop-opacity="1" />
+						<stop offset="100%" stop-color="${color}" stop-opacity="0" />
+					</radialGradient>
+				</defs>
+				<g transform-origin="50 50">
+					<animateTransform 
+						attributeName="transform" 
+						type="scale" 
+						values="${minScale}; ${maxScale}; ${minScale}" 
+						dur="${(1 / frequency).toFixed(2)}s" 
+						repeatCount="indefinite" 
+					/>
+					<animate 
+						attributeName="opacity" 
+						values="${minOpacity}; ${maxOpacity}; ${minOpacity}" 
+						dur="${(1 / frequency).toFixed(2)}s" 
+						repeatCount="indefinite" 
+					/>
+					<circle cx="50" cy="50" r="40" fill="url(#pulseGradient-${seed})" />
+				</g>
+			</svg>
+		`.trim();
+	},
+};
