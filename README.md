@@ -154,6 +154,13 @@ This project is built upon the following exceptional open-source foundations:
 
 See the [LICENSE](LICENSE) file for the full project license terms.
 
+## 💼 Support & Mission Fuel
+SumoSized SVG Maker is 100% free and OSS. Supporting the project is **entirely optional** and goes directly toward fueling the "Elite 12" animation roadmap and agentic toolkits.
+
+- **Tips/Donations**: Help keep the engine running and the animations flowing.
+- **Enterprise**: Custom generator development and high-performance pipeline consulting.
+- **Support**: [Fuel the Mission (Optional)](https://github.com/sponsors/sumosizedginger)
+
 ## 🧠 Mission Knowledge Hub
 In the spirit of **100/100 Transparency**, the entire development history, technical plans, and verification media for this project have been archived directly in the repository.
 
