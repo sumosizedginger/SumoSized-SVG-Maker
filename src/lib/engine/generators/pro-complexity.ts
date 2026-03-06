@@ -1,3 +1,4 @@
+import { z } from "zod";
 import type { SVGGenerator } from "../core/types";
 import { getPalette, getPaletteRole } from "../core/palettes";
 
@@ -166,6 +167,22 @@ export const quantumCoreGenerator: SVGGenerator = {
 		glitchIntensity: 15,
 		transparent: false,
 	},
+	schema: z.object({
+		sacredMode: z.string().optional(),
+		complexity: z.number().int().min(1).max(100),
+		frequencyRatio: z.number().min(0.1).max(20),
+		symmetry: z.number().int().min(1).max(36),
+		amplitude: z.number().min(5).max(80),
+		glowIntensity: z.number().min(0).max(20),
+		lineWidth: z.number().min(0.05).max(2),
+		depthWeaving: z.boolean(),
+		paletteId: z.string(),
+		overrideColor: z.string().regex(/^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/),
+		usePalette: z.boolean(),
+		quantumGlitch: z.boolean(),
+		glitchIntensity: z.number().min(1).max(100),
+		transparent: z.boolean(),
+	}),
 	render: (params, seed) => {
 		let currentSeed = seed;
 		const random = () => seededRandom(currentSeed++);
@@ -289,8 +306,8 @@ export const quantumCoreGenerator: SVGGenerator = {
 				const r =
 					layerAmplitude * Math.cos(complexity * t) +
 					layerAmplitude *
-						0.4 *
-						Math.sin(complexity * frequencyRatio * t + phaseShift);
+					0.4 *
+					Math.sin(complexity * frequencyRatio * t + phaseShift);
 
 				const x = 50 + r * Math.cos(t);
 				const y = 50 + r * Math.sin(t);

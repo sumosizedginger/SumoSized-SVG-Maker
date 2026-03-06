@@ -1,3 +1,4 @@
+import { z } from "zod";
 import type { SVGGenerator } from "../core/types";
 import { getPalette } from "../core/palettes";
 
@@ -99,8 +100,23 @@ export const sacredGeometryGenerator: SVGGenerator = {
 		paletteId: "neon-vibe",
 		overrideColor: "#00f5d4",
 		usePalette: true,
-		transparent: true, // Default to true so it overlays perfectly
+		transparent: true,
 	},
+	schema: z.object({
+		sacredMode: z.enum([
+			"Cosmic Grid",
+			"Seed of Life",
+			"Metatron Cube",
+			"Hyper-Toroid",
+		]),
+		lineWidth: z.number().min(0.05).max(2),
+		scale: z.number().min(0.5).max(3),
+		glowIntensity: z.number().min(0).max(20),
+		paletteId: z.string(),
+		overrideColor: z.string().regex(/^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/),
+		usePalette: z.boolean(),
+		transparent: z.boolean(),
+	}),
 	render: (params, seed) => {
 		let currentSeed = seed;
 		const random = () => seededRandom(currentSeed++);
