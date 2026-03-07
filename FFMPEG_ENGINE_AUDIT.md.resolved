@@ -1,0 +1,813 @@
+# SumoSized SVG Maker → SumoSized Studio
+## V2 Refactoring Roadmap: From SVG Engine to Browser-Native Video Editor
+
+**Author:** Claude (Opus 4.6) for SumoSized Ginger  
+**Date:** March 6, 2026  
+**Status:** Architecture Specification  
+**Target:** 100% OSS, Firebase for AI billing only
+
+### 1.0 MISSION STATUS (MARCH 6, 2026 - 15:00)
+
+**PHASE 1 (Environment Stabilization): COMPLETE.**
+- **Native COI**: Implemented via `src/hooks.server.ts`. Replaces `coi-serviceworker` hack.
+- **Worker Purge**: Kill-switch added to `+layout.svelte` to unregister ghost workers on reload.
+- **Vite Headers**: Hardened in `vite.config.ts`.
+- **Result**: `SharedArrayBuffer` is live. Multithreaded FFmpeg v12 is unblocked.
+
+**PHASE 2 (Export Pipeline Hardening): COMPLETE.**
+- **Error Handling**: `appState.svelte.ts` now catches rasterization hangs with 5s timeout.
+- **A11y/UI**: Unique `id`/`name` attributes restored in `ParamPanel` and `LayerPanel`.
+- **Coverage**: `agentApi.ts` breached **90.32%**. `appState.svelte.ts` stabilized at 31% (Phantom DOM mocked).
+
+**CURRENT BLOCKER: THE 70% BRANCH MISSION.**
+- **Status**: `appState.svelte.ts` is 1000+ lines. Achieving 70% branch coverage requires mocking `LZString`, `storage`, and the full `Canvas2D` API (which JSDOM doesn't support natively without `canvas` npm package).
+- **Strategy**: Switch to `istanbul` provider was successful. Remapping is accurate.
+
+---
+
+## 1. Current Architecture Audit
+
+### 1.1 What You've Built (And Built Well)
+
+The existing codebase is significantly more mature than most "generative art" repos. Here's what's already at production grade:
+
+**Engine Layer (`src/lib/engine/`):**
+- 15+ procedural generators (patterns, sacred geometry, abstract, animations, pro-complexity, text effects, UI assets, icons, gradients, free-draw, image import, SVG import, unified import)
+- Zod-validated parameter schemas on generators
+- Category-based generator registry with snapshot tests (226K of verified output)
+- Filter system (Gaussian Blur, Turbulent Displacement, Color Matrix) with composable SVG `<defs>`
+- A clean `render(params, seed, viewBox) → string` contract on every generator
+
+**Compositor (`src/lib/state/appState.svelte.ts`):**
+- Full layer stack with z-ordering, visibility toggles, and per-layer blend modes (16 CSS blend modes)
+- Per-layer opacity (0.0–1.0)
+- Per-layer transforms: translate (x, y), scale (scaleX, scaleY), rotation with center-point
+- Per-layer crop (cropX, cropY, cropW, cropH) via clip-path
+- Alpha masking (any layer can mask any other layer via `maskLayerId`)
+- Global viewBox/viewport control with aspect ratio presets
+- Variant engine (jitter all params simultaneously)
+- History/undo/redo via `HistoryManager`
+- URL hash serialization (LZ-String compressed state sharing)
+- Local storage persistence with version migration
+
+**Canvas Interaction (`src/lib/ui/CanvasInteract.svelte`):**
+- Pointer tool (select)
+- Move tool (drag layer position via SVG coordinate transform)
+- Transform tool (8-handle bounding box: 4 corners + 4 edges, scale with anchor compensation)
+- Crop tool (drag-to-select region, live dimension overlay, dark overlay outside selection)
+- All tools use SVG `createSVGPoint` → `matrixTransform(ctm.inverse())` for pixel-perfect coordinate mapping
+
+**Export Pipeline (`src/lib/services/mediaService.ts` + `appState.renderComposition`):**
+- SVG (direct blob)
+- PNG/JPEG/WebP (Canvas bridge: SVG → Image → Canvas → toBlob)
+- MOV/MP4 (FFmpeg.wasm: frame capture → PNG sequence → concat demuxer → libx264 with mpeg4 fallback)
+- WebM (FFmpeg.wasm: VP9 encoding)
+- GIF (FFmpeg.wasm: 2-pass palette generation → sierra2_4a dithering)
+- File System Access API with `showSaveFilePicker` (human-readable filenames)
+- Industry presets (Instagram Reels 1080×1920, YouTube HD, Cinematic 4K, Print Poster, etc.)
+
+**Headless Agent API (`window.SumoSvgApp`):**
+- `listGenerators()`, `setGenerator()`, `updateParam()`, `renderNow()`
+- `exportPng()`, `exportMov()`, `exportMp4()`, `exportSvg()`
+- `getState()`, `loadState(hash)` for remote state injection
+- Hash change listener for programmatic control
+
+**Infrastructure:**
+- SvelteKit + Svelte 5 (runes: `$state`, `$derived`, `$effect`)
+- TypeScript strict mode
+- Vite 7.3, adapter-static (GitHub Pages)
+- Vitest with v8 coverage (85% statement threshold)
+- Husky + lint-staged + Prettier
+
+### 1.2 What's Broken or Blocking
+
+**FFmpeg.wasm WASM Load Timeout (The Current Blocker):**
+- 31MB vendored binary in `static/ffmpeg/` (ffmpeg-core.js + ffmpeg-core.wasm)
+- `coi-serviceworker.js` loaded in `app.html` conflicts with Vite dev server COOP/COEP headers
+- `mediaService.ts` uses `toBlobURL('/ffmpeg/...')` which fails when the service worker intercepts
+- 20-second timeout on load, silent failures, no fallback
+- Version mismatch risk: `@ffmpeg/ffmpeg@0.12.15` wrapper with `@ffmpeg/core@0.12.6` vendored binary
+
+**Architecture Gaps for Video Editor Vision:**
+- No timeline component (playhead, scrubbing, track layout)
+- No audio track support
+- No video clip import/decode (only static image and SVG import)
+- No real-time preview (frame capture is synchronous, blocks main thread)
+- No Web Worker offloading for encoding
+- No progress streaming during export (just string status updates)
+- `renderComposition()` in `appState.svelte.ts` mixes concerns (render logic + file I/O + format routing)
+- `mediaService.ts` is tightly coupled to FFmpeg.wasm API (no abstraction layer)
+- Frame capture loop creates/destroys Image elements per frame (GC pressure, memory leaks on large exports)
+- No OffscreenCanvas usage
+
+---
+
+## 2. Target Architecture: SumoSized Studio
+
+### 2.1 Design Principles
+
+1. **100% OSS.** Every tool the user touches is open source. Firebase exists only to bill for AI agent compute.
+2. **Browser-native first.** Prefer W3C APIs (WebCodecs, Canvas, Web Audio, File System Access) over WASM ports.
+3. **WASM as acceleration, not dependency.** FFmpeg.wasm is a fallback for exotic formats, not the primary pipeline.
+4. **Progressive enhancement.** Static exports work without COOP/COEP. Video exports light up when Cross-Origin Isolation is available.
+5. **Worker-first encoding.** Never block the main thread for encode/mux operations.
+
+### 2.2 Technology Stack
+
+| Layer | Current | V2 Target | License |
+|---|---|---|---|
+| **Encoding/Muxing (Primary)** | FFmpeg.wasm v0.12 | **Mediabunny** | MPL-2.0 |
+| **Encoding/Muxing (Fallback)** | — | FFmpeg.wasm v0.12 (single-threaded `@ffmpeg/core`) | LGPL/MIT |
+| **Frame Encode/Decode** | Canvas `toBlob()` | **WebCodecs API** (`VideoEncoder`/`VideoDecoder`) | W3C Standard |
+| **Image Processing** | Canvas 2D | **wasm-vips** (filters, transforms) + Canvas 2D | MIT |
+| **Real-time Preview** | SVG DOM | **OffscreenCanvas** + WebGL (via PixiJS or raw) | MIT |
+| **Audio** | None | **Web Audio API** + **Tone.js** | MIT |
+| **Container Parsing** | None | **mp4box.js** (demux for video import) | BSD |
+| **Animation Runtime** | SVG SMIL (`setCurrentTime`) | Canvas frame loop + requestAnimationFrame | Native |
+| **Service Worker COOP/COEP** | `coi-serviceworker` | **SvelteKit `hooks.server.ts`** + Vite headers + Firebase Hosting headers | N/A |
+| **State Management** | `appState.svelte.ts` singleton | Same pattern, extracted concerns | — |
+| **Framework** | SvelteKit + Svelte 5 | Same | MIT |
+
+### 2.3 Module Boundary Map
+
+```
+src/
+├── lib/
+│   ├── engine/                    # KEEP: Generator system (unchanged)
+│   │   ├── core/
+│   │   │   ├── types.ts           # EXTEND: Add TimelineClip, AudioTrack, ProjectState
+│   │   │   ├── registry.ts
+│   │   │   ├── palettes.ts
+│   │   │   └── starters.ts
+│   │   ├── generators/            # KEEP: All existing generators
+│   │   └── index.ts
+│   │
+│   ├── media/                     # NEW: Extracted media pipeline
+│   │   ├── encoder.ts             # Abstraction over WebCodecs + Mediabunny
+│   │   ├── decoder.ts             # Video/audio import via WebCodecs + mp4box.js
+│   │   ├── muxer.ts               # Mediabunny Output wrapper
+│   │   ├── frameCapturer.ts       # OffscreenCanvas frame renderer
+│   │   ├── gifEncoder.ts          # 2-pass GIF (Mediabunny or FFmpeg fallback)
+│   │   ├── ffmpegFallback.ts      # FFmpeg.wasm single-threaded loader (lazy)
+│   │   ├── capabilities.ts        # Feature detection (WebCodecs, COOP/COEP, SAB)
+│   │   └── worker/
+│   │       └── encode.worker.ts   # Web Worker for encode pipeline
+│   │
+│   ├── audio/                     # NEW: Audio engine
+│   │   ├── audioTrack.ts          # Track model (Web Audio graph)
+│   │   ├── audioMixer.ts          # Multi-track mix-down
+│   │   └── waveform.ts            # Waveform visualization data
+│   │
+│   ├── timeline/                  # NEW: Timeline model (data only, no UI)
+│   │   ├── timeline.ts            # TimelineState with tracks, clips, playhead
+│   │   ├── clip.ts                # Clip types (generator, video, audio, image)
+│   │   └── scheduler.ts           # Frame scheduling for preview playback
+│   │
+│   ├── services/                  # REFACTOR
+│   │   ├── agentApi.ts            # KEEP (extend for timeline commands)
+│   │   ├── storage.ts             # KEEP (extend for project files)
+│   │   ├── svgOptimize.ts         # KEEP
+│   │   ├── telemetry.svelte.ts    # KEEP
+│   │   └── exportService.ts       # NEW: Replaces renderComposition() from appState
+│   │
+│   ├── state/                     # REFACTOR
+│   │   ├── appState.svelte.ts     # SLIM DOWN: Remove render/export methods
+│   │   ├── history.svelte.ts      # KEEP
+│   │   └── projectState.svelte.ts # NEW: Wraps appState + timeline + audio
+│   │
+│   └── ui/                        # EXTEND
+│       ├── CanvasInteract.svelte  # KEEP
+│       ├── DrawingSurface.svelte  # KEEP
+│       ├── ExportPanel.svelte     # REFACTOR: Use exportService
+│       ├── GeneratorGallery.svelte# KEEP
+│       ├── LayerPanel.svelte      # KEEP
+│       ├── ParamPanel.svelte      # KEEP
+│       ├── PresetManager.svelte   # KEEP
+│       ├── Preview.svelte         # KEEP (extend for video preview)
+│       ├── ToolPalette.svelte     # KEEP
+│       ├── Timeline.svelte        # NEW: Visual timeline with tracks
+│       ├── AudioTrackUI.svelte    # NEW: Waveform + controls
+│       └── DebugPanel.svelte      # KEEP
+│
+├── routes/
+│   ├── +page.svelte               # REFACTOR: Add timeline section
+│   ├── +layout.svelte             # KEEP
+│   └── +page.ts                   # KEEP
+│
+└── hooks.server.ts                # NEW: COOP/COEP headers (replaces coi-serviceworker)
+```
+
+---
+
+## 3. Refactoring Plan: Phased Execution
+
+### Phase 1: Kill the WASM Timeout (Week 1)
+
+**Goal:** All 8 export formats working reliably in dev and production.
+
+**Tasks:**
+
+1. **Remove `coi-serviceworker`.**
+   - Delete `static/coi-serviceworker.js`
+   - Remove `<script src="...coi-serviceworker.js">` from `src/app.html`
+   - Remove `coi-serviceworker` from `package.json` dependencies
+
+2. **Add `src/hooks.server.ts` for COOP/COEP.**
+   ```typescript
+   export async function handle({ event, resolve }) {
+     const response = await resolve(event);
+     response.headers.set('Cross-Origin-Opener-Policy', 'same-origin');
+     response.headers.set('Cross-Origin-Embedder-Policy', 'require-corp');
+     return response;
+   }
+   ```
+   Vite config already has `server.headers` and `preview.headers` set — these stay.
+
+3. **Switch FFmpeg.wasm to CDN-loaded single-threaded core.**
+   - Delete `static/ffmpeg/` directory (removes 31MB from repo)
+   - Update `mediaService.ts` to load from unpkg CDN:
+     ```typescript
+     const baseURL = 'https://unpkg.com/@ffmpeg/core@0.12.10/dist/umd';
+     await ffmpeg.load({
+       coreURL: await toBlobURL(`${baseURL}/ffmpeg-core.js`, 'text/javascript'),
+       wasmURL: await toBlobURL(`${baseURL}/ffmpeg-core.wasm`, 'application/wasm'),
+     });
+     ```
+   - Add `optimizeDeps.exclude: ['@ffmpeg/ffmpeg', '@ffmpeg/util']` to `vite.config.ts`
+   - Remove `@ffmpeg/core` from `package.json` dependencies (loaded from CDN)
+
+4. **Add capability detection (`src/lib/media/capabilities.ts`).**
+   ```typescript
+   export const capabilities = {
+     get crossOriginIsolated() { return globalThis.crossOriginIsolated ?? false; },
+     get hasWebCodecs() { return 'VideoEncoder' in globalThis; },
+     get hasSharedArrayBuffer() { return typeof SharedArrayBuffer !== 'undefined'; },
+     get hasFileSystemAccess() { return 'showSaveFilePicker' in globalThis; },
+     get hasOffscreenCanvas() { return 'OffscreenCanvas' in globalThis; },
+   };
+   ```
+
+5. **Verify all 8 formats export correctly.**
+
+**Validation:** `npm run dev` → Export panel → Render each format → File downloads with correct content.
+
+### Phase 2: Extract Media Pipeline (Week 2)
+
+**Goal:** Decouple export logic from appState, create abstraction layer over encoding.
+
+**Tasks:**
+
+1. **Create `src/lib/services/exportService.ts`.**
+   - Move `renderComposition()` out of `appState.svelte.ts`
+   - Move `saveBlobToDisk()` out of `appState.svelte.ts`
+   - ExportService takes rendered SVG string + options, returns Blob
+   - appState calls `exportService.export(format, options)` instead of doing it inline
+
+2. **Create `src/lib/media/frameCapturer.ts`.**
+   - Extract the frame capture loop from `mediaService.exportAnimation()`
+   - Use `OffscreenCanvas` when available (non-blocking)
+   - Reuse a single Image element across frames (reduce GC pressure)
+   - Emit frames as `ImageData` or `Uint8Array` via async generator:
+     ```typescript
+     async function* captureFrames(
+       svgElement: SVGSVGElement,
+       duration: number,
+       fps: number,
+       width: number,
+       height: number,
+     ): AsyncGenerator<{ data: Uint8Array; index: number; timestamp: number }> {
+       // ... yield frames one at a time
+     }
+     ```
+
+3. **Create `src/lib/media/encoder.ts` — the abstraction layer.**
+   ```typescript
+   export interface EncoderBackend {
+     name: string;
+     supports(format: ExportFormat): boolean;
+     encode(frames: AsyncIterable<FrameData>, options: EncodeOptions): Promise<Blob>;
+   }
+   ```
+   - `WebCodecsEncoder` implements this using `VideoEncoder` + Mediabunny muxer
+   - `FFmpegEncoder` implements this using FFmpeg.wasm (fallback)
+   - `encoder.ts` exports `getBestEncoder(format)` that checks capabilities and returns the right backend
+
+4. **Refactor `mediaService.ts` to use the new pipeline.**
+   ```typescript
+   // Before (tightly coupled):
+   await this.ffmpeg.exec(['-f', 'concat', ...]);
+
+   // After (abstracted):
+   const encoder = getBestEncoder(format);
+   const frames = captureFrames(svgElement, duration, fps, width, height);
+   return encoder.encode(frames, { format, width, height, fps });
+   ```
+
+### Phase 3: Integrate Mediabunny (Week 3)
+
+**Goal:** WebCodecs + Mediabunny as primary encoder for MP4/WebM/MOV. FFmpeg.wasm becomes GIF-only fallback.
+
+**Tasks:**
+
+1. **Install Mediabunny.**
+   ```bash
+   npm install mediabunny
+   ```
+   - ~50KB tree-shaken, pure TypeScript, zero WASM binary
+
+2. **Implement `WebCodecsEncoder`.**
+   ```typescript
+   import { Output, Mp4OutputFormat, WebMOutputFormat, BufferTarget, CanvasSource } from 'mediabunny';
+
+   class WebCodecsEncoder implements EncoderBackend {
+     supports(format) {
+       return capabilities.hasWebCodecs && ['mp4', 'mov', 'webm'].includes(format);
+     }
+
+     async encode(frames, options) {
+       const FormatClass = options.format === 'webm' ? WebMOutputFormat : Mp4OutputFormat;
+       const output = new Output({
+         format: new FormatClass(),
+         target: new BufferTarget(),
+       });
+       // ... feed frames from captureFrames() into VideoEncoder → Mediabunny Output
+     }
+   }
+   ```
+
+3. **Keep FFmpeg.wasm for GIF only.**
+   - GIF requires palette generation (2-pass) which WebCodecs doesn't do
+   - Mediabunny doesn't have a GIF muxer (it's a video toolkit)
+   - FFmpeg.wasm single-threaded handles this perfectly
+   - Lazy-load FFmpeg only when GIF is selected
+
+4. **Update ExportPanel to show encoder info.**
+   - Display which encoder will be used for the selected format
+   - Show "WebCodecs (Hardware Accelerated)" or "FFmpeg.wasm (Software)" badge
+
+### Phase 4: Timeline Foundation (Week 4-5)
+
+**Goal:** Data model for multi-track timeline. No UI yet — headless API first.
+
+**Tasks:**
+
+1. **Extend types.ts with timeline types.**
+   ```typescript
+   export interface TimelineClip {
+     id: string;
+     type: 'generator' | 'video' | 'audio' | 'image';
+     trackIndex: number;
+     startTime: number;      // microseconds
+     duration: number;        // microseconds
+     sourceOffset: number;    // trim start point
+     layerSnapshot: Layer;    // frozen layer config for generators
+     sourceUrl?: string;      // for video/audio/image clips
+   }
+
+   export interface TimelineTrack {
+     id: string;
+     name: string;
+     type: 'visual' | 'audio';
+     clips: TimelineClip[];
+     muted: boolean;
+     locked: boolean;
+   }
+
+   export interface TimelineState {
+     tracks: TimelineTrack[];
+     playheadPosition: number;  // microseconds
+     totalDuration: number;
+     fps: number;
+     playing: boolean;
+   }
+   ```
+
+2. **Create `src/lib/timeline/timeline.ts`.**
+   - TimelineManager class with `addClip()`, `moveClip()`, `trimClip()`, `removeClip()`
+   - Snap-to-grid logic
+   - Overlap detection and resolution
+   - `getFrameAtTime(t: number)` returns which clips are active at time t
+
+3. **Create `src/lib/timeline/scheduler.ts`.**
+   - requestAnimationFrame-based playback loop
+   - Calls `appState.currentTime = t` to drive SVG animations
+   - Calls `renderFrameAtTime(t)` for video clip compositing
+
+4. **Extend headless API.**
+   ```typescript
+   window.SumoSvgApp.timeline = {
+     addClip(clip: Partial<TimelineClip>): string,
+     moveClip(clipId: string, startTime: number): void,
+     trimClip(clipId: string, start: number, end: number): void,
+     setPlayhead(time: number): void,
+     play(): void,
+     pause(): void,
+     exportTimeline(format: string, options: object): Promise<Blob>,
+   };
+   ```
+
+### Phase 5: Video Import & Decode (Week 6)
+
+**Goal:** Import MP4/WebM files as timeline clips, decode frames via WebCodecs.
+
+**Tasks:**
+
+1. **Install mp4box.js for container parsing.**
+   ```bash
+   npm install mp4box
+   ```
+
+2. **Create `src/lib/media/decoder.ts`.**
+   - Use mp4box.js to demux container → extract video/audio tracks
+   - Use `VideoDecoder` (WebCodecs) to decode video frames on demand
+   - Use `AudioDecoder` for audio tracks
+   - Cache decoded frames for scrubbing performance
+   - Implement seek-to-keyframe for fast random access
+
+3. **Extend unified-import generator or create video clip type.**
+   - Video clips render their current frame at `getFrameAtTime(t)` into the layer compositor
+   - Video frames are drawn to OffscreenCanvas → composited with SVG layers
+
+### Phase 6: Audio Engine (Week 7)
+
+**Goal:** Audio track support with waveform visualization and mix-down.
+
+**Tasks:**
+
+1. **Create `src/lib/audio/audioTrack.ts`.**
+   - Web Audio API `AudioContext` + `AudioBufferSourceNode`
+   - Volume, pan, mute per track
+   - Decode audio from imported video clips or standalone audio files
+
+2. **Create `src/lib/audio/audioMixer.ts`.**
+   - Multi-track audio graph using Web Audio `GainNode` routing
+   - Master volume control
+   - Export audio mix to `AudioBuffer` for muxing into final video
+
+3. **Create `src/lib/audio/waveform.ts`.**
+   - Generate waveform data (min/max per pixel bucket) for timeline visualization
+   - Use `OfflineAudioContext` for analysis
+
+### Phase 7: Timeline UI (Week 8-9)
+
+**Goal:** Visual timeline component with drag-and-drop clips, track management, playback controls.
+
+**Tasks:**
+
+1. **Create `Timeline.svelte`.**
+   - Track lanes (visual + audio)
+   - Clip rectangles with drag-to-move, edge-drag-to-trim
+   - Playhead scrubber
+   - Zoom level control (frames per pixel)
+   - Time ruler with frame/timecode display
+
+2. **Create `AudioTrackUI.svelte`.**
+   - Waveform canvas visualization
+   - Volume slider
+   - Mute/solo buttons
+
+3. **Update `+page.svelte` layout.**
+   - Add timeline section below the canvas
+   - Toggle between "Design Mode" (current) and "Timeline Mode"
+
+### Phase 8: Firebase Deployment & AI Billing (Week 10+)
+
+**Goal:** Production deployment on Firebase Hosting with Cross-Origin Isolation.
+
+**Tasks:**
+
+1. **Add `firebase.json` hosting config.**
+   ```json
+   {
+     "hosting": {
+       "public": "build",
+       "headers": [
+         {
+           "source": "**",
+           "headers": [
+             { "key": "Cross-Origin-Opener-Policy", "value": "same-origin" },
+             { "key": "Cross-Origin-Embedder-Policy", "value": "require-corp" }
+           ]
+         }
+       ]
+     }
+   }
+   ```
+   This enables SharedArrayBuffer site-wide, unlocking `@ffmpeg/core-mt` if needed later.
+
+2. **AI Agent API endpoint (Firebase Functions).**
+   - Authenticated endpoint that accepts agent commands
+   - Metered billing per agent call
+   - The tool is free. The AI brain is the product.
+
+---
+
+## 4. Dependency Changes
+
+### Remove
+| Package | Reason |
+|---|---|
+| `@ffmpeg/core` | Load from CDN instead of vendoring 31MB |
+| `coi-serviceworker` | Replaced by SvelteKit hooks + Vite headers |
+
+### Add
+| Package | Version | Size (tree-shaken) | Purpose |
+|---|---|---|---|
+| `mediabunny` | ^1.34 | ~50KB | MP4/WebM/MKV muxing + WebCodecs encoding |
+| `mp4box` | ^0.5 | ~80KB | MP4 demuxing for video import |
+| `tone` | ^15 | ~150KB | Audio synthesis/effects (Phase 6) |
+
+### Keep (No Change)
+| Package | Why |
+|---|---|
+| `@ffmpeg/ffmpeg` + `@ffmpeg/util` | GIF encoding fallback (lazy-loaded) |
+| `jszip` | Asset bundle export |
+| `lz-string` | URL hash compression |
+| `zod` | Parameter validation |
+
+---
+
+## 5. Files to Delete
+
+| Path | Size | Reason |
+|---|---|---|
+| `static/ffmpeg/ffmpeg-core.js` | 157KB | Load from CDN |
+| `static/ffmpeg/ffmpeg-core.wasm` | 30.6MB | Load from CDN |
+| `static/coi-serviceworker.js` | 4KB | Replaced by hooks.server.ts |
+
+**Total repo size reduction: ~31MB**
+
+---
+
+## 6. Migration Path for `mediaService.ts`
+
+The current `mediaService.ts` does four distinct jobs in one class. The refactor splits them:
+
+| Current Responsibility | V2 Module | File |
+|---|---|---|
+| FFmpeg.wasm lifecycle | `FFmpegFallback` | `src/lib/media/ffmpegFallback.ts` |
+| Frame capture loop | `FrameCapturer` | `src/lib/media/frameCapturer.ts` |
+| Format-specific encoding | `WebCodecsEncoder` / `FFmpegEncoder` | `src/lib/media/encoder.ts` |
+| Progress reporting | `ExportService` (orchestrator) | `src/lib/services/exportService.ts` |
+
+The `appState.renderComposition()` method (lines 955-1044) gets replaced by:
+```typescript
+// In appState.svelte.ts (slim):
+async renderComposition(format, options) {
+  const { exportService } = await import('$lib/services/exportService');
+  const blob = await exportService.export(this.renderedSvg, format, options);
+  await this.saveBlobToDisk(blob, `sumosized-render.${format}`);
+}
+```
+
+---
+
+## 7. Testing Strategy Updates
+
+### New Test Targets
+
+| Module | Test Type | Coverage Target |
+|---|---|---|
+| `media/capabilities.ts` | Unit | 100% |
+| `media/encoder.ts` | Unit + Integration | 90% |
+| `media/frameCapturer.ts` | Unit (mock Canvas) | 85% |
+| `media/muxer.ts` | Integration | 80% |
+| `timeline/timeline.ts` | Unit | 95% |
+| `timeline/scheduler.ts` | Unit | 85% |
+| `services/exportService.ts` | Integration | 85% |
+
+### Testing WebCodecs in Vitest
+
+WebCodecs is not available in Node.js. Two approaches:
+
+1. **Mock strategy:** Create `__mocks__/webcodecs.ts` that stubs `VideoEncoder`/`VideoDecoder` with known byte outputs. Test the pipeline logic, not the browser codec.
+2. **Playwright E2E:** Add Playwright tests that run in real Chrome for encoder integration tests. These run in CI only, not in `vitest run`.
+
+---
+
+## 8. Performance Targets
+
+| Metric | Current | V2 Target |
+|---|---|---|
+| FFmpeg load time | 20s timeout (broken) | 0ms (Mediabunny, no WASM load) |
+| GIF export (3s @ 24fps, 1080²) | Untestable (timeout) | < 30s (FFmpeg.wasm ST, CDN cached) |
+| MP4 export (3s @ 24fps, 1080²) | Untestable (timeout) | < 10s (WebCodecs HW accelerated) |
+| Main thread blocking during export | 100% (synchronous loop) | 0% (Worker + OffscreenCanvas) |
+| Repo clone size | ~100MB | ~70MB (after removing vendored WASM) |
+| Initial page load (no export) | Fast | Same (Mediabunny is lazy-loaded) |
+
+---
+
+## 9. Breaking Changes & Migration Notes
+
+### Headless API
+
+The `window.SumoSvgApp` contract stays backward compatible. New methods are additive:
+- `timeline.*` namespace added (Phase 4)
+- `exportPng/exportMov/etc` continue to work identically
+- Internal implementation changes are invisible to agents
+
+### URL Hash State
+
+No change. The hash format encodes layer state, not export configuration. Timeline state will use a separate serialization path (project files, not URL hashes — timelines are too large for URL encoding).
+
+### Preset Files
+
+Existing `userPresets` in localStorage continue to work. They represent layer snapshots, which remain the core data model. Timeline projects will be a superset (`project = layers + timeline + audio`).
+
+---
+
+## 10. Priority Order
+
+If you can only do three things, do these:
+
+1. **Phase 1** (Kill the timeout). This unblocks everything. Ship it immediately.
+2. **Phase 2** (Extract media pipeline). This creates the abstraction layer that all future work builds on.
+3. **Phase 3** (Mediabunny). This gives you hardware-accelerated MP4/WebM export with zero WASM binary overhead.
+
+Everything after Phase 3 is additive. The app is fully functional as a generative art tool with reliable export after Phase 1, and becomes a modern media pipeline after Phase 3. Phases 4-8 transform it into the video editor.
+
+---
+
+*Document generated by Claude Opus 4.6 after full codebase review of all source files in the SumoSized-SVG-Maker repository. Every recommendation is grounded in the actual code as of commit HEAD on March 6, 2026.*
+
+### 1.3 Suggestions for Moving Forward (Agentic Update - March 6, 2026)
+
+**CRITICAL: v12 is the 100/100 Path.** We should NOT downgrade to v11. The current "hangs" are symptoms of environment configuration, not library bugs.
+
+**The Hanging Issue (PNG/JPEG/WebP):**
+The logs show `Image rasterization failed` at `appState.svelte.ts:1029:7`. This indicates that the `img.src = url` approach is failing, likely because the `coi-serviceworker` is interfering with blob URL resolution or the canvas is being accessed in a way that violates the newly enforced security context. 
+**RESOLUTION EXECUTION:**
+1. Use `img.crossOrigin = 'anonymous'` for all rasterization.
+2. Implement `img.onerror` rejection in the `Promise` to prevent indefinite hangs.
+
+**The FFmpeg Timeout:**
+20s timeout in `mediaService.ts` is happening because the WASM is failing to load. This is almost certainly due to **COOP/COEP header missing** during dev, which prevents `SharedArrayBuffer` from working in the multithreaded core, OR the service worker is blocking the local asset fetch.
+**VERIFIED RESEARCH:**
+- **Multithreading**: Requires `SharedArrayBuffer` which depends strictly on `COOP: same-origin` and `COEP: require-corp`.
+- **Hooks vs Service Worker**: `src/hooks.server.ts` is the professional SvelteKit way to handle headers. `coi-serviceworker` is a client-side hack that causes race conditions with Vite.
+
+**WE ARE MAINTAINING v12.** It is the modern standard with better ESM support and multithreading stability.
+
+
+Jpeg is hanging now as well.  And PNG is hanging. whatever you changed to outputs did not work. Do we need to consider changing our FFMPEG package, is this one out of date? GIF maker uses a different engine I believe. Webp appears to be stuck.
+appState.svelte.ts:607 State successfully loaded from URL hash
+appState.svelte.ts:625 Avoid using `history.pushState(...)` and `history.replaceState(...)` as these will conflict with SvelteKit's router. Use the `pushState` and `replaceState` imports from `$app/navigation` instead.
+warn @ client.js?v=36268651:3212
+warn @ client.js?v=36268651:95
+history.replaceState @ client.js?v=36268651:108
+updateUrlHash @ appState.svelte.ts:625
+saveState @ appState.svelte.ts:908
+commit @ appState.svelte.ts:918
+init @ appState.svelte.ts:256
+AppState @ appState.svelte.ts:160
+(anonymous) @ appState.svelte.ts:1074
+appState.svelte.ts:626 [State] URL updated via native history (Router not ready)
+mediaService.ts:53 FFmpeg Load Failed Error: FFmpeg load timed out after 20s — local package loading failed
+    at mediaService.ts:29:8
+load @ mediaService.ts:53
+await in load
+exportAnimation @ mediaService.ts:70
+renderComposition @ appState.svelte.ts:1029
+await in renderComposition
+handleRender @ ExportPanel.svelte:65
+handle_event_propagation @ chunk-VWARET45.js?v=36268651:4557
+appState.svelte.ts:1042 Composition Render Failed Error: FFmpeg load timed out after 20s — local package loading failed
+    at mediaService.ts:29:8
+renderComposition @ appState.svelte.ts:1042
+await in renderComposition
+handleRender @ ExportPanel.svelte:65
+handle_event_propagation @ chunk-VWARET45.js?v=36268651:4557
+mediaService.ts:53 FFmpeg Load Failed Error: FFmpeg load timed out after 20s — local package loading failed
+    at mediaService.ts:29:8
+load @ mediaService.ts:53
+await in load
+exportAnimation @ mediaService.ts:70
+renderComposition @ appState.svelte.ts:1029
+await in renderComposition
+handleRender @ ExportPanel.svelte:65
+handle_event_propagation @ chunk-VWARET45.js?v=36268651:4557
+appState.svelte.ts:1042 Composition Render Failed Error: FFmpeg load timed out after 20s — local package loading failed
+    at mediaService.ts:29:8
+renderComposition @ appState.svelte.ts:1042
+await in renderComposition
+handleRender @ ExportPanel.svelte:65
+handle_event_propagation @ chunk-VWARET45.js?v=36268651:4557
+mediaService.ts:53 FFmpeg Load Failed Error: FFmpeg load timed out after 20s — local package loading failed
+    at mediaService.ts:29:8
+load @ mediaService.ts:53
+await in load
+exportAnimation @ mediaService.ts:70
+renderComposition @ appState.svelte.ts:1029
+await in renderComposition
+handleRender @ ExportPanel.svelte:65
+handle_event_propagation @ chunk-VWARET45.js?v=36268651:4557
+appState.svelte.ts:1042 Composition Render Failed Error: FFmpeg load timed out after 20s — local package loading failed
+    at mediaService.ts:29:8
+renderComposition @ appState.svelte.ts:1042
+await in renderComposition
+handleRender @ ExportPanel.svelte:65
+handle_event_propagation @ chunk-VWARET45.js?v=36268651:4557
+mediaService.ts:53 FFmpeg Load Failed Error: FFmpeg load timed out after 20s — local package loading failed
+    at mediaService.ts:29:8
+load @ mediaService.ts:53
+await in load
+exportAnimation @ mediaService.ts:70
+renderComposition @ appState.svelte.ts:1029
+await in renderComposition
+handleRender @ ExportPanel.svelte:65
+handle_event_propagation @ chunk-VWARET45.js?v=36268651:4557
+appState.svelte.ts:1042 Composition Render Failed Error: FFmpeg load timed out after 20s — local package loading failed
+    at mediaService.ts:29:8
+renderComposition @ appState.svelte.ts:1042
+await in renderComposition
+handleRender @ ExportPanel.svelte:65
+handle_event_propagation @ chunk-VWARET45.js?v=36268651:4557
+appState.svelte.ts:279 [Save] Native Save Successful: sumosized-render.svg
+And include all of this in your report: appState.svelte.ts:607 State successfully loaded from URL hash
+appState.svelte.ts:625 Avoid using `history.pushState(...)` and `history.replaceState(...)` as these will conflict with SvelteKit's router. Use the `pushState` and `replaceState` imports from `$app/navigation` instead.
+warn @ client.js?v=36268651:3212
+warn @ client.js?v=36268651:95
+history.replaceState @ client.js?v=36268651:108
+updateUrlHash @ appState.svelte.ts:625
+saveState @ appState.svelte.ts:908
+commit @ appState.svelte.ts:918
+init @ appState.svelte.ts:256
+AppState @ appState.svelte.ts:160
+(anonymous) @ appState.svelte.ts:1082
+appState.svelte.ts:626 [State] URL updated via native history (Router not ready)
+appState.svelte.ts:607 State successfully loaded from URL hash
+appState.svelte.ts:622 [State] URL updated via SvelteKit replaceState
+appState.svelte.ts:984 [Render] Initiating png export... {width: 1080, height: 1920, fps: 24, duration: 3}
+appState.svelte.ts:1050 Composition Render Failed Error: Image rasterization failed
+    at img.onerror (appState.svelte.ts:1029:7)
+renderComposition @ appState.svelte.ts:1050
+await in renderComposition
+handleRender @ ExportPanel.svelte:65
+handle_event_propagation @ chunk-VWARET45.js?v=36268651:4557
+appState.svelte.ts:984 [Render] Initiating jpeg export... {width: 1080, height: 1920, fps: 24, duration: 3}
+appState.svelte.ts:1050 Composition Render Failed Error: Image rasterization failed
+    at img.onerror (appState.svelte.ts:1029:7)
+renderComposition @ appState.svelte.ts:1050
+await in renderComposition
+handleRender @ ExportPanel.svelte:65
+handle_event_propagation @ chunk-VWARET45.js?v=36268651:4557
+appState.svelte.ts:984 [Render] Initiating webp export... {width: 1080, height: 1920, fps: 24, duration: 3}
+appState.svelte.ts:1050 Composition Render Failed Error: Image rasterization failed
+    at img.onerror (appState.svelte.ts:1029:7)
+renderComposition @ appState.svelte.ts:1050
+await in renderComposition
+handleRender @ ExportPanel.svelte:65
+handle_event_propagation @ chunk-VWARET45.js?v=36268651:4557
+appState.svelte.ts:984 [Render] Initiating svg export... {width: 1080, height: 1920, fps: 24, duration: 3}
+appState.svelte.ts:984 [Render] Initiating mov export... {width: 1080, height: 1920, fps: 24, duration: 10}
+mediaService.ts:37 [FFmpeg] Loading from local assets... {core: 'http://localhost:5173/ffmpeg/ffmpeg-core.js', wasm: 'http://localhost:5173/ffmpeg/ffmpeg-core.wasm'}
+mediaService.ts:58 FFmpeg Load Failed Error: FFmpeg load timed out after 20s — local package loading failed
+    at mediaService.ts:29:8
+load @ mediaService.ts:58
+await in load
+exportAnimation @ mediaService.ts:75
+renderComposition @ appState.svelte.ts:1037
+await in renderComposition
+handleRender @ ExportPanel.svelte:65
+handle_event_propagation @ chunk-VWARET45.js?v=36268651:4557
+appState.svelte.ts:1050 Composition Render Failed Error: FFmpeg load timed out after 20s — local package loading failed
+    at mediaService.ts:29:8
+renderComposition @ appState.svelte.ts:1050
+await in renderComposition
+handleRender @ ExportPanel.svelte:65
+handle_event_propagation @ chunk-VWARET45.js?v=36268651:4557
+appState.svelte.ts:984 [Render] Initiating mp4 export... {width: 1080, height: 1920, fps: 24, duration: 10}
+mediaService.ts:37 [FFmpeg] Loading from local assets... {core: 'http://localhost:5173/ffmpeg/ffmpeg-core.js', wasm: 'http://localhost:5173/ffmpeg/ffmpeg-core.wasm'}
+mediaService.ts:58 FFmpeg Load Failed Error: FFmpeg load timed out after 20s — local package loading failed
+    at mediaService.ts:29:8
+load @ mediaService.ts:58
+await in load
+exportAnimation @ mediaService.ts:75
+renderComposition @ appState.svelte.ts:1037
+await in renderComposition
+handleRender @ ExportPanel.svelte:65
+handle_event_propagation @ chunk-VWARET45.js?v=36268651:4557
+appState.svelte.ts:1050 Composition Render Failed Error: FFmpeg load timed out after 20s — local package loading failed
+    at mediaService.ts:29:8
+renderComposition @ appState.svelte.ts:1050
+await in renderComposition
+handleRender @ ExportPanel.svelte:65
+handle_event_propagation @ chunk-VWARET45.js?v=36268651:4557
+appState.svelte.ts:984 [Render] Initiating webm export... {width: 1080, height: 1920, fps: 24, duration: 10}
+mediaService.ts:37 [FFmpeg] Loading from local assets... {core: 'http://localhost:5173/ffmpeg/ffmpeg-core.js', wasm: 'http://localhost:5173/ffmpeg/ffmpeg-core.wasm'}
+mediaService.ts:58 FFmpeg Load Failed Error: FFmpeg load timed out after 20s — local package loading failed
+    at mediaService.ts:29:8
+load @ mediaService.ts:58
+await in load
+exportAnimation @ mediaService.ts:75
+renderComposition @ appState.svelte.ts:1037
+await in renderComposition
+handleRender @ ExportPanel.svelte:65
+handle_event_propagation @ chunk-VWARET45.js?v=36268651:4557
+appState.svelte.ts:1050 Composition Render Failed Error: FFmpeg load timed out after 20s — local package loading failed
+    at mediaService.ts:29:8
+renderComposition @ appState.svelte.ts:1050
+await in renderComposition
+handleRender @ ExportPanel.svelte:65
+handle_event_propagation @ chunk-VWARET45.js?v=36268651:4557 Jpeg is hanging now as well.  And PNG is hanging. whatever you changed to outputs did not work. Do we need to consider changing our FFMPEG package, is this one out of date? GIF maker uses a different engine I believe. Webp appears to be stuck.

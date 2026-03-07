@@ -1,0 +1,97 @@
+
+> svg@1.1.0 test
+> vitest run --coverage
+
+
+[1m[46m RUN [49m[22m [36mv4.0.18 [39m[90mD:/SVG[39m
+      [2mCoverage enabled with [22m[33mistanbul[39m
+
+ [32mΓ£ô[39m src/lib/engine/generators/generators.test.ts [2m([22m[2m101 tests[22m[2m)[22m[32m 140[2mms[22m[39m
+[90mstdout[2m | src/lib/services/agentApi.test.ts
+[22m[39m[State] URL updated via native history (Router not ready)
+State successfully loaded from URL hash
+[State] URL updated via native history (Router not ready)
+
+[90mstdout[2m | src/lib/services/agentApi.test.ts[2m > [22m[2mAgent API (window.SumoSvgApp)[2m > [22m[2msetGenerator successfully changes active layer's generator
+[22m[39m[State] URL updated via native history (Router not ready)
+[State] URL updated via native history (Router not ready)
+
+[90mstdout[2m | src/lib/services/agentApi.test.ts[2m > [22m[2mAgent API (window.SumoSvgApp)[2m > [22m[2msetParams successfully updates layer parameters
+[22m[39m[State] URL updated via native history (Router not ready)
+[State] URL updated via native history (Router not ready)
+
+[90mstdout[2m | src/lib/services/agentApi.test.ts[2m > [22m[2mAgent API (window.SumoSvgApp)[2m > [22m[2msetSeed successfully updates deterministic entropy
+[22m[39m[State] URL updated via native history (Router not ready)
+[State] URL updated via native history (Router not ready)
+
+[90mstdout[2m | src/lib/services/agentApi.test.ts[2m > [22m[2mAgent API (window.SumoSvgApp)[2m > [22m[2mrenderNow returns a valid SVG string
+[22m[39m[State] URL updated via native history (Router not ready)
+
+[90mstdout[2m | src/lib/services/agentApi.test.ts[2m > [22m[2mAgent API (window.SumoSvgApp)[2m > [22m[2mgetPreviewDataURL resolves to a base64 Data URI
+[22m[39m[State] URL updated via native history (Router not ready)
+
+[90mstdout[2m | src/lib/services/agentApi.test.ts[2m > [22m[2mAgent API (window.SumoSvgApp)[2m > [22m[2msavePreset and listPresets properly write and read to local storage emulation
+[22m[39m[State] URL updated via native history (Router not ready)
+
+[90mstdout[2m | src/lib/services/agentApi.test.ts[2m > [22m[2mAgent API (window.SumoSvgApp)[2m > [22m[2mclearLayers successfully zeroes out the composition
+[22m[39m[State] URL updated via native history (Router not ready)
+[State] URL updated via native history (Router not ready)
+
+[90mstdout[2m | src/lib/services/agentApi.test.ts[2m > [22m[2mAgent API (window.SumoSvgApp)[2m > [22m[2msetGenerator falls back to fuzzy name matching if exact ID fails
+[22m[39m[State] URL updated via native history (Router not ready)
+
+[90mstdout[2m | src/lib/services/agentApi.test.ts[2m > [22m[2mAgent API (window.SumoSvgApp)[2m > [22m[2mZod Validation Enforcement[2m > [22m[2msetParams rejects out-of-range values
+[22m[39m[State] URL updated via native history (Router not ready)
+
+[90mstdout[2m | src/lib/services/agentApi.test.ts[2m > [22m[2mAgent API (window.SumoSvgApp)[2m > [22m[2mZod Validation Enforcement[2m > [22m[2msetParams rejects incorrect types
+[22m[39m[State] URL updated via native history (Router not ready)
+
+[90mstdout[2m | src/lib/services/agentApi.test.ts[2m > [22m[2mAgent API (window.SumoSvgApp)[2m > [22m[2mZod Validation Enforcement[2m > [22m[2msetParams accepts valid parameters for orbit
+[22m[39m[State] URL updated via native history (Router not ready)
+[State] URL updated via native history (Router not ready)
+
+[90mstdout[2m | src/lib/services/agentApi.test.ts[2m > [22m[2mAgent API (window.SumoSvgApp)[2m > [22m[2mInternal AppState Branch Coverage Hardening[2m > [22m[2mcovers SVG export branch in renderComposition
+[22m[39m[State] URL updated via native history (Router not ready)
+
+[90mstdout[2m | src/lib/services/agentApi.test.ts[2m > [22m[2mAgent API (window.SumoSvgApp)[2m > [22m[2mInternal AppState Branch Coverage Hardening[2m > [22m[2mcovers Image generation error branch
+[22m[39m[State] URL updated via native history (Router not ready)
+
+ [32mΓ£ô[39m src/lib/services/agentApi.test.ts [2m([22m[2m23 tests[22m[2m)[22m[32m 49[2mms[22m[39m
+
+[2m Test Files [22m [1m[32m2 passed[39m[22m[90m (2)[39m
+[2m      Tests [22m [1m[32m124 passed[39m[22m[90m (124)[39m
+[2m   Start at [22m 14:57:10
+[2m   Duration [22m 3.58s[2m (transform 2.09s, setup 0ms, import 3.93s, tests 189ms, environment 1.12s)[22m
+
+[34m % [39m[2mCoverage report from [22m[33mistanbul[39m
+-------------------|---------|----------|---------|---------|-------------------
+File               | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s 
+-------------------|---------|----------|---------|---------|-------------------
+All files          |   67.03 |    43.79 |   58.69 |   67.02 |                   
+ engine            |    62.5 |       50 |     100 |    62.5 |                   
+  a11y.ts          |    62.5 |       50 |     100 |    62.5 | 6,11,16           
+ engine/core       |      75 |    77.77 |   71.42 |   76.47 |                   
+  palettes.ts      |     100 |      100 |     100 |     100 |                   
+  registry.ts      |    37.5 |        0 |      50 |   33.33 | 62-66             
+  starters.ts      |     100 |      100 |     100 |     100 |                   
+ engine/generators |   88.78 |    57.97 |   89.83 |   88.16 |                   
+  abstract.ts      |     100 |    84.61 |     100 |     100 | 104,122           
+  animations.ts    |     100 |    52.74 |     100 |     100 | ...1083,1170-1172 
+  filters.ts       |   57.14 |      100 |       0 |   57.14 | 32-53             
+  free-draw.ts     |   21.87 |    23.07 |      50 |   22.58 | 67-106            
+  gradient.ts      |     100 |      100 |     100 |     100 |                   
+  icons.ts         |   96.29 |       80 |     100 |      96 | 123               
+  image-layer.ts   |       0 |        0 |       0 |       0 | 4-48              
+  layouts.ts       |     100 |    77.77 |     100 |     100 | 86,104            
+  patterns.ts      |     100 |       80 |     100 |     100 | 96,113,250,267    
+  ...complexity.ts |     100 |     91.3 |     100 |     100 | 186,210           
+  ...d-geometry.ts |     100 |    88.23 |     100 |     100 | 120,138           
+  svg-import.ts    |       0 |        0 |       0 |       0 | 4-40              
+  text-effects.ts  |     100 |    73.33 |     100 |     100 | ...14,116,119,165 
+  ui-assets.ts     |     100 |       60 |     100 |     100 | 85,99             
+  ...ied-import.ts |   12.12 |     3.84 |     100 |   12.12 | 100-162           
+ services          |   90.32 |    97.29 |     100 |   89.77 |                   
+  agentApi.ts      |   90.32 |    97.29 |     100 |   89.77 | ...40,172-173,187 
+ state             |   31.54 |    21.83 |   32.67 |   32.61 |                   
+  ...ate.svelte.ts |   31.54 |    21.83 |   32.67 |   32.61 | ...1053,1071-1083 
+-------------------|---------|----------|---------|---------|-------------------

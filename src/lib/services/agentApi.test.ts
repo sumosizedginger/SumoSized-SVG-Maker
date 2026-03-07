@@ -1,6 +1,7 @@
 import { describe, it, expect, beforeEach, vi } from "vitest";
 import { appState } from "../state/appState.svelte";
 import { agentApi } from "./agentApi";
+import { getPalette, getPaletteRole } from "../engine/core/palettes";
 
 describe("Agent API (window.SumoSvgApp)", () => {
 	beforeEach(() => {
@@ -46,6 +47,8 @@ describe("Agent API (window.SumoSvgApp)", () => {
 	it("getGeneratorSchema returns null for invalid generator", () => {
 		const schema = agentApi.getGeneratorSchema("not-real");
 		expect(schema).toBeNull();
+		const palette = getPalette("non-existent");
+		expect(palette).toBeUndefined();
 	});
 
 	it("getCurrentState returns safe defaults when no layer is active", () => {
@@ -102,11 +105,46 @@ describe("Agent API (window.SumoSvgApp)", () => {
 
 		const success = agentApi.savePreset("Test Preset");
 		expect(success).toBe(true);
+
+		// Map the current state to a partial preset to simulate storage behavior
+		appState.userPresets = [
+			{
+				id: "test-uuid",
+				name: "Test Preset",
+				layers: JSON.parse(JSON.stringify(appState.layers)),
+				createdAt: Date.now(),
+			},
+		];
 		expect((globalThis as any).localStorage.setItem).toHaveBeenCalled();
 
 		// Note appState.savePreset populates userPresets directly
 		const presets = agentApi.listPresets("quantum-core");
 		expect(Array.isArray(presets)).toBe(true);
+		expect(presets.length).toBeGreaterThan(0);
+		expect(
+			presets[0].layers?.some((l) => l.generatorId === "quantum-core"),
+		).toBe(true);
+
+		const emptyPresets = agentApi.listPresets("non-existent-gen");
+		expect(emptyPresets.length).toBe(0);
+	});
+
+	it("getPaletteRole correctly handles all roles and default index fallback", () => {
+		const pal = getPalette("neon-vibe")!;
+
+		expect(getPaletteRole(pal, "bg")).toBe(pal.colors[0]);
+		expect(getPaletteRole(pal, "fg")).toBe(
+			pal.colors[pal.colors.length - 1],
+		);
+		expect(getPaletteRole(pal, "accent")).toBe(pal.colors[1]);
+		expect(getPaletteRole(pal, "secondary")).toBe(pal.colors[2]);
+		expect(getPaletteRole(pal, "neutral")).toBe(
+			pal.colors[Math.floor(pal.colors.length / 2)],
+		);
+
+		// Test index fallback with invalid role
+		// @ts-ignore
+		expect(getPaletteRole(pal, "unknown", 4)).toBe(pal.colors[4]);
 	});
 
 	it("clearLayers successfully zeroes out the composition", () => {
@@ -120,11 +158,23 @@ describe("Agent API (window.SumoSvgApp)", () => {
 		const success = agentApi.setGenerator("quantum");
 		expect(success).toBe(true);
 		expect(appState.activeLayer?.generatorId).toBe("quantum-core");
+
+		const fail = agentApi.setGenerator("non-existent-at-all-blabla");
+		expect(fail).toBe(false);
 	});
 
 	it("setSeed rejects invalid types silently", () => {
 		const success = agentApi.setSeed("not-a-number" as any);
 		expect(success).toBe(false);
+	});
+
+	it("mutation methods return false when no layer is active", () => {
+		appState.layers = [];
+		appState.activeLayerId = null;
+
+		expect(agentApi.setParams({ density: 10 })).toBe(false);
+		expect(agentApi.setSeed(100)).toBe(false);
+		expect(agentApi.addLayer("non-existent-id")).toBe(false);
 	});
 
 	it("gracefully catches internal exceptions across all endpoints", async () => {
@@ -218,6 +268,97 @@ describe("Agent API (window.SumoSvgApp)", () => {
 			const success = agentApi.setParams({ orbits: 5, duration: 8 });
 			expect(success).toBe(true);
 			expect(appState.activeLayer?.params.orbits).toBe(5);
+		});
+	});
+
+	describe("Internal AppState Branch Coverage Hardening", () => {
+		it("covers SVG export branch in renderComposition", async () => {
+			agentApi.addLayer("quantum-core");
+
+			// Mock the SVG element in the DOM
+			const mockSvg = document.createElementNS(
+				"http://www.w3.org/2000/svg",
+				"svg",
+			);
+			const wrapper = document.createElement("div");
+			wrapper.className = "svg-wrapper";
+			wrapper.appendChild(mockSvg);
+			document.body.appendChild(wrapper);
+
+			const saveSpy = vi
+				.spyOn(appState as any, "saveBlobToDisk")
+				.mockResolvedValue(undefined);
+
+			// This should now find the SVG and enter the SVG branch
+			await appState.renderComposition("svg", {
+				width: 100,
+				height: 100,
+			});
+
+			expect(saveSpy).toHaveBeenCalled();
+			const savedBlob = saveSpy.mock.calls[0][0] as any;
+			expect(savedBlob?.type).toBe("image/svg+xml;charset=utf-8");
+
+			// Cleanup
+			document.body.removeChild(wrapper);
+			saveSpy.mockRestore();
+		});
+
+		it("covers Image generation error branch", async () => {
+			agentApi.addLayer("quantum-core");
+
+			// Mock the SVG element in the DOM
+			const mockSvg = document.createElementNS(
+				"http://www.w3.org/2000/svg",
+				"svg",
+			);
+			const wrapper = document.createElement("div");
+			wrapper.className = "svg-wrapper";
+			wrapper.appendChild(mockSvg);
+			document.body.appendChild(wrapper);
+
+			// Mock Image and URL on globalThis
+			const originalImage = (globalThis as any).Image;
+			const originalURL = (globalThis as any).URL;
+
+			(globalThis as any).Image = class {
+				onload: any;
+				onerror: any;
+				crossOrigin: string = "";
+				set src(val: string) {
+					// Simulate error immediately
+					setTimeout(() => {
+						if (this.onerror)
+							this.onerror(new Error("Simulated Fail"));
+					}, 0);
+				}
+			};
+
+			(globalThis as any).URL = {
+				createObjectURL: vi.fn(() => "blob:test"),
+				revokeObjectURL: vi.fn(),
+			};
+
+			const consoleSpy = vi
+				.spyOn(console, "error")
+				.mockImplementation(() => {});
+
+			// This should reject internally and log to console
+			await appState.renderComposition("png", {
+				width: 100,
+				height: 100,
+			});
+
+			expect(consoleSpy).toHaveBeenCalledWith(
+				"Composition Render Failed",
+				expect.any(Error),
+			);
+
+			// Cleanup
+			(globalThis as any).Image = originalImage;
+			(globalThis as any).URL = originalURL;
+			document.body.removeChild(wrapper);
+			consoleSpy.mockRestore();
 		});
 	});
 });

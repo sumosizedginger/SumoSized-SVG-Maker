@@ -1,0 +1,23 @@
+# FFMPEG Engine Audit and Handoff
+
+- [x] Phase 1: Kill the WASM Timeout
+    - [x] Remove coi-serviceworker
+    - [x] Add hooks.server.ts for COOP/COEP
+    - [x] Switch FFmpeg to CDN (v0.12.10)
+    - [x] Add capability detection
+    - [x] Verify static formats (PNG/JPEG/WebP) FIXED via Base64
+- [x] Phase 2: SvelteKit & Rasterization Fixes (Compliance)
+    - [x] Fix history.replaceState (SvelteKit router sync)
+    - [x] Implement svgToBase64 for reliable rasterization
+- [x] Phase 3: Integrate Mediabunny (Hardware Acceleration)
+    - [x] Install mediabunny
+    - [x] Create encoder.ts abstraction
+    - [x] Implement WebCodecsEncoder
+- [x] Phase 4: GIF Removal & Code Cleanup
+    - [x] Update appState types and render logic
+    - [x] Remove GIF option from ExportPanel and add link to external GIF Maker
+    - [x] Strip GIF logic from FFmpegEncoder
+    - [x] Remove GIF references from Unified-Import
+    - [x] Update documentation (Download types.md, Architecture)
+    - [x] Final verification of MP4/MOV/WebM
+- [x] Verification and Testing

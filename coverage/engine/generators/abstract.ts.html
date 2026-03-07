@@ -33,9 +33,9 @@
 					</div>
 
 					<div class="fl pad1y space-right2">
-						<span class="strong">91.66% </span>
+						<span class="strong">84.61% </span>
 						<span class="quiet">Branches</span>
-						<span class="fraction">11/12</span>
+						<span class="fraction">11/13</span>
 					</div>
 
 					<div class="fl pad1y space-right2">
@@ -47,7 +47,7 @@
 					<div class="fl pad1y space-right2">
 						<span class="strong">100% </span>
 						<span class="quiet">Lines</span>
-						<span class="fraction">28/28</span>
+						<span class="fraction">29/29</span>
 					</div>
 				</div>
 				<p class="quiet">
@@ -243,7 +243,13 @@
 <a name='L177'></a><a href='#L177'>177</a>
 <a name='L178'></a><a href='#L178'>178</a>
 <a name='L179'></a><a href='#L179'>179</a>
-<a name='L180'></a><a href='#L180'>180</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L180'></a><a href='#L180'>180</a>
+<a name='L181'></a><a href='#L181'>181</a>
+<a name='L182'></a><a href='#L182'>182</a>
+<a name='L183'></a><a href='#L183'>183</a>
+<a name='L184'></a><a href='#L184'>184</a>
+<a name='L185'></a><a href='#L185'>185</a>
+<a name='L186'></a><a href='#L186'>186</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">2x</span>
@@ -363,10 +369,10 @@
 <span class="cline-any cline-yes">17x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">17x</span>
-<span class="cline-any cline-yes">14x</span>
-<span class="cline-any cline-yes">14x</span>
-<span class="cline-any cline-yes">14x</span>
-<span class="cline-any cline-yes">14x</span>
+<span class="cline-any cline-yes">13x</span>
+<span class="cline-any cline-yes">13x</span>
+<span class="cline-any cline-yes">13x</span>
+<span class="cline-any cline-yes">13x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -401,6 +407,12 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">17711x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">379x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">850x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -525,7 +537,7 @@ export const flowField: SVGGenerator = {
 		opacity: 0.6,
 		transparent: false,
 	},
-	render: (params, seed) =&gt; {
+	render: (params, seed, viewBox = <span class="branch-0 cbranch-no" title="branch not covered" >{ x: 0, y: 0, w: 100, h: 100 }) =&gt; {</span>
 		const {
 			count,
 			steps,
@@ -568,8 +580,8 @@ export const flowField: SVGGenerator = {
 		};
 &nbsp;
 		for (let i = 0; i &lt; count; i++) {
-			let x = rand() * 100;
-			let y = rand() * 100;
+			let x = viewBox.x + rand() * viewBox.w;
+			let y = viewBox.y + rand() * viewBox.h;
 			let d = `M ${x.toFixed(2)} ${y.toFixed(2)}`;
 &nbsp;
 			for (let j = 0; j &lt; steps; j++) {
@@ -579,7 +591,13 @@ export const flowField: SVGGenerator = {
 				d += ` L ${x.toFixed(2)} ${y.toFixed(2)}`;
 &nbsp;
 				// Stop if hitting the exact boundary
-				if (x &lt; 0 || x &gt; 100 || y &lt; 0 || y &gt; 100) break;
+				if (
+					x &lt; viewBox.x ||
+					x &gt; viewBox.x + viewBox.w ||
+					y &lt; viewBox.y ||
+					y &gt; viewBox.y + viewBox.h
+				)
+					break;
 			}
 			paths.push(
 				`&lt;path d="${d}" fill="none" stroke="${finalLine}" stroke-width="0.5" stroke-opacity="${opacity}" /&gt;`,
@@ -587,13 +605,13 @@ export const flowField: SVGGenerator = {
 		}
 &nbsp;
 		return `
-      &lt;svg width="100%" height="100%" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"&gt;
+      &lt;svg width="100%" height="100%" viewBox="${viewBox.x} ${viewBox.y} ${viewBox.w} ${viewBox.h}" xmlns="http://www.w3.org/2000/svg"&gt;
         &lt;title&gt;Flow Field&lt;/title&gt;
         &lt;desc&gt;Organic flowing ribbons generated with ${count} paths and ${complexity} complexity.&lt;/desc&gt;
         &lt;defs&gt;
-          &lt;clipPath id="flowClip-${seed}"&gt;&lt;rect width="100" height="100" /&gt;&lt;/clipPath&gt;
+          &lt;clipPath id="flowClip-${seed}"&gt;&lt;rect x="${viewBox.x}" y="${viewBox.y}" width="${viewBox.w}" height="${viewBox.h}" /&gt;&lt;/clipPath&gt;
         &lt;/defs&gt;
-        ${transparent ? "" : `&lt;rect width="100" height="100" fill="${finalBg}" /&gt;`}
+        ${transparent ? "" : `&lt;rect x="${viewBox.x}" y="${viewBox.y}" width="${viewBox.w}" height="${viewBox.h}" fill="${finalBg}" /&gt;`}
         &lt;g clip-path="url(#flowClip-${seed})"&gt;
           ${paths.join("\n")}
         &lt;/g&gt;
@@ -615,7 +633,7 @@ export const flowField: SVGGenerator = {
 				rel="noopener noreferrer"
 				>istanbul</a
 			>
-			at 2026-03-05T21:42:55.219Z
+			at 2026-03-06T22:57:14.212Z
 		</div>
 		<script src="../../prettify.js"></script>
 		<script>

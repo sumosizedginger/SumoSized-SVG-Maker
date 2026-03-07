@@ -4,13 +4,14 @@
 	import { appState } from "../state/appState.svelte";
 
 	interface Props {
+		layerId: string;
 		generatorId: string;
 		params: ParamDefinition[];
 		values: Record<string, any>;
 		onUpdate: (key: string, value: any) => void;
 	}
 
-	let { generatorId, params, values, onUpdate }: Props = $props();
+	let { layerId, generatorId, params, values, onUpdate }: Props = $props();
 
 	let hasAdvancedParams = $derived(params.some((p) => p.advanced));
 
@@ -139,15 +140,15 @@
 				</h3>
 				{#each groupItems as param}
 					<div class="param-field">
-						<label for="{generatorId}-{param.name}"
-							>{param.label}</label
+						<label for="{layerId}-{param.name}">{param.label}</label
 						>
 
 						{#if param.type === "number" || param.type === "integer"}
 							<div class="number-input">
 								<input
 									type="range"
-									id="{generatorId}-{param.name}"
+									id="{layerId}-{param.name}"
+									name="{layerId}-{param.name}"
 									min={param.min}
 									max={param.max}
 									step={param.step}
@@ -160,6 +161,8 @@
 								/>
 								<input
 									type="number"
+									id="{layerId}-{param.name}-number"
+									name="{layerId}-{param.name}-number"
 									aria-label="{param.label} numeric value"
 									min={param.min}
 									max={param.max}
@@ -171,7 +174,8 @@
 						{:else if param.type === "color"}
 							<input
 								type="color"
-								id="{generatorId}-{param.name}"
+								id="{layerId}-{param.name}"
+								name="{layerId}-{param.name}"
 								use:forceColorAttr={values[param.name] ??
 									param.default}
 								oninput={(e) => handleChange(param.name, e)}
@@ -180,13 +184,15 @@
 						{:else if param.type === "boolean"}
 							<input
 								type="checkbox"
-								id="{generatorId}-{param.name}"
+								id="{layerId}-{param.name}"
+								name="{layerId}-{param.name}"
 								checked={values[param.name] ?? param.default}
 								onchange={(e) => handleChange(param.name, e)}
 							/>
 						{:else if param.type === "select" || param.type === "palette"}
 							<select
-								id="{generatorId}-{param.name}"
+								id="{layerId}-{param.name}"
+								name="{layerId}-{param.name}"
 								value={values[param.name] ?? param.default}
 								onchange={(e) => handleChange(param.name, e)}
 								aria-label="Select {param.label}"
@@ -208,7 +214,8 @@
 						{:else if param.type === "text"}
 							<input
 								type="text"
-								id="{generatorId}-{param.name}"
+								id="{layerId}-{param.name}"
+								name="{layerId}-{param.name}"
 								value={values[param.name] ?? param.default}
 								oninput={(e) => handleChange(param.name, e)}
 								placeholder="Enter {param.label.toLowerCase()}..."

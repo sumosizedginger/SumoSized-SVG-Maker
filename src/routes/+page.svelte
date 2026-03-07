@@ -285,6 +285,7 @@
 						</h2>
 						<div class="params-scroll">
 							<ParamPanel
+								layerId={appState.activeLayer.id}
 								generatorId={appState.activeLayer.generatorId}
 								params={appState.activeGenerator?.params || []}
 								values={appState.activeLayer.params}

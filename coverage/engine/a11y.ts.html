@@ -84,50 +84,50 @@
 <a name='L22'></a><a href='#L22'>22</a>
 <a name='L23'></a><a href='#L23'>23</a>
 <a name='L24'></a><a href='#L24'>24</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">156x</span>
+<span class="cline-any cline-yes">226x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">156x</span>
+<span class="cline-any cline-yes">226x</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">156x</span>
+<span class="cline-any cline-yes">226x</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">156x</span>
+<span class="cline-any cline-yes">226x</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">156x</span>
+<span class="cline-any cline-yes">226x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">export function checkA11y(svgString: string) {
-    const errors: string[] = [];
+	const errors: string[] = [];
 &nbsp;
-    // Title validation
-    <span class="missing-if-branch" title="if path not taken" >I</span>if (!/&lt;title&gt;.*&lt;\/title&gt;/.test(svgString)) {
-<span class="cstat-no" title="statement not covered" >        errors.push("Missing &lt;title&gt; tag for semantic identification.");</span>
-    }
+	// Title validation
+	<span class="missing-if-branch" title="if path not taken" >I</span>if (!/&lt;title&gt;.*&lt;\/title&gt;/.test(svgString)) {
+<span class="cstat-no" title="statement not covered" >		errors.push("Missing &lt;title&gt; tag for semantic identification.");</span>
+	}
 &nbsp;
-    // Desc validation
-    <span class="missing-if-branch" title="if path not taken" >I</span>if (!/&lt;desc&gt;.*&lt;\/desc&gt;/.test(svgString)) {
-<span class="cstat-no" title="statement not covered" >        errors.push("Missing &lt;desc&gt; tag for assistive technologies.");</span>
-    }
+	// Desc validation
+	<span class="missing-if-branch" title="if path not taken" >I</span>if (!/&lt;desc&gt;.*&lt;\/desc&gt;/.test(svgString)) {
+<span class="cstat-no" title="statement not covered" >		errors.push("Missing &lt;desc&gt; tag for assistive technologies.");</span>
+	}
 &nbsp;
-    // ViewBox presence
-    <span class="missing-if-branch" title="if path not taken" >I</span>if (!/viewBox=["'][\d\s\.]+["']/.test(svgString)) {
-<span class="cstat-no" title="statement not covered" >        errors.push("Missing viewBox attribute for scalable presentation.");</span>
-    }
+	// ViewBox presence
+	<span class="missing-if-branch" title="if path not taken" >I</span>if (!/viewBox=["'][\d\s\.]+["']/.test(svgString)) {
+<span class="cstat-no" title="statement not covered" >		errors.push("Missing viewBox attribute for scalable presentation.");</span>
+	}
 &nbsp;
-    return {
-        valid: errors.length === 0,
-        errors
-    };
+	return {
+		valid: errors.length === 0,
+		errors,
+	};
 }
 &nbsp;</pre></td></tr></table></pre>
 
@@ -143,7 +143,7 @@
 				rel="noopener noreferrer"
 				>istanbul</a
 			>
-			at 2026-03-05T21:42:55.219Z
+			at 2026-03-06T22:57:14.212Z
 		</div>
 		<script src="../prettify.js"></script>
 		<script>

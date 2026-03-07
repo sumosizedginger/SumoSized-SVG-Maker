@@ -1,0 +1,83 @@
+
+> svg@1.1.0 test
+> vitest run --coverage
+
+
+[1m[46m RUN [49m[22m [36mv4.0.18 [39m[90mD:/SVG[39m
+      [2mCoverage enabled with [22m[33mistanbul[39m
+
+ [32mΓ£ô[39m src/lib/engine/generators/generators.test.ts [2m([22m[2m101 tests[22m[2m)[22m[32m 144[2mms[22m[39m
+[90mstdout[2m | src/lib/services/agentApi.test.ts[2m > [22m[2mAgent API (window.SumoSvgApp)[2m > [22m[2msetGenerator successfully changes active layer's generator
+[22m[39m[State] URL updated via native history (Router not ready)
+[State] URL updated via native history (Router not ready)
+
+[90mstdout[2m | src/lib/services/agentApi.test.ts[2m > [22m[2mAgent API (window.SumoSvgApp)[2m > [22m[2msetParams successfully updates layer parameters
+[22m[39m[State] URL updated via native history (Router not ready)
+[State] URL updated via native history (Router not ready)
+
+[90mstdout[2m | src/lib/services/agentApi.test.ts[2m > [22m[2mAgent API (window.SumoSvgApp)[2m > [22m[2msetSeed successfully updates deterministic entropy
+[22m[39m[State] URL updated via native history (Router not ready)
+[State] URL updated via native history (Router not ready)
+
+[90mstdout[2m | src/lib/services/agentApi.test.ts[2m > [22m[2mAgent API (window.SumoSvgApp)[2m > [22m[2mrenderNow returns a valid SVG string
+[22m[39m[State] URL updated via native history (Router not ready)
+
+[90mstdout[2m | src/lib/services/agentApi.test.ts[2m > [22m[2mAgent API (window.SumoSvgApp)[2m > [22m[2mgetPreviewDataURL resolves to a base64 Data URI
+[22m[39m[State] URL updated via native history (Router not ready)
+
+[90mstdout[2m | src/lib/services/agentApi.test.ts[2m > [22m[2mAgent API (window.SumoSvgApp)[2m > [22m[2msavePreset and listPresets properly write and read to local storage emulation
+[22m[39m[State] URL updated via native history (Router not ready)
+
+[90mstdout[2m | src/lib/services/agentApi.test.ts[2m > [22m[2mAgent API (window.SumoSvgApp)[2m > [22m[2mclearLayers successfully zeroes out the composition
+[22m[39m[State] URL updated via native history (Router not ready)
+[State] URL updated via native history (Router not ready)
+
+[90mstdout[2m | src/lib/services/agentApi.test.ts[2m > [22m[2mAgent API (window.SumoSvgApp)[2m > [22m[2msetGenerator falls back to fuzzy name matching if exact ID fails
+[22m[39m[State] URL updated via native history (Router not ready)
+
+[90mstdout[2m | src/lib/services/agentApi.test.ts[2m > [22m[2mAgent API (window.SumoSvgApp)[2m > [22m[2mZod Validation Enforcement[2m > [22m[2msetParams rejects out-of-range values
+[22m[39m[State] URL updated via native history (Router not ready)
+
+[90mstdout[2m | src/lib/services/agentApi.test.ts[2m > [22m[2mAgent API (window.SumoSvgApp)[2m > [22m[2mZod Validation Enforcement[2m > [22m[2msetParams rejects incorrect types
+[22m[39m[State] URL updated via native history (Router not ready)
+
+[90mstdout[2m | src/lib/services/agentApi.test.ts[2m > [22m[2mAgent API (window.SumoSvgApp)[2m > [22m[2mZod Validation Enforcement[2m > [22m[2msetParams accepts valid parameters for orbit
+[22m[39m[State] URL updated via native history (Router not ready)
+[State] URL updated via native history (Router not ready)
+
+[90mstdout[2m | src/lib/services/agentApi.test.ts[2m > [22m[2mAgent API (window.SumoSvgApp)[2m > [22m[2mInternal AppState Branch Coverage Hardening[2m > [22m[2mcovers SVG export branch in renderComposition
+[22m[39m[State] URL updated via native history (Router not ready)
+
+[90mstdout[2m | src/lib/services/agentApi.test.ts[2m > [22m[2mAgent API (window.SumoSvgApp)[2m > [22m[2mInternal AppState Branch Coverage Hardening[2m > [22m[2mcovers Image generation error branch
+[22m[39m[State] URL updated via native history (Router not ready)
+
+ [31mΓ¥»[39m src/lib/services/agentApi.test.ts [2m([22m[2m23 tests[22m[2m | [22m[31m2 failed[39m[2m)[22m[32m 36[2mms[22m[39m
+     [32mΓ£ô[39m should expose the SumoSvgApp namespace on window[32m 1[2mms[22m[39m
+     [32mΓ£ô[39m listGenerators returns properly formed manifest[32m 1[2mms[22m[39m
+     [32mΓ£ô[39m getGeneratorSchema returns valid parameters for a known generator[32m 0[2mms[22m[39m
+     [32mΓ£ô[39m getGeneratorSchema returns null for invalid generator[32m 0[2mms[22m[39m
+     [32mΓ£ô[39m getCurrentState returns safe defaults when no layer is active[32m 0[2mms[22m[39m
+     [32mΓ£ô[39m setGenerator successfully changes active layer's generator[32m 2[2mms[22m[39m
+     [32mΓ£ô[39m setParams successfully updates layer parameters[32m 1[2mms[22m[39m
+     [32mΓ£ô[39m setSeed successfully updates deterministic entropy[32m 3[2mms[22m[39m
+     [32mΓ£ô[39m renderNow returns a valid SVG string[32m 6[2mms[22m[39m
+     [32mΓ£ô[39m getPreviewDataURL resolves to a base64 Data URI[32m 4[2mms[22m[39m
+     [32mΓ£ô[39m savePreset and listPresets properly write and read to local storage emulation[32m 1[2mms[22m[39m
+     [32mΓ£ô[39m getPaletteRole correctly handles all roles and default index fallback[32m 0[2mms[22m[39m
+     [32mΓ£ô[39m clearLayers successfully zeroes out the composition[32m 1[2mms[22m[39m
+     [32mΓ£ô[39m setGenerator falls back to fuzzy name matching if exact ID fails[32m 1[2mms[22m[39m
+     [32mΓ£ô[39m setSeed rejects invalid types silently[32m 0[2mms[22m[39m
+     [32mΓ£ô[39m mutation methods return false when no layer is active[32m 0[2mms[22m[39m
+     [32mΓ£ô[39m gracefully catches internal exceptions across all endpoints[32m 1[2mms[22m[39m
+       [32mΓ£ô[39m addLayer rejects invalid parameters for anim-matrix-rain[32m 2[2mms[22m[39m
+       [32mΓ£ô[39m setParams rejects out-of-range values[32m 1[2mms[22m[39m
+       [32mΓ£ô[39m setParams rejects incorrect types[32m 1[2mms[22m[39m
+       [32mΓ£ô[39m setParams accepts valid parameters for orbit[32m 1[2mms[22m[39m
+[31m       [31m├ù[31m covers SVG export branch in renderComposition[39m[32m 6[2mms[22m[39m
+[31m       [31m├ù[31m covers Image generation error branch[39m[32m 1[2mms[22m[39m
+
+[2m Test Files [22m [1m[31m1 failed[39m[22m[2m | [22m[1m[32m1 passed[39m[22m[90m (2)[39m
+[2m      Tests [22m [1m[31m2 failed[39m[22m[2m | [22m[1m[32m122 passed[39m[22m[90m (124)[39m
+[2m   Start at [22m 14:47:57
+[2m   Duration [22m 3.03s[2m (transform 2.04s, setup 0ms, import 3.99s, tests 180ms, environment 0ms)[22m
+

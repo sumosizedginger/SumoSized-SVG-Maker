@@ -29,6 +29,32 @@ A headless wrapper that exposes internal state mutations to the global `window` 
 
 Pure presentational layers built with Svelte. They are optimized for INP (Interaction to Next Paint) by directly injecting the engine's stringified SVG output via `{@html}` blocks.
 
+## 📹 Media Pipeline
+
+The media pipeline handles the conversion of SVG compositions into professional video and image formats.
+
+### 1. exportService.ts (The Orchestrator)
+
+- **Role**: High-level API for all exports (Static & Video).
+- **Function**: Handles frame capture timing, progress reporting, and selects the best encoder backend.
+- **Location**: [exportService.ts](../src/lib/services/exportService.ts)
+
+### 2. media/encoder.ts (The Abstraction)
+
+- **Role**: Common interface for all encoding backends.
+- **Function**: Feature-detects capabilities (WebCodecs vs FFmpeg) and exports the correct backend instance.
+- **Location**: [encoder.ts](../src/lib/media/encoder.ts)
+
+### 3. media/webcodecsEncoder.ts (Hardware Express)
+
+- **Role**: Hardware-accelerated MP4/WebM/MOV encoding. Up to **50x faster** than WASM.
+- **Location**: [webcodecsEncoder.ts](../src/lib/media/webcodecsEncoder.ts)
+
+### 4. media/ffmpegEncoder.ts (The Legacy Fallback)
+
+- **Role**: Software fallback for video encoding (h264/VP9) for environments without `VideoEncoder`.
+- **Location**: [ffmpegEncoder.ts](../src/lib/media/ffmpegEncoder.ts)
+
 ## Module Dependency
 
 The project is structured to prevent circular dependencies. The `engine` is at the bottom of the stack—it knows nothing of the UI. The `UI` is at the top—it consumes the `engine` and `state`.

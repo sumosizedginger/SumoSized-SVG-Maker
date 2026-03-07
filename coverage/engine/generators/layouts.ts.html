@@ -33,9 +33,9 @@
 					</div>
 
 					<div class="fl pad1y space-right2">
-						<span class="strong">87.5% </span>
+						<span class="strong">77.77% </span>
 						<span class="quiet">Branches</span>
-						<span class="fraction">7/8</span>
+						<span class="fraction">7/9</span>
 					</div>
 
 					<div class="fl pad1y space-right2">
@@ -312,11 +312,11 @@
 <span class="cline-any cline-yes">14x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">14x</span>
-<span class="cline-any cline-yes">8x</span>
-<span class="cline-any cline-yes">8x</span>
-<span class="cline-any cline-yes">8x</span>
-<span class="cline-any cline-yes">8x</span>
-<span class="cline-any cline-yes">8x</span>
+<span class="cline-any cline-yes">9x</span>
+<span class="cline-any cline-yes">9x</span>
+<span class="cline-any cline-yes">9x</span>
+<span class="cline-any cline-yes">9x</span>
+<span class="cline-any cline-yes">9x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -441,7 +441,7 @@ export const poster: SVGGenerator = {
 		usePalette: true,
 		transparent: false,
 	},
-	render: (params, seed) =&gt; {
+	render: (params, seed, viewBox = <span class="branch-0 cbranch-no" title="branch not covered" >{ x: 0, y: 0, w: 100, h: 100 }) =&gt; {</span>
 		const {
 			blockCount,
 			padding,
@@ -474,27 +474,27 @@ export const poster: SVGGenerator = {
 			return (s - 1) / 2147483646;
 		};
 &nbsp;
-		const area = 100 - padding * 2;
+		const pad = padding;
 		for (let i = 0; i &lt; blockCount; i++) {
-			const w = rand() * (area * 0.6) + area * 0.2;
-			const h = rand() * (area * 0.4) + area * 0.1;
-			const x = padding + rand() * (area - w);
-			const y = padding + rand() * (area - h);
+			const w = rand() * (viewBox.w * 0.6) + viewBox.w * 0.2;
+			const h = rand() * (viewBox.h * 0.4) + viewBox.h * 0.1;
+			const x = viewBox.x + pad + rand() * (viewBox.w - w - pad * 2);
+			const y = viewBox.y + pad + rand() * (viewBox.h - h - pad * 2);
 			const color = rand() &gt; 0.6 ? finalAccent : finalSecondary;
 &nbsp;
 			blocks.push(
-				`&lt;rect x="${x}" y="${y}" width="${w}" height="${h}" fill="${color}" opacity="0.8" /&gt;`,
+				`&lt;rect x="${x.toFixed(2)}" y="${y.toFixed(2)}" width="${w.toFixed(2)}" height="${h.toFixed(2)}" fill="${color}" opacity="0.8" /&gt;`,
 			);
 		}
 &nbsp;
 		return `
-      &lt;svg width="100%" height="100%" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"&gt;
+      &lt;svg width="100%" height="100%" viewBox="${viewBox.x} ${viewBox.y} ${viewBox.w} ${viewBox.h}" xmlns="http://www.w3.org/2000/svg"&gt;
         &lt;title&gt;Swiss Poster&lt;/title&gt;
-        &lt;desc&gt;Minimalist layout with ${blockCount} geometric blocks and ${padding}% padding.&lt;/desc&gt;
+        &lt;desc&gt;Minimalist layout with ${blockCount} geometric blocks and ${padding} padding. Adaptive Cinematic Viewport: ${viewBox.w}:${viewBox.h}&lt;/desc&gt;
         &lt;defs&gt;
-          &lt;clipPath id="posterClip-${seed}"&gt;&lt;rect width="100" height="100" /&gt;&lt;/clipPath&gt;
+          &lt;clipPath id="posterClip-${seed}"&gt;&lt;rect x="${viewBox.x}" y="${viewBox.y}" width="${viewBox.w}" height="${viewBox.h}" /&gt;&lt;/clipPath&gt;
         &lt;/defs&gt;
-        ${transparent ? "" : `&lt;rect width="100" height="100" fill="${finalBg}" /&gt;`}
+        ${transparent ? "" : `&lt;rect x="${viewBox.x}" y="${viewBox.y}" width="${viewBox.w}" height="${viewBox.h}" fill="${finalBg}" /&gt;`}
         &lt;g clip-path="url(#posterClip-${seed})"&gt;
           ${blocks.join("\n")}
         &lt;/g&gt;
@@ -516,7 +516,7 @@ export const poster: SVGGenerator = {
 				rel="noopener noreferrer"
 				>istanbul</a
 			>
-			at 2026-03-05T21:42:55.219Z
+			at 2026-03-06T22:57:14.212Z
 		</div>
 		<script src="../../prettify.js"></script>
 		<script>

@@ -30,9 +30,9 @@ export const unifiedImport: SVGGenerator = {
 	id: "unified-import",
 	name: "Import Asset",
 	description:
-		"Import SVG vectors, Raster images (PNG/APNG/JPG/WebP/GIF), or Videos (MP4/WebM).",
+		"Import SVG vectors, Raster images (PNG/APNG/JPG/WebP), or Videos (MP4/WebM).",
 	category: "Layers",
-	tags: ["import", "raster", "vector", "video", "gif", "apng", "webp"],
+	tags: ["import", "raster", "vector", "video", "apng", "webp"],
 	version: "1.1.0",
 	params: [
 		{
@@ -42,7 +42,7 @@ export const unifiedImport: SVGGenerator = {
 			default: "image",
 			options: [
 				{ value: "svg", label: "SVG Vector" },
-				{ value: "image", label: "Image / GIF" },
+				{ value: "image", label: "Image (Static)" },
 				{ value: "video", label: "Video" },
 			],
 		},
@@ -158,7 +158,7 @@ export const unifiedImport: SVGGenerator = {
 				</foreignObject>
 			`;
 		} else {
-			// Handles PNG, JPG, GIF, and SVG (URL or Data URI)
+			// Handles PNG, JPG, and SVG (URL or Data URI)
 			return `<image x="${renderX}" y="${renderY}" href="${processedUrl}" width="${renderWidth}" height="${renderHeight}" preserveAspectRatio="${params.preserveAspectRatio}" />`;
 		}
 	},

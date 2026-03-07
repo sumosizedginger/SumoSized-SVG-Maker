@@ -1,5 +1,7 @@
 import { generators, getGenerator } from "$lib/engine/core/registry";
 import * as storage from "$lib/services/storage";
+import { browser } from "$app/environment";
+import { page } from "$app/state";
 import { replaceState } from "$app/navigation";
 import { HistoryManager } from "./history.svelte";
 import type { Preset } from "$lib/services/storage";
@@ -569,22 +571,22 @@ class AppState {
 					opacity: l.o !== undefined ? l.o : 1.0,
 					transforms: l.t
 						? {
-							x: l.t.x || 0,
-							y: l.t.y || 0,
-							scaleX:
-								l.t.scaleX !== undefined
-									? l.t.scaleX
-									: l.t.scale || 1,
-							scaleY:
-								l.t.scaleY !== undefined
-									? l.t.scaleY
-									: l.t.scale || 1,
-							rotation: l.t.rotation || 0,
-							cropX: l.t.cropX,
-							cropY: l.t.cropY,
-							cropW: l.t.cropW,
-							cropH: l.t.cropH,
-						}
+								x: l.t.x || 0,
+								y: l.t.y || 0,
+								scaleX:
+									l.t.scaleX !== undefined
+										? l.t.scaleX
+										: l.t.scale || 1,
+								scaleY:
+									l.t.scaleY !== undefined
+										? l.t.scaleY
+										: l.t.scale || 1,
+								rotation: l.t.rotation || 0,
+								cropX: l.t.cropX,
+								cropY: l.t.cropY,
+								cropW: l.t.cropW,
+								cropH: l.t.cropH,
+							}
 						: { x: 0, y: 0, scaleX: 1, scaleY: 1, rotation: 0 },
 					filter: l.f,
 					maskLayerId: l.m,
@@ -612,20 +614,29 @@ class AppState {
 	}
 
 	private updateUrlHash() {
-		if (typeof window === "undefined") return;
+		if (!browser) return;
 		const hash = this.serializeState();
 
 		try {
-			// SvelteKit's replaceState requires the router to be initialized.
-			// We use a try-catch to fallback to native history if the router isn't ready yet.
-			replaceState(`#${hash}`, {});
-			console.log("[State] URL updated via SvelteKit replaceState");
+			// SvelteKit's replaceState is the only supported way to update URL without navigation
+			// We only call it if the router is explicitly ready. The SvelteKit router attaches
+			// `replaceState` to the global scope or client module, but calling it too early throws.
+			if (page && page.state) {
+				// We wrap in a strict try-catch because SvelteKit 5 throws if router isn't fully mounted
+				try {
+					replaceState(`#${hash}`, page.state);
+				} catch (err) {
+					console.log(
+						"[State] Router strictly not ready, skipping hash sync",
+					);
+				}
+			} else {
+				console.log(
+					"[State] Router state not ready, skipping hash sync",
+				);
+			}
 		} catch (e) {
-			// Fallback for early initialization
-			window.history.replaceState(null, "", `#${hash}`);
-			console.log(
-				"[State] URL updated via native history (Router not ready)",
-			);
+			console.warn("[State] Navigation sync failed", e);
 		}
 	}
 
@@ -724,7 +735,7 @@ class AppState {
 									rotation: 0,
 								},
 							};
-						} catch (e) { }
+						} catch (e) {}
 					}
 				}
 			}
@@ -757,7 +768,7 @@ class AppState {
 									y: Number(ty.toFixed(2)),
 								},
 							};
-						} catch (e) { }
+						} catch (e) {}
 					}
 				}
 			}
@@ -953,15 +964,7 @@ class AppState {
 	}
 
 	async renderComposition(
-		format:
-			| "png"
-			| "mov"
-			| "gif"
-			| "svg"
-			| "jpeg"
-			| "webp"
-			| "webm"
-			| "mp4",
+		format: "png" | "mov" | "svg" | "jpeg" | "webp" | "webm" | "mp4",
 		options: {
 			width?: number;
 			height?: number;
@@ -969,77 +972,43 @@ class AppState {
 			duration?: number;
 		} = {},
 	) {
-		// ELITE TARGETING: Find the main preview SVG, not UI icons!
-		const svgElement = document.querySelector(
-			".svg-wrapper > svg",
-		) as SVGSVGElement | null;
-		if (!svgElement) {
-			console.error(
-				"Export failed: Preview SVG element not found in .svg-wrapper",
-			);
-			return;
-		}
-
-		const { width = 2000, height = 2000, fps = 24, duration = 3 } = options;
+		const { exportService } = await import("$lib/services/exportService");
 
 		try {
-			let blob: Blob;
+			this.renderingStatus = "Preparing render...";
 
-			if (format === "svg") {
-				blob = new Blob([this.renderedSvg], {
-					type: "image/svg+xml;charset=utf-8",
-				});
-			} else if (
-				format === "png" ||
-				format === "jpeg" ||
-				format === "webp"
-			) {
-				const canvas = document.createElement("canvas");
-				canvas.width = width;
-				canvas.height = height;
-				const ctx = canvas.getContext("2d")!;
-				const svgBlob = new Blob([this.renderedSvg], {
-					type: "image/svg+xml;charset=utf-8",
-				});
-				const url = URL.createObjectURL(svgBlob);
-				const img = new Image();
+			const {
+				width = 2000,
+				height = 2000,
+				fps = 24,
+				duration = 3,
+			} = options;
 
-				blob = await new Promise((resolve) => {
-					img.onload = () => {
-						// JPEGs don't support transparency, so we always fill black
-						ctx.fillStyle = "black";
-						ctx.fillRect(0, 0, width, height);
-						ctx.drawImage(img, 0, 0, width, height);
-						URL.revokeObjectURL(url);
+			const svgElement = document.querySelector(
+				".svg-wrapper > svg",
+			) as SVGSVGElement | null;
+			if (!svgElement) throw new Error("Preview SVG not found");
 
-						const mimeType =
-							format === "jpeg"
-								? "image/jpeg"
-								: format === "webp"
-									? "image/webp"
-									: "image/png";
-						canvas.toBlob((b) => resolve(b!), mimeType, 0.95);
-					};
-					img.src = url;
-				});
-			} else {
-				// Animated formats (MOV, GIF)
-				const { mediaService } =
-					await import("$lib/services/mediaService");
-				blob = await mediaService.exportAnimation(
-					format as "mov" | "gif" | "webm" | "mp4",
-					duration,
-					fps,
-					width,
-					height,
-				);
-			}
+			const blob = await exportService.export(
+				svgElement,
+				format,
+				{ width, height, fps, duration },
+				(status) => {
+					this.renderingStatus = status;
+				},
+			);
 
-			// Download the final asset using the Smart Save utility
-			const fileName = `sumosized-render.${format}`;
-			await this.saveBlobToDisk(blob, fileName);
-		} catch (error) {
-			console.error("Composition Render Failed", error);
+			const filename = `sumosized-render.${format === "jpeg" ? "jpg" : format}`;
+			await this.saveBlobToDisk(blob, filename);
+
+			this.renderingStatus = "";
+		} catch (e) {
+			console.error("Composition Render Failed", e);
+			this.renderingStatus = "Error: " + (e as Error).message;
+			setTimeout(() => {
+				if (this.renderingStatus.startsWith("Error"))
+					this.renderingStatus = "";
+			}, 5000);
 		}
 	}
 

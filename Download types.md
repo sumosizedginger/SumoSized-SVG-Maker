@@ -12,16 +12,15 @@ The SumoSized Export Engine is now fully production-ready, featuring universal V
 
 ## ✅ Implementation Status
 
-| Format   | Class     | Engine               | Status             |
-| :------- | :-------- | :------------------- | :----------------- |
-| **SVG**  | Vector    | Native Browser       | **LIVE**           |
-| **PNG**  | Raster    | Canvas Bridge        | **LIVE**           |
-| **JPEG** | Raster    | Canvas Bridge        | **LIVE**           |
-| **WebP** | Raster    | Canvas Bridge        | **LIVE**           |
-| **MOV**  | Video     | FFmpeg.wasm (x264)   | **LIVE (TESTING)** |
-| **MP4**  | Video     | FFmpeg.wasm (x264)   | **LIVE (TESTING)** |
-| **WebM** | Video     | FFmpeg.wasm (VP9)    | **LIVE (TESTING)** |
-| **GIF**  | Animation | FFmpeg.wasm (2-pass) | **LIVE (TESTING)** |
+| Format   | Class  | Engine               | Status             |
+| :------- | :----- | :------------------- | :----------------- |
+| **SVG**  | Vector | Native Browser       | **LIVE**           |
+| **PNG**  | Raster | Canvas Bridge        | **LIVE**           |
+| **JPEG** | Raster | Canvas Bridge        | **LIVE**           |
+| **WebP** | Raster | Canvas Bridge        | **LIVE**           |
+| **WebM** | Video  | FFmpeg.wasm (VP9)    | **LIVE (TESTING)** |
+| **MOV**  | Video  | WebCodecs (Hardware) | **LIVE**           |
+| **MP4**  | Video  | WebCodecs (Hardware) | **LIVE**           |
 
 ## Core Architecture
 

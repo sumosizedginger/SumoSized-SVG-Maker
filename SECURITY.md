@@ -4,10 +4,16 @@
 
 The SumoSized SVG Generator ecosystem currently formally supports the latest release branch to preserve mathematically deterministic rendering safety.
 
-| Version | Supported          |
-| ------- | ------------------ |
-| v1.0.x  | :white_check_mark: |
-| < 1.0.0 | :x:                |
+| < 1.0.0 | :x: |
+
+## Cross-Origin Isolation (COI)
+
+This application mandates a strictly isolated execution environment to enable high-performance multi-threaded WASM (FFmpeg.wasm) and hardware-accelerated WebCodecs.
+
+- **COOP (Cross-Origin-Opener-Policy)**: Set to `same-origin`.
+- **COEP (Cross-Origin-Embedder-Policy)**: Set to `require-corp`.
+
+This configuration prevents side-channel attacks (like Spectre) while allowing the use of `SharedArrayBuffer`, which is critical for the zero-latency frame buffer used in video exports.
 
 ## Reporting a Vulnerability
 

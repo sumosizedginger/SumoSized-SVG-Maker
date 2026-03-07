@@ -1,10 +1,6 @@
 var createFFmpegCore = (() => {
-	var _scriptDir =
-		typeof document !== "undefined" && document.currentScript
-			? document.currentScript.src
-			: undefined;
-	if (typeof __filename !== "undefined")
-		_scriptDir = _scriptDir || __filename;
+	var _scriptDir = import.meta.url;
+
 	return function (createFFmpegCore = {}) {
 		var Module =
 			typeof createFFmpegCore != "undefined" ? createFFmpegCore : {};
@@ -16,9 +12,11 @@ var createFFmpegCore = (() => {
 		const NULL = 0;
 		const SIZE_I32 = Uint32Array.BYTES_PER_ELEMENT;
 		const DEFAULT_ARGS = ["./ffmpeg", "-nostdin", "-y"];
+		const DEFAULT_ARGS_FFPROBE = ["./ffprobe"];
 		Module["NULL"] = NULL;
 		Module["SIZE_I32"] = SIZE_I32;
 		Module["DEFAULT_ARGS"] = DEFAULT_ARGS;
+		Module["DEFAULT_ARGS_FFPROBE"] = DEFAULT_ARGS_FFPROBE;
 		Module["ret"] = -1;
 		Module["timeout"] = -1;
 		Module["logger"] = () => {};
@@ -52,6 +50,17 @@ var createFFmpegCore = (() => {
 			const args = [...Module["DEFAULT_ARGS"], ..._args];
 			try {
 				Module["_ffmpeg"](args.length, stringsToPtr(args));
+			} catch (e) {
+				if (!e.message.startsWith("Aborted")) {
+					throw e;
+				}
+			}
+			return Module["ret"];
+		}
+		function ffprobe(..._args) {
+			const args = [...Module["DEFAULT_ARGS_FFPROBE"], ..._args];
+			try {
+				Module["_ffprobe"](args.length, stringsToPtr(args));
 			} catch (e) {
 				if (!e.message.startsWith("Aborted")) {
 					throw e;
@@ -96,6 +105,7 @@ var createFFmpegCore = (() => {
 		Module["printErr"] = printErr;
 		Module["locateFile"] = _locateFile;
 		Module["exec"] = exec;
+		Module["ffprobe"] = ffprobe;
 		Module["setLogger"] = setLogger;
 		Module["setTimeout"] = setTimeout;
 		Module["setProgress"] = setProgress;
@@ -107,12 +117,10 @@ var createFFmpegCore = (() => {
 		var quit_ = (status, toThrow) => {
 			throw toThrow;
 		};
-		var ENVIRONMENT_IS_WEB = typeof window == "object";
-		var ENVIRONMENT_IS_WORKER = typeof importScripts == "function";
-		var ENVIRONMENT_IS_NODE =
-			typeof process == "object" &&
-			typeof process.versions == "object" &&
-			typeof process.versions.node == "string";
+		var ENVIRONMENT_IS_WEB = false;
+		var ENVIRONMENT_IS_WORKER = true;
+		var ENVIRONMENT_IS_NODE = false;
+		var ENVIRONMENT_IS_PTHREAD = Module["ENVIRONMENT_IS_PTHREAD"] || false;
 		var scriptDirectory = "";
 		function locateFile(path) {
 			if (Module["locateFile"]) {
@@ -121,50 +129,7 @@ var createFFmpegCore = (() => {
 			return scriptDirectory + path;
 		}
 		var read_, readAsync, readBinary, setWindowTitle;
-		if (ENVIRONMENT_IS_NODE) {
-			var fs = require("fs");
-			var nodePath = require("path");
-			if (ENVIRONMENT_IS_WORKER) {
-				scriptDirectory = nodePath.dirname(scriptDirectory) + "/";
-			} else {
-				scriptDirectory = __dirname + "/";
-			}
-			read_ = (filename, binary) => {
-				filename = isFileURI(filename)
-					? new URL(filename)
-					: nodePath.normalize(filename);
-				return fs.readFileSync(filename, binary ? undefined : "utf8");
-			};
-			readBinary = (filename) => {
-				var ret = read_(filename, true);
-				if (!ret.buffer) {
-					ret = new Uint8Array(ret);
-				}
-				return ret;
-			};
-			readAsync = (filename, onload, onerror, binary = true) => {
-				filename = isFileURI(filename)
-					? new URL(filename)
-					: nodePath.normalize(filename);
-				fs.readFile(
-					filename,
-					binary ? undefined : "utf8",
-					(err, data) => {
-						if (err) onerror(err);
-						else onload(binary ? data.buffer : data);
-					},
-				);
-			};
-			if (!Module["thisProgram"] && process.argv.length > 1) {
-				thisProgram = process.argv[1].replace(/\\/g, "/");
-			}
-			arguments_ = process.argv.slice(2);
-			quit_ = (status, toThrow) => {
-				process.exitCode = status;
-				throw toThrow;
-			};
-			Module["inspect"] = () => "[Emscripten Module object]";
-		} else if (ENVIRONMENT_IS_WEB || ENVIRONMENT_IS_WORKER) {
+		if (ENVIRONMENT_IS_WEB || ENVIRONMENT_IS_WORKER) {
 			if (ENVIRONMENT_IS_WORKER) {
 				scriptDirectory = self.location.href;
 			} else if (
@@ -235,6 +200,7 @@ var createFFmpegCore = (() => {
 			abort("no native wasm support detected");
 		}
 		var wasmMemory;
+		var wasmModule;
 		var ABORT = false;
 		var EXITSTATUS;
 		function assert(condition, text) {
@@ -265,6 +231,41 @@ var createFFmpegCore = (() => {
 			Module["HEAP64"] = HEAP64 = new BigInt64Array(b);
 			Module["HEAPU64"] = HEAPU64 = new BigUint64Array(b);
 		}
+		var INITIAL_MEMORY = Module["INITIAL_MEMORY"] || 1073741824;
+		assert(
+			INITIAL_MEMORY >= 65536,
+			"INITIAL_MEMORY should be larger than STACK_SIZE, was " +
+				INITIAL_MEMORY +
+				"! (STACK_SIZE=" +
+				65536 +
+				")",
+		);
+		if (ENVIRONMENT_IS_PTHREAD) {
+			wasmMemory = Module["wasmMemory"];
+		} else {
+			if (Module["wasmMemory"]) {
+				wasmMemory = Module["wasmMemory"];
+			} else {
+				wasmMemory = new WebAssembly.Memory({
+					initial: INITIAL_MEMORY / 65536,
+					maximum: INITIAL_MEMORY / 65536,
+					shared: true,
+				});
+				if (!(wasmMemory.buffer instanceof SharedArrayBuffer)) {
+					err(
+						"requested a shared WebAssembly.Memory but the returned buffer is not a SharedArrayBuffer, indicating that while the browser has SharedArrayBuffer it does not have WebAssembly threads support - you may need to set a flag",
+					);
+					if (ENVIRONMENT_IS_NODE) {
+						err(
+							"(on node you may need: --experimental-wasm-threads --experimental-wasm-bulk-memory and/or recent version)",
+						);
+					}
+					throw Error("bad memory");
+				}
+			}
+		}
+		updateMemoryViews();
+		INITIAL_MEMORY = wasmMemory.buffer.byteLength;
 		var wasmTable;
 		var __ATPRERUN__ = [];
 		var __ATINIT__ = [];
@@ -286,6 +287,7 @@ var createFFmpegCore = (() => {
 		}
 		function initRuntime() {
 			runtimeInitialized = true;
+			if (ENVIRONMENT_IS_PTHREAD) return;
 			if (!Module["noFSInit"] && !FS.init.initialized) FS.init();
 			FS.ignorePermissions = false;
 			TTY.init();
@@ -293,6 +295,7 @@ var createFFmpegCore = (() => {
 			callRuntimeCallbacks(__ATINIT__);
 		}
 		function postRun() {
+			if (ENVIRONMENT_IS_PTHREAD) return;
 			if (Module["postRun"]) {
 				if (typeof Module["postRun"] == "function")
 					Module["postRun"] = [Module["postRun"]];
@@ -357,13 +360,14 @@ var createFFmpegCore = (() => {
 		function isDataURI(filename) {
 			return filename.startsWith(dataURIPrefix);
 		}
-		function isFileURI(filename) {
-			return filename.startsWith("file://");
-		}
 		var wasmBinaryFile;
-		wasmBinaryFile = "ffmpeg-core.wasm";
-		if (!isDataURI(wasmBinaryFile)) {
-			wasmBinaryFile = locateFile(wasmBinaryFile);
+		if (Module["locateFile"]) {
+			wasmBinaryFile = "ffmpeg-core.wasm";
+			if (!isDataURI(wasmBinaryFile)) {
+				wasmBinaryFile = locateFile(wasmBinaryFile);
+			}
+		} else {
+			wasmBinaryFile = new URL("ffmpeg-core.wasm", import.meta.url).href;
 		}
 		function getBinary(file) {
 			try {
@@ -380,7 +384,7 @@ var createFFmpegCore = (() => {
 		}
 		function getBinaryPromise(binaryFile) {
 			if (!wasmBinary && (ENVIRONMENT_IS_WEB || ENVIRONMENT_IS_WORKER)) {
-				if (typeof fetch == "function" && !isFileURI(binaryFile)) {
+				if (typeof fetch == "function") {
 					return fetch(binaryFile, { credentials: "same-origin" })
 						.then((response) => {
 							if (!response["ok"]) {
@@ -393,16 +397,6 @@ var createFFmpegCore = (() => {
 							return response["arrayBuffer"]();
 						})
 						.catch(() => getBinary(binaryFile));
-				} else {
-					if (readAsync) {
-						return new Promise((resolve, reject) => {
-							readAsync(
-								binaryFile,
-								(response) => resolve(new Uint8Array(response)),
-								reject,
-							);
-						});
-					}
 				}
 			}
 			return Promise.resolve().then(() => getBinary(binaryFile));
@@ -425,8 +419,6 @@ var createFFmpegCore = (() => {
 				!binary &&
 				typeof WebAssembly.instantiateStreaming == "function" &&
 				!isDataURI(binaryFile) &&
-				!isFileURI(binaryFile) &&
-				!ENVIRONMENT_IS_NODE &&
 				typeof fetch == "function"
 			) {
 				return fetch(binaryFile, { credentials: "same-origin" }).then(
@@ -455,16 +447,16 @@ var createFFmpegCore = (() => {
 			function receiveInstance(instance, module) {
 				var exports = instance.exports;
 				Module["asm"] = exports;
-				wasmMemory = Module["asm"]["ra"];
-				updateMemoryViews();
-				wasmTable = Module["asm"]["ua"];
-				addOnInit(Module["asm"]["sa"]);
+				registerTLSInit(Module["asm"]["Oa"]);
+				wasmTable = Module["asm"]["Ia"];
+				addOnInit(Module["asm"]["Ga"]);
+				wasmModule = module;
 				removeRunDependency("wasm-instantiate");
 				return exports;
 			}
 			addRunDependency("wasm-instantiate");
 			function receiveInstantiationResult(result) {
-				receiveInstance(result["instance"]);
+				receiveInstance(result["instance"], result["module"]);
 			}
 			if (Module["instantiateWasm"]) {
 				try {
@@ -486,7 +478,7 @@ var createFFmpegCore = (() => {
 			return {};
 		}
 		var ASM_CONSTS = {
-			6059608: ($0) => {
+			6083176: ($0) => {
 				Module.ret = $0;
 			},
 		};
@@ -504,196 +496,50 @@ var createFFmpegCore = (() => {
 			this.message = `Program terminated with exit(${status})`;
 			this.status = status;
 		}
-		function callRuntimeCallbacks(callbacks) {
-			while (callbacks.length > 0) {
-				callbacks.shift()(Module);
-			}
+		function terminateWorker(worker) {
+			worker.terminate();
+			worker.onmessage = (e) => {};
 		}
-		var wasmTableMirror = [];
-		function getWasmTableEntry(funcPtr) {
-			var func = wasmTableMirror[funcPtr];
-			if (!func) {
-				if (funcPtr >= wasmTableMirror.length)
-					wasmTableMirror.length = funcPtr + 1;
-				wasmTableMirror[funcPtr] = func = wasmTable.get(funcPtr);
-			}
-			return func;
-		}
-		function getValue(ptr, type = "i8") {
-			if (type.endsWith("*")) type = "*";
-			switch (type) {
-				case "i1":
-					return HEAP8[ptr >> 0];
-				case "i8":
-					return HEAP8[ptr >> 0];
-				case "i16":
-					return HEAP16[ptr >> 1];
-				case "i32":
-					return HEAP32[ptr >> 2];
-				case "i64":
-					return HEAP64[ptr >> 3];
-				case "float":
-					return HEAPF32[ptr >> 2];
-				case "double":
-					return HEAPF64[ptr >> 3];
-				case "*":
-					return HEAPU32[ptr >> 2];
-				default:
-					abort(`invalid type for getValue: ${type}`);
-			}
-		}
-		function setValue(ptr, value, type = "i8") {
-			if (type.endsWith("*")) type = "*";
-			switch (type) {
-				case "i1":
-					HEAP8[ptr >> 0] = value;
-					break;
-				case "i8":
-					HEAP8[ptr >> 0] = value;
-					break;
-				case "i16":
-					HEAP16[ptr >> 1] = value;
-					break;
-				case "i32":
-					HEAP32[ptr >> 2] = value;
-					break;
-				case "i64":
-					HEAP64[ptr >> 3] = BigInt(value);
-					break;
-				case "float":
-					HEAPF32[ptr >> 2] = value;
-					break;
-				case "double":
-					HEAPF64[ptr >> 3] = value;
-					break;
-				case "*":
-					HEAPU32[ptr >> 2] = value;
-					break;
-				default:
-					abort(`invalid type for setValue: ${type}`);
-			}
-		}
-		var UTF8Decoder =
-			typeof TextDecoder != "undefined"
-				? new TextDecoder("utf8")
-				: undefined;
-		function UTF8ArrayToString(heapOrArray, idx, maxBytesToRead) {
-			var endIdx = idx + maxBytesToRead;
-			var endPtr = idx;
-			while (heapOrArray[endPtr] && !(endPtr >= endIdx)) ++endPtr;
-			if (endPtr - idx > 16 && heapOrArray.buffer && UTF8Decoder) {
-				return UTF8Decoder.decode(heapOrArray.subarray(idx, endPtr));
-			}
-			var str = "";
-			while (idx < endPtr) {
-				var u0 = heapOrArray[idx++];
-				if (!(u0 & 128)) {
-					str += String.fromCharCode(u0);
-					continue;
-				}
-				var u1 = heapOrArray[idx++] & 63;
-				if ((u0 & 224) == 192) {
-					str += String.fromCharCode(((u0 & 31) << 6) | u1);
-					continue;
-				}
-				var u2 = heapOrArray[idx++] & 63;
-				if ((u0 & 240) == 224) {
-					u0 = ((u0 & 15) << 12) | (u1 << 6) | u2;
-				} else {
-					u0 =
-						((u0 & 7) << 18) |
-						(u1 << 12) |
-						(u2 << 6) |
-						(heapOrArray[idx++] & 63);
-				}
-				if (u0 < 65536) {
-					str += String.fromCharCode(u0);
-				} else {
-					var ch = u0 - 65536;
-					str += String.fromCharCode(
-						55296 | (ch >> 10),
-						56320 | (ch & 1023),
-					);
-				}
-			}
-			return str;
-		}
-		function UTF8ToString(ptr, maxBytesToRead) {
-			return ptr ? UTF8ArrayToString(HEAPU8, ptr, maxBytesToRead) : "";
-		}
-		function ___assert_fail(condition, filename, line, func) {
-			abort(
-				`Assertion failed: ${UTF8ToString(condition)}, at: ` +
-					[
-						filename ? UTF8ToString(filename) : "unknown filename",
-						line,
-						func ? UTF8ToString(func) : "unknown function",
-					],
+		function killThread(pthread_ptr) {
+			var worker = PThread.pthreads[pthread_ptr];
+			delete PThread.pthreads[pthread_ptr];
+			terminateWorker(worker);
+			__emscripten_thread_free_data(pthread_ptr);
+			PThread.runningWorkers.splice(
+				PThread.runningWorkers.indexOf(worker),
+				1,
 			);
+			worker.pthread_ptr = 0;
 		}
-		function ExceptionInfo(excPtr) {
-			this.excPtr = excPtr;
-			this.ptr = excPtr - 24;
-			this.set_type = function (type) {
-				HEAPU32[(this.ptr + 4) >> 2] = type;
-			};
-			this.get_type = function () {
-				return HEAPU32[(this.ptr + 4) >> 2];
-			};
-			this.set_destructor = function (destructor) {
-				HEAPU32[(this.ptr + 8) >> 2] = destructor;
-			};
-			this.get_destructor = function () {
-				return HEAPU32[(this.ptr + 8) >> 2];
-			};
-			this.set_caught = function (caught) {
-				caught = caught ? 1 : 0;
-				HEAP8[(this.ptr + 12) >> 0] = caught;
-			};
-			this.get_caught = function () {
-				return HEAP8[(this.ptr + 12) >> 0] != 0;
-			};
-			this.set_rethrown = function (rethrown) {
-				rethrown = rethrown ? 1 : 0;
-				HEAP8[(this.ptr + 13) >> 0] = rethrown;
-			};
-			this.get_rethrown = function () {
-				return HEAP8[(this.ptr + 13) >> 0] != 0;
-			};
-			this.init = function (type, destructor) {
-				this.set_adjusted_ptr(0);
-				this.set_type(type);
-				this.set_destructor(destructor);
-			};
-			this.set_adjusted_ptr = function (adjustedPtr) {
-				HEAPU32[(this.ptr + 16) >> 2] = adjustedPtr;
-			};
-			this.get_adjusted_ptr = function () {
-				return HEAPU32[(this.ptr + 16) >> 2];
-			};
-			this.get_exception_ptr = function () {
-				var isPointer = ___cxa_is_pointer_type(this.get_type());
-				if (isPointer) {
-					return HEAPU32[this.excPtr >> 2];
-				}
-				var adjusted = this.get_adjusted_ptr();
-				if (adjusted !== 0) return adjusted;
-				return this.excPtr;
-			};
+		function cancelThread(pthread_ptr) {
+			var worker = PThread.pthreads[pthread_ptr];
+			worker.postMessage({ cmd: "cancel" });
 		}
-		var exceptionLast = 0;
-		var uncaughtExceptionCount = 0;
-		function ___cxa_throw(ptr, type, destructor) {
-			var info = new ExceptionInfo(ptr);
-			info.init(type, destructor);
-			exceptionLast = ptr;
-			uncaughtExceptionCount++;
-			throw exceptionLast;
+		function cleanupThread(pthread_ptr) {
+			var worker = PThread.pthreads[pthread_ptr];
+			assert(worker);
+			PThread.returnWorkerToPool(worker);
 		}
-		var dlopenMissingError =
-			"To use dlopen, you need enable dynamic linking, see https://emscripten.org/docs/compiling/Dynamic-Linking.html";
-		function ___dlsym(handle, symbol) {
-			abort(dlopenMissingError);
+		function zeroMemory(address, size) {
+			HEAPU8.fill(0, address, address + size);
+			return address;
+		}
+		function spawnThread(threadParams) {
+			var worker = PThread.getNewWorker();
+			if (!worker) {
+				return 6;
+			}
+			PThread.runningWorkers.push(worker);
+			PThread.pthreads[threadParams.pthread_ptr] = worker;
+			worker.pthread_ptr = threadParams.pthread_ptr;
+			var msg = {
+				cmd: "run",
+				start_routine: threadParams.startRoutine,
+				arg: threadParams.arg,
+				pthread_ptr: threadParams.pthread_ptr,
+			};
+			worker.postMessage(msg, threadParams.transferList);
+			return 0;
 		}
 		var PATH = {
 			isAbs: (path) => path.charAt(0) === "/",
@@ -771,22 +617,13 @@ var createFFmpegCore = (() => {
 				typeof crypto == "object" &&
 				typeof crypto["getRandomValues"] == "function"
 			) {
-				return (view) => crypto.getRandomValues(view);
-			} else if (ENVIRONMENT_IS_NODE) {
-				try {
-					var crypto_module = require("crypto");
-					var randomFillSync = crypto_module["randomFillSync"];
-					if (randomFillSync) {
-						return (view) => crypto_module["randomFillSync"](view);
-					}
-					var randomBytes = crypto_module["randomBytes"];
-					return (view) => (
-						view.set(randomBytes(view.byteLength)),
-						view
-					);
-				} catch (e) {}
-			}
-			abort("initRandomDevice");
+				return (view) => (
+					view.set(
+						crypto.getRandomValues(new Uint8Array(view.byteLength)),
+					),
+					view
+				);
+			} else abort("initRandomDevice");
 		}
 		function randomFill(view) {
 			return (randomFill = initRandomFill())(view);
@@ -914,6 +751,55 @@ var createFFmpegCore = (() => {
 			if (dontAddNull) u8array.length = numBytesWritten;
 			return u8array;
 		}
+		var UTF8Decoder =
+			typeof TextDecoder != "undefined"
+				? new TextDecoder("utf8")
+				: undefined;
+		function UTF8ArrayToString(heapOrArray, idx, maxBytesToRead) {
+			var endIdx = idx + maxBytesToRead;
+			var endPtr = idx;
+			while (heapOrArray[endPtr] && !(endPtr >= endIdx)) ++endPtr;
+			if (endPtr - idx > 16 && heapOrArray.buffer && UTF8Decoder) {
+				return UTF8Decoder.decode(
+					heapOrArray.buffer instanceof SharedArrayBuffer
+						? heapOrArray.slice(idx, endPtr)
+						: heapOrArray.subarray(idx, endPtr),
+				);
+			}
+			var str = "";
+			while (idx < endPtr) {
+				var u0 = heapOrArray[idx++];
+				if (!(u0 & 128)) {
+					str += String.fromCharCode(u0);
+					continue;
+				}
+				var u1 = heapOrArray[idx++] & 63;
+				if ((u0 & 224) == 192) {
+					str += String.fromCharCode(((u0 & 31) << 6) | u1);
+					continue;
+				}
+				var u2 = heapOrArray[idx++] & 63;
+				if ((u0 & 240) == 224) {
+					u0 = ((u0 & 15) << 12) | (u1 << 6) | u2;
+				} else {
+					u0 =
+						((u0 & 7) << 18) |
+						(u1 << 12) |
+						(u2 << 6) |
+						(heapOrArray[idx++] & 63);
+				}
+				if (u0 < 65536) {
+					str += String.fromCharCode(u0);
+				} else {
+					var ch = u0 - 65536;
+					str += String.fromCharCode(
+						55296 | (ch >> 10),
+						56320 | (ch & 1023),
+					);
+				}
+			}
+			return str;
+		}
 		var TTY = {
 			ttys: [],
 			init: function () {},
@@ -985,30 +871,7 @@ var createFFmpegCore = (() => {
 				get_char: function (tty) {
 					if (!tty.input.length) {
 						var result = null;
-						if (ENVIRONMENT_IS_NODE) {
-							var BUFSIZE = 256;
-							var buf = Buffer.alloc(BUFSIZE);
-							var bytesRead = 0;
-							try {
-								bytesRead = fs.readSync(
-									process.stdin.fd,
-									buf,
-									0,
-									BUFSIZE,
-									-1,
-								);
-							} catch (e) {
-								if (e.toString().includes("EOF")) bytesRead = 0;
-								else throw e;
-							}
-							if (bytesRead > 0) {
-								result = buf
-									.slice(0, bytesRead)
-									.toString("utf-8");
-							} else {
-								result = null;
-							}
-						} else if (
+						if (
 							typeof window != "undefined" &&
 							typeof window.prompt == "function"
 						) {
@@ -1061,10 +924,6 @@ var createFFmpegCore = (() => {
 				},
 			},
 		};
-		function zeroMemory(address, size) {
-			HEAPU8.fill(0, address, address + size);
-			return address;
-		}
 		function alignMemory(size, alignment) {
 			return Math.ceil(size / alignment) * alignment;
 		}
@@ -1326,9 +1185,6 @@ var createFFmpegCore = (() => {
 					position,
 					canOwn,
 				) {
-					if (buffer.buffer === HEAP8.buffer) {
-						canOwn = false;
-					}
 					if (!length) return 0;
 					var node = stream.node;
 					node.timestamp = Date.now();
@@ -3291,6 +3147,9 @@ var createFFmpegCore = (() => {
 				return node;
 			},
 		};
+		function UTF8ToString(ptr, maxBytesToRead) {
+			return ptr ? UTF8ArrayToString(HEAPU8, ptr, maxBytesToRead) : "";
+		}
 		var SYSCALLS = {
 			DEFAULT_POLLMASK: 5,
 			calculateAt: function (dirfd, path, allowEmpty) {
@@ -3374,6 +3233,446 @@ var createFFmpegCore = (() => {
 				return stream;
 			},
 		};
+		function _proc_exit(code) {
+			if (ENVIRONMENT_IS_PTHREAD) return proxyToMainThread(1, 1, code);
+			EXITSTATUS = code;
+			if (!keepRuntimeAlive()) {
+				PThread.terminateAllThreads();
+				if (Module["onExit"]) Module["onExit"](code);
+				ABORT = true;
+			}
+			quit_(code, new ExitStatus(code));
+		}
+		function exitJS(status, implicit) {
+			EXITSTATUS = status;
+			if (ENVIRONMENT_IS_PTHREAD) {
+				exitOnMainThread(status);
+				throw "unwind";
+			}
+			_proc_exit(status);
+		}
+		var _exit = exitJS;
+		function handleException(e) {
+			if (e instanceof ExitStatus || e == "unwind") {
+				return EXITSTATUS;
+			}
+			quit_(1, e);
+		}
+		var PThread = {
+			unusedWorkers: [],
+			runningWorkers: [],
+			tlsInitFunctions: [],
+			pthreads: {},
+			init: function () {
+				if (ENVIRONMENT_IS_PTHREAD) {
+					PThread.initWorker();
+				} else {
+					PThread.initMainThread();
+				}
+			},
+			initMainThread: function () {
+				var pthreadPoolSize = 32;
+				while (pthreadPoolSize--) {
+					PThread.allocateUnusedWorker();
+				}
+				addOnPreRun(() => {
+					addRunDependency("loading-workers");
+					PThread.loadWasmModuleToAllWorkers(() =>
+						removeRunDependency("loading-workers"),
+					);
+				});
+			},
+			initWorker: function () {
+				noExitRuntime = false;
+			},
+			setExitStatus: function (status) {
+				EXITSTATUS = status;
+			},
+			terminateAllThreads__deps: ["$terminateWorker"],
+			terminateAllThreads: function () {
+				for (var worker of PThread.runningWorkers) {
+					terminateWorker(worker);
+				}
+				for (var worker of PThread.unusedWorkers) {
+					terminateWorker(worker);
+				}
+				PThread.unusedWorkers = [];
+				PThread.runningWorkers = [];
+				PThread.pthreads = [];
+			},
+			returnWorkerToPool: function (worker) {
+				var pthread_ptr = worker.pthread_ptr;
+				delete PThread.pthreads[pthread_ptr];
+				PThread.unusedWorkers.push(worker);
+				PThread.runningWorkers.splice(
+					PThread.runningWorkers.indexOf(worker),
+					1,
+				);
+				worker.pthread_ptr = 0;
+				__emscripten_thread_free_data(pthread_ptr);
+			},
+			receiveObjectTransfer: function (data) {},
+			threadInitTLS: function () {
+				PThread.tlsInitFunctions.forEach((f) => f());
+			},
+			loadWasmModuleToWorker: (worker) =>
+				new Promise((onFinishedLoading) => {
+					worker.onmessage = (e) => {
+						var d = e["data"];
+						var cmd = d["cmd"];
+						if (worker.pthread_ptr)
+							PThread.currentProxiedOperationCallerThread =
+								worker.pthread_ptr;
+						if (
+							d["targetThread"] &&
+							d["targetThread"] != _pthread_self()
+						) {
+							var targetWorker = PThread.pthreads[d.targetThread];
+							if (targetWorker) {
+								targetWorker.postMessage(d, d["transferList"]);
+							} else {
+								err(
+									'Internal error! Worker sent a message "' +
+										cmd +
+										'" to target pthread ' +
+										d["targetThread"] +
+										", but that thread no longer exists!",
+								);
+							}
+							PThread.currentProxiedOperationCallerThread =
+								undefined;
+							return;
+						}
+						if (cmd === "checkMailbox") {
+							checkMailbox();
+						} else if (cmd === "spawnThread") {
+							spawnThread(d);
+						} else if (cmd === "cleanupThread") {
+							cleanupThread(d["thread"]);
+						} else if (cmd === "killThread") {
+							killThread(d["thread"]);
+						} else if (cmd === "cancelThread") {
+							cancelThread(d["thread"]);
+						} else if (cmd === "loaded") {
+							worker.loaded = true;
+							onFinishedLoading(worker);
+						} else if (cmd === "print") {
+							out("Thread " + d["threadId"] + ": " + d["text"]);
+						} else if (cmd === "printErr") {
+							err("Thread " + d["threadId"] + ": " + d["text"]);
+						} else if (cmd === "alert") {
+							alert("Thread " + d["threadId"] + ": " + d["text"]);
+						} else if (d.target === "setimmediate") {
+							worker.postMessage(d);
+						} else if (cmd === "callHandler") {
+							Module[d["handler"]](...d["args"]);
+						} else if (cmd) {
+							err("worker sent an unknown command " + cmd);
+						}
+						PThread.currentProxiedOperationCallerThread = undefined;
+					};
+					worker.onerror = (e) => {
+						var message = "worker sent an error!";
+						err(
+							message +
+								" " +
+								e.filename +
+								":" +
+								e.lineno +
+								": " +
+								e.message,
+						);
+						throw e;
+					};
+					var handlers = [];
+					var knownHandlers = [
+						"onExit",
+						"onAbort",
+						"print",
+						"printErr",
+					];
+					for (var handler of knownHandlers) {
+						if (Module.hasOwnProperty(handler)) {
+							handlers.push(handler);
+						}
+					}
+					worker.postMessage({
+						cmd: "load",
+						handlers: handlers,
+						urlOrBlob: Module["mainScriptUrlOrBlob"],
+						wasmMemory: wasmMemory,
+						wasmModule: wasmModule,
+					});
+				}),
+			loadWasmModuleToAllWorkers: function (onMaybeReady) {
+				if (ENVIRONMENT_IS_PTHREAD) {
+					return onMaybeReady();
+				}
+				let pthreadPoolReady = Promise.all(
+					PThread.unusedWorkers.map(PThread.loadWasmModuleToWorker),
+				);
+				pthreadPoolReady.then(onMaybeReady);
+			},
+			allocateUnusedWorker: function () {
+				var worker;
+				if (!Module["locateFile"]) {
+					worker = new Worker(
+						new URL("ffmpeg-core.worker.js", import.meta.url),
+					);
+				} else {
+					var pthreadMainJs = locateFile("ffmpeg-core.worker.js");
+					worker = new Worker(pthreadMainJs);
+				}
+				PThread.unusedWorkers.push(worker);
+			},
+			getNewWorker: function () {
+				if (PThread.unusedWorkers.length == 0) {
+					PThread.allocateUnusedWorker();
+					PThread.loadWasmModuleToWorker(PThread.unusedWorkers[0]);
+				}
+				return PThread.unusedWorkers.pop();
+			},
+		};
+		Module["PThread"] = PThread;
+		function callRuntimeCallbacks(callbacks) {
+			while (callbacks.length > 0) {
+				callbacks.shift()(Module);
+			}
+		}
+		var wasmTableMirror = [];
+		function getWasmTableEntry(funcPtr) {
+			var func = wasmTableMirror[funcPtr];
+			if (!func) {
+				if (funcPtr >= wasmTableMirror.length)
+					wasmTableMirror.length = funcPtr + 1;
+				wasmTableMirror[funcPtr] = func = wasmTable.get(funcPtr);
+			}
+			return func;
+		}
+		function establishStackSpace() {
+			var pthread_ptr = _pthread_self();
+			var stackHigh = HEAP32[(pthread_ptr + 52) >> 2];
+			var stackSize = HEAP32[(pthread_ptr + 56) >> 2];
+			var stackLow = stackHigh - stackSize;
+			_emscripten_stack_set_limits(stackHigh, stackLow);
+			stackRestore(stackHigh);
+		}
+		Module["establishStackSpace"] = establishStackSpace;
+		function exitOnMainThread(returnCode) {
+			if (ENVIRONMENT_IS_PTHREAD)
+				return proxyToMainThread(2, 0, returnCode);
+			_exit(returnCode);
+		}
+		function getValue(ptr, type = "i8") {
+			if (type.endsWith("*")) type = "*";
+			switch (type) {
+				case "i1":
+					return HEAP8[ptr >> 0];
+				case "i8":
+					return HEAP8[ptr >> 0];
+				case "i16":
+					return HEAP16[ptr >> 1];
+				case "i32":
+					return HEAP32[ptr >> 2];
+				case "i64":
+					return HEAP64[ptr >> 3];
+				case "float":
+					return HEAPF32[ptr >> 2];
+				case "double":
+					return HEAPF64[ptr >> 3];
+				case "*":
+					return HEAPU32[ptr >> 2];
+				default:
+					abort(`invalid type for getValue: ${type}`);
+			}
+		}
+		function invokeEntryPoint(ptr, arg) {
+			var result = getWasmTableEntry(ptr)(arg);
+			if (keepRuntimeAlive()) {
+				PThread.setExitStatus(result);
+			} else {
+				__emscripten_thread_exit(result);
+			}
+		}
+		Module["invokeEntryPoint"] = invokeEntryPoint;
+		function registerTLSInit(tlsInitFunc) {
+			PThread.tlsInitFunctions.push(tlsInitFunc);
+		}
+		function setValue(ptr, value, type = "i8") {
+			if (type.endsWith("*")) type = "*";
+			switch (type) {
+				case "i1":
+					HEAP8[ptr >> 0] = value;
+					break;
+				case "i8":
+					HEAP8[ptr >> 0] = value;
+					break;
+				case "i16":
+					HEAP16[ptr >> 1] = value;
+					break;
+				case "i32":
+					HEAP32[ptr >> 2] = value;
+					break;
+				case "i64":
+					HEAP64[ptr >> 3] = BigInt(value);
+					break;
+				case "float":
+					HEAPF32[ptr >> 2] = value;
+					break;
+				case "double":
+					HEAPF64[ptr >> 3] = value;
+					break;
+				case "*":
+					HEAPU32[ptr >> 2] = value;
+					break;
+				default:
+					abort(`invalid type for setValue: ${type}`);
+			}
+		}
+		function ___assert_fail(condition, filename, line, func) {
+			abort(
+				`Assertion failed: ${UTF8ToString(condition)}, at: ` +
+					[
+						filename ? UTF8ToString(filename) : "unknown filename",
+						line,
+						func ? UTF8ToString(func) : "unknown function",
+					],
+			);
+		}
+		function ExceptionInfo(excPtr) {
+			this.excPtr = excPtr;
+			this.ptr = excPtr - 24;
+			this.set_type = function (type) {
+				HEAPU32[(this.ptr + 4) >> 2] = type;
+			};
+			this.get_type = function () {
+				return HEAPU32[(this.ptr + 4) >> 2];
+			};
+			this.set_destructor = function (destructor) {
+				HEAPU32[(this.ptr + 8) >> 2] = destructor;
+			};
+			this.get_destructor = function () {
+				return HEAPU32[(this.ptr + 8) >> 2];
+			};
+			this.set_caught = function (caught) {
+				caught = caught ? 1 : 0;
+				HEAP8[(this.ptr + 12) >> 0] = caught;
+			};
+			this.get_caught = function () {
+				return HEAP8[(this.ptr + 12) >> 0] != 0;
+			};
+			this.set_rethrown = function (rethrown) {
+				rethrown = rethrown ? 1 : 0;
+				HEAP8[(this.ptr + 13) >> 0] = rethrown;
+			};
+			this.get_rethrown = function () {
+				return HEAP8[(this.ptr + 13) >> 0] != 0;
+			};
+			this.init = function (type, destructor) {
+				this.set_adjusted_ptr(0);
+				this.set_type(type);
+				this.set_destructor(destructor);
+			};
+			this.set_adjusted_ptr = function (adjustedPtr) {
+				HEAPU32[(this.ptr + 16) >> 2] = adjustedPtr;
+			};
+			this.get_adjusted_ptr = function () {
+				return HEAPU32[(this.ptr + 16) >> 2];
+			};
+			this.get_exception_ptr = function () {
+				var isPointer = ___cxa_is_pointer_type(this.get_type());
+				if (isPointer) {
+					return HEAPU32[this.excPtr >> 2];
+				}
+				var adjusted = this.get_adjusted_ptr();
+				if (adjusted !== 0) return adjusted;
+				return this.excPtr;
+			};
+		}
+		var exceptionLast = 0;
+		var uncaughtExceptionCount = 0;
+		function ___cxa_throw(ptr, type, destructor) {
+			var info = new ExceptionInfo(ptr);
+			info.init(type, destructor);
+			exceptionLast = ptr;
+			uncaughtExceptionCount++;
+			throw exceptionLast;
+		}
+		var dlopenMissingError =
+			"To use dlopen, you need enable dynamic linking, see https://emscripten.org/docs/compiling/Dynamic-Linking.html";
+		function ___dlsym(handle, symbol) {
+			abort(dlopenMissingError);
+		}
+		function ___emscripten_init_main_thread_js(tb) {
+			__emscripten_thread_init(
+				tb,
+				!ENVIRONMENT_IS_WORKER,
+				1,
+				!ENVIRONMENT_IS_WEB,
+				65536,
+			);
+			PThread.threadInitTLS();
+		}
+		function ___emscripten_thread_cleanup(thread) {
+			if (!ENVIRONMENT_IS_PTHREAD) cleanupThread(thread);
+			else postMessage({ cmd: "cleanupThread", thread: thread });
+		}
+		function pthreadCreateProxied(pthread_ptr, attr, startRoutine, arg) {
+			if (ENVIRONMENT_IS_PTHREAD)
+				return proxyToMainThread(
+					3,
+					1,
+					pthread_ptr,
+					attr,
+					startRoutine,
+					arg,
+				);
+			return ___pthread_create_js(pthread_ptr, attr, startRoutine, arg);
+		}
+		function ___pthread_create_js(pthread_ptr, attr, startRoutine, arg) {
+			if (typeof SharedArrayBuffer == "undefined") {
+				err(
+					"Current environment does not support SharedArrayBuffer, pthreads are not available!",
+				);
+				return 6;
+			}
+			var transferList = [];
+			var error = 0;
+			if (
+				ENVIRONMENT_IS_PTHREAD &&
+				(transferList.length === 0 || error)
+			) {
+				return pthreadCreateProxied(
+					pthread_ptr,
+					attr,
+					startRoutine,
+					arg,
+				);
+			}
+			if (error) return error;
+			var threadParams = {
+				startRoutine: startRoutine,
+				pthread_ptr: pthread_ptr,
+				arg: arg,
+				transferList: transferList,
+			};
+			if (ENVIRONMENT_IS_PTHREAD) {
+				threadParams.cmd = "spawnThread";
+				postMessage(threadParams, transferList);
+				return 0;
+			}
+			return spawnThread(threadParams);
+		}
+		function ___pthread_kill_js(thread, signal) {
+			if (signal === 33) {
+				if (!ENVIRONMENT_IS_PTHREAD) cancelThread(thread);
+				else postMessage({ cmd: "cancelThread", thread: thread });
+			} else {
+				if (!ENVIRONMENT_IS_PTHREAD) killThread(thread);
+				else postMessage({ cmd: "killThread", thread: thread });
+			}
+			return 0;
+		}
 		function ___syscall__newselect(
 			nfds,
 			readfds,
@@ -3381,6 +3680,16 @@ var createFFmpegCore = (() => {
 			exceptfds,
 			timeout,
 		) {
+			if (ENVIRONMENT_IS_PTHREAD)
+				return proxyToMainThread(
+					4,
+					1,
+					nfds,
+					readfds,
+					writefds,
+					exceptfds,
+					timeout,
+				);
 			try {
 				var total = 0;
 				var srcReadLow = readfds ? HEAP32[readfds >> 2] : 0,
@@ -3626,9 +3935,7 @@ var createFFmpegCore = (() => {
 								opts = undefined;
 							}
 							var WebSocketConstructor;
-							if (ENVIRONMENT_IS_NODE) {
-								WebSocketConstructor = require("ws");
-							} else {
+							{
 								WebSocketConstructor = WebSocket;
 							}
 							ws = new WebSocketConstructor(url, opts);
@@ -3889,54 +4196,6 @@ var createFFmpegCore = (() => {
 					if (!ENVIRONMENT_IS_NODE) {
 						throw new FS.ErrnoError(138);
 					}
-					if (sock.server) {
-						throw new FS.ErrnoError(28);
-					}
-					var WebSocketServer = require("ws").Server;
-					var host = sock.saddr;
-					sock.server = new WebSocketServer({
-						host: host,
-						port: sock.sport,
-					});
-					Module["websocket"].emit("listen", sock.stream.fd);
-					sock.server.on("connection", function (ws) {
-						if (sock.type === 1) {
-							var newsock = SOCKFS.createSocket(
-								sock.family,
-								sock.type,
-								sock.protocol,
-							);
-							var peer = SOCKFS.websocket_sock_ops.createPeer(
-								newsock,
-								ws,
-							);
-							newsock.daddr = peer.addr;
-							newsock.dport = peer.port;
-							sock.pending.push(newsock);
-							Module["websocket"].emit(
-								"connection",
-								newsock.stream.fd,
-							);
-						} else {
-							SOCKFS.websocket_sock_ops.createPeer(sock, ws);
-							Module["websocket"].emit(
-								"connection",
-								sock.stream.fd,
-							);
-						}
-					});
-					sock.server.on("close", function () {
-						Module["websocket"].emit("close", sock.stream.fd);
-						sock.server = null;
-					});
-					sock.server.on("error", function (error) {
-						sock.error = 23;
-						Module["websocket"].emit("error", [
-							sock.stream.fd,
-							sock.error,
-							"EHOSTUNREACH: Host is unreachable",
-						]);
-					});
 				},
 				accept: function (listensock) {
 					if (!listensock.server || !listensock.pending.length) {
@@ -3999,7 +4258,15 @@ var createFFmpegCore = (() => {
 						buffer = buffer.buffer;
 					}
 					var data;
-					data = buffer.slice(offset, offset + length);
+					if (buffer instanceof SharedArrayBuffer) {
+						data = new Uint8Array(
+							new Uint8Array(
+								buffer.slice(offset, offset + length),
+							),
+						).buffer;
+					} else {
+						data = buffer.slice(offset, offset + length);
+					}
 					if (sock.type === 2) {
 						if (
 							!dest ||
@@ -4219,6 +4486,17 @@ var createFFmpegCore = (() => {
 			},
 		};
 		function ___syscall_accept4(fd, addr, addrlen, flags, d1, d2) {
+			if (ENVIRONMENT_IS_PTHREAD)
+				return proxyToMainThread(
+					5,
+					1,
+					fd,
+					addr,
+					addrlen,
+					flags,
+					d1,
+					d2,
+				);
 			try {
 				var sock = getSocketFromFD(fd);
 				var newsock = sock.sock_ops.accept(sock);
@@ -4359,6 +4637,8 @@ var createFFmpegCore = (() => {
 			return info;
 		}
 		function ___syscall_bind(fd, addr, addrlen, d1, d2, d3) {
+			if (ENVIRONMENT_IS_PTHREAD)
+				return proxyToMainThread(6, 1, fd, addr, addrlen, d1, d2, d3);
 			try {
 				var sock = getSocketFromFD(fd);
 				var info = getSocketAddress(addr, addrlen);
@@ -4371,6 +4651,8 @@ var createFFmpegCore = (() => {
 			}
 		}
 		function ___syscall_connect(fd, addr, addrlen, d1, d2, d3) {
+			if (ENVIRONMENT_IS_PTHREAD)
+				return proxyToMainThread(7, 1, fd, addr, addrlen, d1, d2, d3);
 			try {
 				var sock = getSocketFromFD(fd);
 				var info = getSocketAddress(addr, addrlen);
@@ -4383,6 +4665,8 @@ var createFFmpegCore = (() => {
 			}
 		}
 		function ___syscall_faccessat(dirfd, path, amode, flags) {
+			if (ENVIRONMENT_IS_PTHREAD)
+				return proxyToMainThread(8, 1, dirfd, path, amode, flags);
 			try {
 				path = SYSCALLS.getStr(path);
 				path = SYSCALLS.calculateAt(dirfd, path);
@@ -4409,6 +4693,8 @@ var createFFmpegCore = (() => {
 			}
 		}
 		function ___syscall_fcntl64(fd, cmd, varargs) {
+			if (ENVIRONMENT_IS_PTHREAD)
+				return proxyToMainThread(9, 1, fd, cmd, varargs);
 			SYSCALLS.varargs = varargs;
 			try {
 				var stream = SYSCALLS.getStreamFromFD(fd);
@@ -4458,6 +4744,8 @@ var createFFmpegCore = (() => {
 			}
 		}
 		function ___syscall_fstat64(fd, buf) {
+			if (ENVIRONMENT_IS_PTHREAD)
+				return proxyToMainThread(10, 1, fd, buf);
 			try {
 				var stream = SYSCALLS.getStreamFromFD(fd);
 				return SYSCALLS.doStat(FS.stat, stream.path, buf);
@@ -4471,6 +4759,8 @@ var createFFmpegCore = (() => {
 			return stringToUTF8Array(str, HEAPU8, outPtr, maxBytesToWrite);
 		}
 		function ___syscall_getdents64(fd, dirp, count) {
+			if (ENVIRONMENT_IS_PTHREAD)
+				return proxyToMainThread(11, 1, fd, dirp, count);
 			try {
 				var stream = SYSCALLS.getStreamFromFD(fd);
 				if (!stream.getdents) {
@@ -4526,6 +4816,8 @@ var createFFmpegCore = (() => {
 			}
 		}
 		function ___syscall_getpeername(fd, addr, addrlen, d1, d2, d3) {
+			if (ENVIRONMENT_IS_PTHREAD)
+				return proxyToMainThread(12, 1, fd, addr, addrlen, d1, d2, d3);
 			try {
 				var sock = getSocketFromFD(fd);
 				if (!sock.daddr) {
@@ -4546,6 +4838,8 @@ var createFFmpegCore = (() => {
 			}
 		}
 		function ___syscall_getsockname(fd, addr, addrlen, d1, d2, d3) {
+			if (ENVIRONMENT_IS_PTHREAD)
+				return proxyToMainThread(13, 1, fd, addr, addrlen, d1, d2, d3);
 			try {
 				var sock = getSocketFromFD(fd);
 				var errno = writeSockaddr(
@@ -4563,6 +4857,17 @@ var createFFmpegCore = (() => {
 			}
 		}
 		function ___syscall_getsockopt(fd, level, optname, optval, optlen, d1) {
+			if (ENVIRONMENT_IS_PTHREAD)
+				return proxyToMainThread(
+					14,
+					1,
+					fd,
+					level,
+					optname,
+					optval,
+					optlen,
+					d1,
+				);
 			try {
 				var sock = getSocketFromFD(fd);
 				if (level === 1) {
@@ -4581,6 +4886,8 @@ var createFFmpegCore = (() => {
 			}
 		}
 		function ___syscall_ioctl(fd, op, varargs) {
+			if (ENVIRONMENT_IS_PTHREAD)
+				return proxyToMainThread(15, 1, fd, op, varargs);
 			SYSCALLS.varargs = varargs;
 			try {
 				var stream = SYSCALLS.getStreamFromFD(fd);
@@ -4631,6 +4938,8 @@ var createFFmpegCore = (() => {
 			}
 		}
 		function ___syscall_listen(fd, backlog) {
+			if (ENVIRONMENT_IS_PTHREAD)
+				return proxyToMainThread(16, 1, fd, backlog);
 			try {
 				var sock = getSocketFromFD(fd);
 				sock.sock_ops.listen(sock, backlog);
@@ -4642,6 +4951,8 @@ var createFFmpegCore = (() => {
 			}
 		}
 		function ___syscall_lstat64(path, buf) {
+			if (ENVIRONMENT_IS_PTHREAD)
+				return proxyToMainThread(17, 1, path, buf);
 			try {
 				path = SYSCALLS.getStr(path);
 				return SYSCALLS.doStat(FS.lstat, path, buf);
@@ -4652,6 +4963,8 @@ var createFFmpegCore = (() => {
 			}
 		}
 		function ___syscall_mkdirat(dirfd, path, mode) {
+			if (ENVIRONMENT_IS_PTHREAD)
+				return proxyToMainThread(18, 1, dirfd, path, mode);
 			try {
 				path = SYSCALLS.getStr(path);
 				path = SYSCALLS.calculateAt(dirfd, path);
@@ -4667,6 +4980,8 @@ var createFFmpegCore = (() => {
 			}
 		}
 		function ___syscall_newfstatat(dirfd, path, buf, flags) {
+			if (ENVIRONMENT_IS_PTHREAD)
+				return proxyToMainThread(19, 1, dirfd, path, buf, flags);
 			try {
 				path = SYSCALLS.getStr(path);
 				var nofollow = flags & 256;
@@ -4685,6 +5000,8 @@ var createFFmpegCore = (() => {
 			}
 		}
 		function ___syscall_openat(dirfd, path, flags, varargs) {
+			if (ENVIRONMENT_IS_PTHREAD)
+				return proxyToMainThread(20, 1, dirfd, path, flags, varargs);
 			SYSCALLS.varargs = varargs;
 			try {
 				path = SYSCALLS.getStr(path);
@@ -4698,6 +5015,8 @@ var createFFmpegCore = (() => {
 			}
 		}
 		function ___syscall_poll(fds, nfds, timeout) {
+			if (ENVIRONMENT_IS_PTHREAD)
+				return proxyToMainThread(21, 1, fds, nfds, timeout);
 			try {
 				var nonzero = 0;
 				for (var i = 0; i < nfds; i++) {
@@ -4724,6 +5043,17 @@ var createFFmpegCore = (() => {
 			}
 		}
 		function ___syscall_recvfrom(fd, buf, len, flags, addr, addrlen) {
+			if (ENVIRONMENT_IS_PTHREAD)
+				return proxyToMainThread(
+					22,
+					1,
+					fd,
+					buf,
+					len,
+					flags,
+					addr,
+					addrlen,
+				);
 			try {
 				var sock = getSocketFromFD(fd);
 				var msg = sock.sock_ops.recvmsg(sock, len);
@@ -4746,6 +5076,15 @@ var createFFmpegCore = (() => {
 			}
 		}
 		function ___syscall_renameat(olddirfd, oldpath, newdirfd, newpath) {
+			if (ENVIRONMENT_IS_PTHREAD)
+				return proxyToMainThread(
+					23,
+					1,
+					olddirfd,
+					oldpath,
+					newdirfd,
+					newpath,
+				);
 			try {
 				oldpath = SYSCALLS.getStr(oldpath);
 				newpath = SYSCALLS.getStr(newpath);
@@ -4760,6 +5099,7 @@ var createFFmpegCore = (() => {
 			}
 		}
 		function ___syscall_rmdir(path) {
+			if (ENVIRONMENT_IS_PTHREAD) return proxyToMainThread(24, 1, path);
 			try {
 				path = SYSCALLS.getStr(path);
 				FS.rmdir(path);
@@ -4771,6 +5111,17 @@ var createFFmpegCore = (() => {
 			}
 		}
 		function ___syscall_sendto(fd, message, length, flags, addr, addr_len) {
+			if (ENVIRONMENT_IS_PTHREAD)
+				return proxyToMainThread(
+					25,
+					1,
+					fd,
+					message,
+					length,
+					flags,
+					addr,
+					addr_len,
+				);
 			try {
 				var sock = getSocketFromFD(fd);
 				var dest = getSocketAddress(addr, addr_len, true);
@@ -4792,6 +5143,8 @@ var createFFmpegCore = (() => {
 			}
 		}
 		function ___syscall_socket(domain, type, protocol) {
+			if (ENVIRONMENT_IS_PTHREAD)
+				return proxyToMainThread(26, 1, domain, type, protocol);
 			try {
 				var sock = SOCKFS.createSocket(domain, type, protocol);
 				return sock.stream.fd;
@@ -4802,6 +5155,8 @@ var createFFmpegCore = (() => {
 			}
 		}
 		function ___syscall_stat64(path, buf) {
+			if (ENVIRONMENT_IS_PTHREAD)
+				return proxyToMainThread(27, 1, path, buf);
 			try {
 				path = SYSCALLS.getStr(path);
 				return SYSCALLS.doStat(FS.stat, path, buf);
@@ -4812,6 +5167,8 @@ var createFFmpegCore = (() => {
 			}
 		}
 		function ___syscall_unlinkat(dirfd, path, flags) {
+			if (ENVIRONMENT_IS_PTHREAD)
+				return proxyToMainThread(28, 1, dirfd, path, flags);
 			try {
 				path = SYSCALLS.getStr(path);
 				path = SYSCALLS.calculateAt(dirfd, path);
@@ -4833,6 +5190,74 @@ var createFFmpegCore = (() => {
 		function __emscripten_get_now_is_monotonic() {
 			return nowIsMonotonic;
 		}
+		function maybeExit() {
+			if (!keepRuntimeAlive()) {
+				try {
+					if (ENVIRONMENT_IS_PTHREAD)
+						__emscripten_thread_exit(EXITSTATUS);
+					else _exit(EXITSTATUS);
+				} catch (e) {
+					handleException(e);
+				}
+			}
+		}
+		function callUserCallback(func) {
+			if (ABORT) {
+				return;
+			}
+			try {
+				func();
+				maybeExit();
+			} catch (e) {
+				handleException(e);
+			}
+		}
+		function __emscripten_thread_mailbox_await(pthread_ptr) {
+			if (typeof Atomics.waitAsync === "function") {
+				var wait = Atomics.waitAsync(
+					HEAP32,
+					pthread_ptr >> 2,
+					pthread_ptr,
+				);
+				wait.value.then(checkMailbox);
+				var waitingAsync = pthread_ptr + 128;
+				Atomics.store(HEAP32, waitingAsync >> 2, 1);
+			}
+		}
+		Module["__emscripten_thread_mailbox_await"] =
+			__emscripten_thread_mailbox_await;
+		function checkMailbox() {
+			var pthread_ptr = _pthread_self();
+			if (pthread_ptr) {
+				__emscripten_thread_mailbox_await(pthread_ptr);
+				callUserCallback(() => __emscripten_check_mailbox());
+			}
+		}
+		Module["checkMailbox"] = checkMailbox;
+		function __emscripten_notify_mailbox_postmessage(
+			targetThreadId,
+			currThreadId,
+			mainThreadId,
+		) {
+			if (targetThreadId == currThreadId) {
+				setTimeout(() => checkMailbox());
+			} else if (ENVIRONMENT_IS_PTHREAD) {
+				postMessage({
+					targetThread: targetThreadId,
+					cmd: "checkMailbox",
+				});
+			} else {
+				var worker = PThread.pthreads[targetThreadId];
+				if (!worker) {
+					return;
+				}
+				worker.postMessage({ cmd: "checkMailbox" });
+			}
+		}
+		function __emscripten_set_offscreencanvas_size(target, width, height) {
+			return -1;
+		}
+		function __emscripten_thread_set_strongref(thread) {}
 		function __emscripten_throw_longjmp() {
 			throw Infinity;
 		}
@@ -4938,6 +5363,18 @@ var createFFmpegCore = (() => {
 			return (date.getTime() / 1e3) | 0;
 		}
 		function __mmap_js(len, prot, flags, fd, off, allocated, addr) {
+			if (ENVIRONMENT_IS_PTHREAD)
+				return proxyToMainThread(
+					29,
+					1,
+					len,
+					prot,
+					flags,
+					fd,
+					off,
+					allocated,
+					addr,
+				);
 			try {
 				var stream = SYSCALLS.getStreamFromFD(fd);
 				var res = FS.mmap(stream, len, off, prot, flags);
@@ -4952,6 +5389,17 @@ var createFFmpegCore = (() => {
 			}
 		}
 		function __munmap_js(addr, len, prot, flags, fd, offset) {
+			if (ENVIRONMENT_IS_PTHREAD)
+				return proxyToMainThread(
+					30,
+					1,
+					addr,
+					len,
+					prot,
+					flags,
+					fd,
+					offset,
+				);
 			try {
 				var stream = SYSCALLS.getStreamFromFD(fd);
 				if (prot & 2) {
@@ -5025,56 +5473,96 @@ var createFFmpegCore = (() => {
 		function _emscripten_asm_const_int(code, sigPtr, argbuf) {
 			return runEmAsmFunction(code, sigPtr, argbuf);
 		}
+		function _emscripten_check_blocking_allowed() {}
 		function _emscripten_date_now() {
 			return Date.now();
 		}
+		function runtimeKeepalivePush() {
+			runtimeKeepaliveCounter += 1;
+		}
+		function _emscripten_exit_with_live_runtime() {
+			runtimeKeepalivePush();
+			throw "unwind";
+		}
 		function getHeapMax() {
-			return 2147483648;
+			return HEAPU8.length;
 		}
 		function _emscripten_get_heap_max() {
 			return getHeapMax();
 		}
 		var _emscripten_get_now;
-		if (ENVIRONMENT_IS_NODE) {
-			global.performance = require("perf_hooks").performance;
+		_emscripten_get_now = () => performance.timeOrigin + performance.now();
+		function _emscripten_num_logical_cores() {
+			return navigator["hardwareConcurrency"];
 		}
-		_emscripten_get_now = () => performance.now();
-		function _emscripten_memcpy_big(dest, src, num) {
-			HEAPU8.copyWithin(dest, src, src + num);
+		function withStackSave(f) {
+			var stack = stackSave();
+			var ret = f();
+			stackRestore(stack);
+			return ret;
 		}
-		function emscripten_realloc_buffer(size) {
-			var b = wasmMemory.buffer;
-			try {
-				wasmMemory.grow((size - b.byteLength + 65535) >>> 16);
-				updateMemoryViews();
-				return 1;
-			} catch (e) {}
+		function proxyToMainThread(index, sync) {
+			var numCallArgs = arguments.length - 2;
+			var outerArgs = arguments;
+			return withStackSave(() => {
+				var serializedNumCallArgs = numCallArgs * 2;
+				var args = stackAlloc(serializedNumCallArgs * 8);
+				var b = args >> 3;
+				for (var i = 0; i < numCallArgs; i++) {
+					var arg = outerArgs[2 + i];
+					if (typeof arg == "bigint") {
+						HEAP64[b + 2 * i] = 1n;
+						HEAP64[b + 2 * i + 1] = arg;
+					} else {
+						HEAP64[b + 2 * i] = 0n;
+						HEAPF64[b + 2 * i + 1] = arg;
+					}
+				}
+				return __emscripten_run_in_main_runtime_thread_js(
+					index,
+					serializedNumCallArgs,
+					args,
+					sync,
+				);
+			});
+		}
+		var emscripten_receive_on_main_thread_js_callArgs = [];
+		function _emscripten_receive_on_main_thread_js(
+			index,
+			numCallArgs,
+			args,
+		) {
+			numCallArgs /= 2;
+			emscripten_receive_on_main_thread_js_callArgs.length = numCallArgs;
+			var b = args >> 3;
+			for (var i = 0; i < numCallArgs; i++) {
+				if (HEAP64[b + 2 * i]) {
+					emscripten_receive_on_main_thread_js_callArgs[i] =
+						HEAP64[b + 2 * i + 1];
+				} else {
+					emscripten_receive_on_main_thread_js_callArgs[i] =
+						HEAPF64[b + 2 * i + 1];
+				}
+			}
+			var isEmAsmConst = index < 0;
+			var func = !isEmAsmConst
+				? proxiedFunctionTable[index]
+				: ASM_CONSTS[-index - 1];
+			return func.apply(
+				null,
+				emscripten_receive_on_main_thread_js_callArgs,
+			);
+		}
+		function abortOnCannotGrowMemory(requestedSize) {
+			abort("OOM");
 		}
 		function _emscripten_resize_heap(requestedSize) {
 			var oldSize = HEAPU8.length;
 			requestedSize = requestedSize >>> 0;
-			var maxHeapSize = getHeapMax();
-			if (requestedSize > maxHeapSize) {
-				return false;
-			}
-			var alignUp = (x, multiple) =>
-				x + ((multiple - (x % multiple)) % multiple);
-			for (var cutDown = 1; cutDown <= 4; cutDown *= 2) {
-				var overGrownHeapSize = oldSize * (1 + 0.2 / cutDown);
-				overGrownHeapSize = Math.min(
-					overGrownHeapSize,
-					requestedSize + 100663296,
-				);
-				var newSize = Math.min(
-					maxHeapSize,
-					alignUp(Math.max(requestedSize, overGrownHeapSize), 65536),
-				);
-				var replacement = emscripten_realloc_buffer(newSize);
-				if (replacement) {
-					return true;
-				}
-			}
-			return false;
+			abortOnCannotGrowMemory(requestedSize);
+		}
+		function _emscripten_unwind_to_js_event_loop() {
+			throw "unwind";
 		}
 		var ENV = {};
 		function getExecutableName() {
@@ -5117,6 +5605,8 @@ var createFFmpegCore = (() => {
 			HEAP8[buffer >> 0] = 0;
 		}
 		function _environ_get(__environ, environ_buf) {
+			if (ENVIRONMENT_IS_PTHREAD)
+				return proxyToMainThread(31, 1, __environ, environ_buf);
 			var bufSize = 0;
 			getEnvStrings().forEach(function (string, i) {
 				var ptr = environ_buf + bufSize;
@@ -5127,6 +5617,13 @@ var createFFmpegCore = (() => {
 			return 0;
 		}
 		function _environ_sizes_get(penviron_count, penviron_buf_size) {
+			if (ENVIRONMENT_IS_PTHREAD)
+				return proxyToMainThread(
+					32,
+					1,
+					penviron_count,
+					penviron_buf_size,
+				);
 			var strings = getEnvStrings();
 			HEAPU32[penviron_count >> 2] = strings.length;
 			var bufSize = 0;
@@ -5136,20 +5633,8 @@ var createFFmpegCore = (() => {
 			HEAPU32[penviron_buf_size >> 2] = bufSize;
 			return 0;
 		}
-		function _proc_exit(code) {
-			EXITSTATUS = code;
-			if (!keepRuntimeAlive()) {
-				if (Module["onExit"]) Module["onExit"](code);
-				ABORT = true;
-			}
-			quit_(code, new ExitStatus(code));
-		}
-		function exitJS(status, implicit) {
-			EXITSTATUS = status;
-			_proc_exit(status);
-		}
-		var _exit = exitJS;
 		function _fd_close(fd) {
+			if (ENVIRONMENT_IS_PTHREAD) return proxyToMainThread(33, 1, fd);
 			try {
 				var stream = SYSCALLS.getStreamFromFD(fd);
 				FS.close(stream);
@@ -5161,6 +5646,8 @@ var createFFmpegCore = (() => {
 			}
 		}
 		function _fd_fdstat_get(fd, pbuf) {
+			if (ENVIRONMENT_IS_PTHREAD)
+				return proxyToMainThread(34, 1, fd, pbuf);
 			try {
 				var rightsBase = 0;
 				var rightsInheriting = 0;
@@ -5203,6 +5690,8 @@ var createFFmpegCore = (() => {
 			return ret;
 		}
 		function _fd_read(fd, iov, iovcnt, pnum) {
+			if (ENVIRONMENT_IS_PTHREAD)
+				return proxyToMainThread(35, 1, fd, iov, iovcnt, pnum);
 			try {
 				var stream = SYSCALLS.getStreamFromFD(fd);
 				var num = doReadv(stream, iov, iovcnt);
@@ -5220,6 +5709,8 @@ var createFFmpegCore = (() => {
 			return num < MIN_INT53 || num > MAX_INT53 ? NaN : Number(num);
 		}
 		function _fd_seek(fd, offset, whence, newOffset) {
+			if (ENVIRONMENT_IS_PTHREAD)
+				return proxyToMainThread(36, 1, fd, offset, whence, newOffset);
 			try {
 				offset = bigintToI53Checked(offset);
 				if (isNaN(offset)) return 61;
@@ -5251,6 +5742,8 @@ var createFFmpegCore = (() => {
 			return ret;
 		}
 		function _fd_write(fd, iov, iovcnt, pnum) {
+			if (ENVIRONMENT_IS_PTHREAD)
+				return proxyToMainThread(37, 1, fd, iov, iovcnt, pnum);
 			try {
 				var stream = SYSCALLS.getStreamFromFD(fd);
 				var num = doWritev(stream, iov, iovcnt);
@@ -5263,6 +5756,8 @@ var createFFmpegCore = (() => {
 			}
 		}
 		function _getaddrinfo(node, service, hint, out) {
+			if (ENVIRONMENT_IS_PTHREAD)
+				return proxyToMainThread(38, 1, node, service, hint, out);
 			var addr = 0;
 			var port = 0;
 			var flags = 0;
@@ -5757,6 +6252,7 @@ var createFFmpegCore = (() => {
 			writeArrayToMemory(bytes, s);
 			return bytes.length - 1;
 		}
+		PThread.init();
 		var FSNode = function (parent, name, mode, rdev) {
 			if (!parent) {
 				parent = this;
@@ -5804,137 +6300,278 @@ var createFFmpegCore = (() => {
 		FS.FSNode = FSNode;
 		FS.createPreloadedFile = FS_createPreloadedFile;
 		FS.staticInit();
+		var proxiedFunctionTable = [
+			null,
+			_proc_exit,
+			exitOnMainThread,
+			pthreadCreateProxied,
+			___syscall__newselect,
+			___syscall_accept4,
+			___syscall_bind,
+			___syscall_connect,
+			___syscall_faccessat,
+			___syscall_fcntl64,
+			___syscall_fstat64,
+			___syscall_getdents64,
+			___syscall_getpeername,
+			___syscall_getsockname,
+			___syscall_getsockopt,
+			___syscall_ioctl,
+			___syscall_listen,
+			___syscall_lstat64,
+			___syscall_mkdirat,
+			___syscall_newfstatat,
+			___syscall_openat,
+			___syscall_poll,
+			___syscall_recvfrom,
+			___syscall_renameat,
+			___syscall_rmdir,
+			___syscall_sendto,
+			___syscall_socket,
+			___syscall_stat64,
+			___syscall_unlinkat,
+			__mmap_js,
+			__munmap_js,
+			_environ_get,
+			_environ_sizes_get,
+			_fd_close,
+			_fd_fdstat_get,
+			_fd_read,
+			_fd_seek,
+			_fd_write,
+			_getaddrinfo,
+		];
 		var wasmImports = {
-			b: ___assert_fail,
-			f: ___cxa_throw,
-			ka: ___dlsym,
-			R: ___syscall__newselect,
-			L: ___syscall_accept4,
-			K: ___syscall_bind,
-			J: ___syscall_connect,
-			la: ___syscall_faccessat,
-			g: ___syscall_fcntl64,
-			ha: ___syscall_fstat64,
-			U: ___syscall_getdents64,
-			I: ___syscall_getpeername,
-			H: ___syscall_getsockname,
-			G: ___syscall_getsockopt,
-			y: ___syscall_ioctl,
-			F: ___syscall_listen,
-			ea: ___syscall_lstat64,
-			$: ___syscall_mkdirat,
-			fa: ___syscall_newfstatat,
-			w: ___syscall_openat,
-			V: ___syscall_poll,
-			E: ___syscall_recvfrom,
-			T: ___syscall_renameat,
-			S: ___syscall_rmdir,
-			D: ___syscall_sendto,
-			v: ___syscall_socket,
-			ga: ___syscall_stat64,
-			O: ___syscall_unlinkat,
-			ia: __emscripten_get_now_is_monotonic,
-			M: __emscripten_throw_longjmp,
-			Y: __gmtime_js,
-			Z: __localtime_js,
-			_: __mktime_js,
-			W: __mmap_js,
-			X: __munmap_js,
-			P: __tzset_js,
-			a: _abort,
-			t: _dlopen,
-			oa: _emscripten_asm_const_int,
-			l: _emscripten_date_now,
-			Q: _emscripten_get_heap_max,
-			p: _emscripten_get_now,
-			ja: _emscripten_memcpy_big,
-			N: _emscripten_resize_heap,
-			ca: _environ_get,
-			da: _environ_sizes_get,
-			o: _exit,
-			m: _fd_close,
-			ba: _fd_fdstat_get,
-			x: _fd_read,
-			aa: _fd_seek,
-			q: _fd_write,
-			k: _getaddrinfo,
-			i: _getnameinfo,
-			pa: invoke_i,
-			na: invoke_ii,
-			c: invoke_iii,
-			n: invoke_iiii,
-			s: invoke_iiiii,
-			z: invoke_iiiiii,
-			r: invoke_iiiiiiiii,
-			B: invoke_iiiijj,
-			qa: invoke_iij,
-			h: invoke_vi,
+			c: ___assert_fail,
+			h: ___cxa_throw,
+			Ba: ___dlsym,
+			oa: ___emscripten_init_main_thread_js,
+			A: ___emscripten_thread_cleanup,
+			ea: ___pthread_create_js,
+			ca: ___pthread_kill_js,
+			_: ___syscall__newselect,
+			R: ___syscall_accept4,
+			Q: ___syscall_bind,
+			P: ___syscall_connect,
+			Ca: ___syscall_faccessat,
+			k: ___syscall_fcntl64,
+			xa: ___syscall_fstat64,
+			ba: ___syscall_getdents64,
+			O: ___syscall_getpeername,
+			N: ___syscall_getsockname,
+			M: ___syscall_getsockopt,
+			E: ___syscall_ioctl,
+			L: ___syscall_listen,
+			ua: ___syscall_lstat64,
+			la: ___syscall_mkdirat,
+			va: ___syscall_newfstatat,
+			C: ___syscall_openat,
+			fa: ___syscall_poll,
+			K: ___syscall_recvfrom,
+			aa: ___syscall_renameat,
+			$: ___syscall_rmdir,
+			J: ___syscall_sendto,
+			y: ___syscall_socket,
+			wa: ___syscall_stat64,
+			U: ___syscall_unlinkat,
+			Aa: __emscripten_get_now_is_monotonic,
+			W: __emscripten_notify_mailbox_postmessage,
+			qa: __emscripten_set_offscreencanvas_size,
+			na: __emscripten_thread_mailbox_await,
+			za: __emscripten_thread_set_strongref,
+			S: __emscripten_throw_longjmp,
+			ia: __gmtime_js,
+			ja: __localtime_js,
+			ka: __mktime_js,
+			ga: __mmap_js,
+			ha: __munmap_js,
+			V: __tzset_js,
+			b: _abort,
+			x: _dlopen,
+			Fa: _emscripten_asm_const_int,
+			B: _emscripten_check_blocking_allowed,
+			q: _emscripten_date_now,
+			ya: _emscripten_exit_with_live_runtime,
+			Y: _emscripten_get_heap_max,
+			l: _emscripten_get_now,
+			Z: _emscripten_num_logical_cores,
+			pa: _emscripten_receive_on_main_thread_js,
+			T: _emscripten_resize_heap,
+			da: _emscripten_unwind_to_js_event_loop,
+			sa: _environ_get,
+			ta: _environ_sizes_get,
+			p: _exit,
+			r: _fd_close,
+			ra: _fd_fdstat_get,
+			D: _fd_read,
+			ma: _fd_seek,
+			t: _fd_write,
+			n: _getaddrinfo,
+			m: _getnameinfo,
+			H: invoke_i,
+			i: invoke_ii,
+			e: invoke_iii,
+			o: invoke_iiii,
+			w: invoke_iiiii,
+			F: invoke_iiiiii,
+			v: invoke_iiiiiiiii,
+			I: invoke_iiiijj,
+			Ea: invoke_iij,
+			f: invoke_vi,
 			j: invoke_vii,
+			s: invoke_viii,
 			d: invoke_viiii,
-			ma: invoke_viiiiii,
-			A: invoke_viiiiiiii,
-			C: is_timeout,
-			u: send_progress,
-			e: _strftime,
+			u: invoke_viiiii,
+			Da: invoke_viiiiii,
+			G: invoke_viiiiiiii,
+			X: is_timeout,
+			a: wasmMemory || Module["wasmMemory"],
+			z: send_progress,
+			g: _strftime,
 		};
 		var asm = createWasm();
 		var ___wasm_call_ctors = function () {
-			return (___wasm_call_ctors = Module["asm"]["sa"]).apply(
+			return (___wasm_call_ctors = Module["asm"]["Ga"]).apply(
 				null,
 				arguments,
 			);
 		};
 		var _malloc = (Module["_malloc"] = function () {
-			return (_malloc = Module["_malloc"] = Module["asm"]["ta"]).apply(
+			return (_malloc = Module["_malloc"] = Module["asm"]["Ha"]).apply(
 				null,
 				arguments,
 			);
 		});
 		var ___errno_location = function () {
-			return (___errno_location = Module["asm"]["va"]).apply(
+			return (___errno_location = Module["asm"]["Ja"]).apply(
 				null,
 				arguments,
 			);
 		};
 		var _ntohs = function () {
-			return (_ntohs = Module["asm"]["wa"]).apply(null, arguments);
+			return (_ntohs = Module["asm"]["Ka"]).apply(null, arguments);
 		};
 		var _htons = function () {
-			return (_htons = Module["asm"]["xa"]).apply(null, arguments);
+			return (_htons = Module["asm"]["La"]).apply(null, arguments);
 		};
 		var _ffmpeg = (Module["_ffmpeg"] = function () {
-			return (_ffmpeg = Module["_ffmpeg"] = Module["asm"]["ya"]).apply(
+			return (_ffmpeg = Module["_ffmpeg"] = Module["asm"]["Ma"]).apply(
 				null,
 				arguments,
 			);
 		});
-		var _htonl = function () {
-			return (_htonl = Module["asm"]["za"]).apply(null, arguments);
-		};
+		var _ffprobe = (Module["_ffprobe"] = function () {
+			return (_ffprobe = Module["_ffprobe"] = Module["asm"]["Na"]).apply(
+				null,
+				arguments,
+			);
+		});
+		var __emscripten_tls_init = (Module["__emscripten_tls_init"] =
+			function () {
+				return (__emscripten_tls_init = Module[
+					"__emscripten_tls_init"
+				] =
+					Module["asm"]["Oa"]).apply(null, arguments);
+			});
+		var _pthread_self = (Module["_pthread_self"] = function () {
+			return (_pthread_self = Module["_pthread_self"] =
+				Module["asm"]["Pa"]).apply(null, arguments);
+		});
 		var _emscripten_builtin_memalign = function () {
-			return (_emscripten_builtin_memalign = Module["asm"]["Aa"]).apply(
+			return (_emscripten_builtin_memalign = Module["asm"]["Qa"]).apply(
 				null,
 				arguments,
 			);
 		};
+		var __emscripten_thread_init = (Module["__emscripten_thread_init"] =
+			function () {
+				return (__emscripten_thread_init = Module[
+					"__emscripten_thread_init"
+				] =
+					Module["asm"]["Ra"]).apply(null, arguments);
+			});
+		var __emscripten_thread_crashed = (Module[
+			"__emscripten_thread_crashed"
+		] = function () {
+			return (__emscripten_thread_crashed = Module[
+				"__emscripten_thread_crashed"
+			] =
+				Module["asm"]["Sa"]).apply(null, arguments);
+		});
+		var _emscripten_main_thread_process_queued_calls = function () {
+			return (_emscripten_main_thread_process_queued_calls =
+				Module["asm"][
+					"emscripten_main_thread_process_queued_calls"
+				]).apply(null, arguments);
+		};
+		var _htonl = function () {
+			return (_htonl = Module["asm"]["Ta"]).apply(null, arguments);
+		};
+		var _emscripten_main_runtime_thread_id = function () {
+			return (_emscripten_main_runtime_thread_id =
+				Module["asm"]["emscripten_main_runtime_thread_id"]).apply(
+				null,
+				arguments,
+			);
+		};
+		var __emscripten_run_in_main_runtime_thread_js = function () {
+			return (__emscripten_run_in_main_runtime_thread_js =
+				Module["asm"]["Ua"]).apply(null, arguments);
+		};
+		var _emscripten_dispatch_to_thread_ = function () {
+			return (_emscripten_dispatch_to_thread_ =
+				Module["asm"]["emscripten_dispatch_to_thread_"]).apply(
+				null,
+				arguments,
+			);
+		};
+		var __emscripten_thread_free_data = function () {
+			return (__emscripten_thread_free_data = Module["asm"]["Va"]).apply(
+				null,
+				arguments,
+			);
+		};
+		var __emscripten_thread_exit = (Module["__emscripten_thread_exit"] =
+			function () {
+				return (__emscripten_thread_exit = Module[
+					"__emscripten_thread_exit"
+				] =
+					Module["asm"]["Wa"]).apply(null, arguments);
+			});
+		var __emscripten_check_mailbox = (Module["__emscripten_check_mailbox"] =
+			function () {
+				return (__emscripten_check_mailbox = Module[
+					"__emscripten_check_mailbox"
+				] =
+					Module["asm"]["Xa"]).apply(null, arguments);
+			});
 		var _setThrew = function () {
-			return (_setThrew = Module["asm"]["Ba"]).apply(null, arguments);
+			return (_setThrew = Module["asm"]["Ya"]).apply(null, arguments);
+		};
+		var _emscripten_stack_set_limits = function () {
+			return (_emscripten_stack_set_limits = Module["asm"]["Za"]).apply(
+				null,
+				arguments,
+			);
 		};
 		var stackSave = function () {
-			return (stackSave = Module["asm"]["Ca"]).apply(null, arguments);
+			return (stackSave = Module["asm"]["_a"]).apply(null, arguments);
 		};
 		var stackRestore = function () {
-			return (stackRestore = Module["asm"]["Da"]).apply(null, arguments);
+			return (stackRestore = Module["asm"]["$a"]).apply(null, arguments);
+		};
+		var stackAlloc = function () {
+			return (stackAlloc = Module["asm"]["ab"]).apply(null, arguments);
 		};
 		var ___cxa_is_pointer_type = function () {
-			return (___cxa_is_pointer_type = Module["asm"]["Ea"]).apply(
+			return (___cxa_is_pointer_type = Module["asm"]["bb"]).apply(
 				null,
 				arguments,
 			);
 		};
-		var _ff_h264_cabac_tables = (Module["_ff_h264_cabac_tables"] = 1537004);
-		var ___start_em_js = (Module["___start_em_js"] = 6059629);
-		var ___stop_em_js = (Module["___stop_em_js"] = 6059806);
+		var _ff_h264_cabac_tables = (Module["_ff_h264_cabac_tables"] = 1551564);
+		var ___start_em_js = (Module["___start_em_js"] = 6083197);
+		var ___stop_em_js = (Module["___stop_em_js"] = 6083374);
 		function invoke_iiiii(index, a1, a2, a3, a4) {
 			var sp = stackSave();
 			try {
@@ -5985,6 +6622,16 @@ var createFFmpegCore = (() => {
 				_setThrew(1, 0);
 			}
 		}
+		function invoke_viii(index, a1, a2, a3) {
+			var sp = stackSave();
+			try {
+				getWasmTableEntry(index)(a1, a2, a3);
+			} catch (e) {
+				stackRestore(sp);
+				if (e !== e + 0) throw e;
+				_setThrew(1, 0);
+			}
+		}
 		function invoke_vi(index, a1) {
 			var sp = stackSave();
 			try {
@@ -5999,6 +6646,16 @@ var createFFmpegCore = (() => {
 			var sp = stackSave();
 			try {
 				getWasmTableEntry(index)(a1, a2, a3, a4);
+			} catch (e) {
+				stackRestore(sp);
+				if (e !== e + 0) throw e;
+				_setThrew(1, 0);
+			}
+		}
+		function invoke_ii(index, a1) {
+			var sp = stackSave();
+			try {
+				return getWasmTableEntry(index)(a1);
 			} catch (e) {
 				stackRestore(sp);
 				if (e !== e + 0) throw e;
@@ -6035,10 +6692,10 @@ var createFFmpegCore = (() => {
 				_setThrew(1, 0);
 			}
 		}
-		function invoke_ii(index, a1) {
+		function invoke_viiiii(index, a1, a2, a3, a4, a5) {
 			var sp = stackSave();
 			try {
-				return getWasmTableEntry(index)(a1);
+				getWasmTableEntry(index)(a1, a2, a3, a4, a5);
 			} catch (e) {
 				stackRestore(sp);
 				if (e !== e + 0) throw e;
@@ -6075,12 +6732,16 @@ var createFFmpegCore = (() => {
 				_setThrew(1, 0);
 			}
 		}
+		Module["keepRuntimeAlive"] = keepRuntimeAlive;
+		Module["wasmMemory"] = wasmMemory;
 		Module["setValue"] = setValue;
 		Module["getValue"] = getValue;
 		Module["UTF8ToString"] = UTF8ToString;
 		Module["stringToUTF8"] = stringToUTF8;
 		Module["lengthBytesUTF8"] = lengthBytesUTF8;
+		Module["ExitStatus"] = ExitStatus;
 		Module["FS"] = FS;
+		Module["PThread"] = PThread;
 		var calledRun;
 		dependenciesFulfilled = function runCaller() {
 			if (!calledRun) run();
@@ -6088,6 +6749,12 @@ var createFFmpegCore = (() => {
 		};
 		function run() {
 			if (runDependencies > 0) {
+				return;
+			}
+			if (ENVIRONMENT_IS_PTHREAD) {
+				readyPromiseResolve(Module);
+				initRuntime();
+				startWorker(Module);
 				return;
 			}
 			preRun();
@@ -6129,11 +6796,4 @@ var createFFmpegCore = (() => {
 		return createFFmpegCore.ready;
 	};
 })();
-if (typeof exports === "object" && typeof module === "object")
-	module.exports = createFFmpegCore;
-else if (typeof define === "function" && define["amd"])
-	define([], function () {
-		return createFFmpegCore;
-	});
-else if (typeof exports === "object")
-	exports["createFFmpegCore"] = createFFmpegCore;
+export default createFFmpegCore;

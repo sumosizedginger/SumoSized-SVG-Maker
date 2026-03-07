@@ -3,7 +3,7 @@
 	import { fade, fly } from "svelte/transition";
 
 	let format = $state<
-		"png" | "mov" | "gif" | "svg" | "jpeg" | "webp" | "webm" | "mp4"
+		"png" | "mov" | "svg" | "jpeg" | "webp" | "webm" | "mp4"
 	>("png");
 	let isRendering = $state(false);
 	let isExportingAssets = $state(false);
@@ -169,11 +169,10 @@
 							<option value="webm"
 								>Web Optimized Video (WebM)</option
 							>
-							<option value="gif">Animated GIF</option>
 						</select>
 					</div>
 
-					{#if format === "mov" || format === "mp4" || format === "gif" || format === "webm"}
+					{#if format === "mov" || format === "mp4" || format === "webm"}
 						<div class="option" transition:fade>
 							<label for="fps">FPS</label>
 							<input
@@ -215,6 +214,33 @@
 						🚀 Render Master Asset
 					{/if}
 				</button>
+			</section>
+
+			<hr class="divider" />
+
+			<section class="export-section">
+				<h4>3. Legacy / Advanced GIF</h4>
+				<p class="section-desc">
+					For specialized Animated GIF exports, use our dedicated
+					engine.
+				</p>
+				<a
+					href="https://sumosizedginger.github.io/sumosized-gif-maker/"
+					target="_blank"
+					class="secondary-btn external-link"
+				>
+					<svg
+						viewBox="0 0 24 24"
+						width="16"
+						height="16"
+						fill="currentColor"
+					>
+						<path
+							d="M19 19H5V5h7V3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z"
+						/>
+					</svg>
+					Open SumoSized GIF Maker
+				</a>
 			</section>
 		</div>
 	</div>

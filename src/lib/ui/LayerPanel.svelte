@@ -77,7 +77,7 @@
 	async function handleImport() {
 		const input = document.createElement("input");
 		input.type = "file";
-		input.accept = ".svg,.png,.apng,.jpg,.jpeg,.webp,.gif,.mp4,.webm";
+		input.accept = ".svg,.png,.apng,.jpg,.jpeg,.webp,.mp4,.webm";
 		input.onchange = async (e) => {
 			const file = (e.target as HTMLInputElement).files?.[0];
 			if (!file) return;
@@ -99,7 +99,7 @@
 				});
 				sourceType = "video";
 			} else {
-				// PNG, JPG, GIF
+				// PNG, JPG, etc.
 				url = await new Promise((resolve) => {
 					const reader = new FileReader();
 					reader.onload = () => resolve(reader.result as string);
@@ -189,6 +189,7 @@
 		>
 		<select
 			id="ratio-select"
+			name="ratio-select"
 			class="ratio-select"
 			value={appState.documentAspectRatio}
 			onchange={(e) =>
@@ -262,6 +263,8 @@
 					</span>
 					<input
 						type="checkbox"
+						id="visible-{layer.id}"
+						name="visible-{layer.id}"
 						title="Toggle Visibility"
 						class="visibility-checkbox"
 						checked={layer.visible}
@@ -273,6 +276,8 @@
 					/>
 					<input
 						type="checkbox"
+						id="selected-{layer.id}"
+						name="selected-{layer.id}"
 						title="Select for Export (Elite Choice)"
 						class="selection-checkbox"
 						checked={layer.selected}
@@ -326,6 +331,7 @@
 							<label for={`blend-${layer.id}`}>Blend</label>
 							<select
 								id={`blend-${layer.id}`}
+								name={`blend-${layer.id}`}
 								value={layer.blendMode}
 								onchange={(e) =>
 									appState.updateLayer(layer.id, {
